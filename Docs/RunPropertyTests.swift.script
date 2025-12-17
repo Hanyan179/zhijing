@@ -1,0 +1,198 @@
+#!/usr/bin/env swift
+
+import Foundation
+
+// This file runs the property-based tests for documentation
+// It includes all the test code inline to make it executable as a script
+
+// MARK: - Test Utilities
+
+struct DocumentMetadataValidation {
+    let hasNavigationLink: Bool
+    let hasVersion: Bool
+    let hasAuthor: Bool
+    let hasUpdateDate: Bool
+    let hasStatus: Bool
+    
+    var isValid: Bool {
+        return hasNavigationLink && hasVersion && hasAuthor && hasUpdateDate && hasStatus
+    }
+    
+    var missingFields: [String] {
+        var missing: [String] = []
+        if !hasNavigationLink { missing.append("导航链接") }
+        if !hasVersion { missing.append("版本号") }
+        if !hasAuthor { missing.append("作者") }
+        if !hasUpdateDate { missing.append("更新日期") }
+        if !hasStatus { missing.append("状态") }
+        return missing
+    }
+}
+
+// Helper extension for string repetition
+extension String {
+    static func * (left: String, right: Int) -> String {
+        return String(repeating: left, count: right)
+    }
+}
+
+// MARK: - Link Integrity Tests
+
+func extractMarkdownLinks(from content: String) -> [(text: String, path: String)] {
+    var links: [(String, String)] = []
+    let pattern = "\\[([^\\]]+)\\]\\(([^\\)]+)\\)"
+    
+    guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+        return links
+    }
+    
+    let range = NSRange(content.startIndex..., in: content)
+    let matches = regex.matches(in: content, options: [], range: range)
+    
+    for match in matches {
+        if match.numberOfRanges >= 3 {
+            if let textRange = Range(match.range(at: 1), in: content),
+               let pathRange = Range(match.range(at: 2), in: content) {
+                let text = String(content[textRange])
+                let path = String(content[pathRange])
+                links.append((text, path))
+            }
+        }
+    }
+    
+    return links
+}
+
+func isExternalLink(_ path: String) -> Bool {
+    return path.hasPrefix("http://") || path.hasPrefix("https://")
+}
+
+func isAnchorLink(_ path: String) -> Bool {
+    return path.hasPrefix("#")
+}
+
+func resolveRelativePath(from documentPath: String, to relativePath: String) -> String? {
+    let documentURL = URL(fileURLWithPath: documentPath)
+    let documentDir = documentURL.deletingLastPathComponent()
+    let targetURL = documentDir.appendingPathComponent(relativePath)
+    let normalizedPath = targetURL.standardized.path
+    return normalizedPath
+}
+
+func fileExists(at path: String) -> Bool {
+    return FileManager.default.fileExists(atPath: path)
+}
+
+func getAllMarkdownFiles(in directory: String) -> [String] {
+    let fileManager = FileManager.default
+    var markdownFiles: [String] = []
+    
+    guard let enumerator = fileManager.enumerator(atPath: directory) else {
+        return []
+    }
+    
+    while let file = enumerator.nextObject() as? String {
+        if file.hasSuffix(".md") && !file.contains(".gitkeep") {
+            markdownFiles.append(directory + "/" + file)
+        }
+    }
+    
+    return markdownFiles
+}
+
+func readFileContent(_ path: String) -> String? {
+    return try? String(contentsOfFile: path, encoding: .utf8)
+}
+
+func validateInternalLinks(in documentPath: String, content: String) -> [String] {
+    var brokenLinks: [String] = []
+    let links = extractMarkdownLinks(from: content)
+    
+    for (_, path) in links {
+        if isExternalLink(path) || isAnchorLink(path) {
+            continue
+        }
+        
+        // Split path and anchor if present (e.g., "file.md#section")
+        var filePath = path
+        if let anchorIndex = path.firstIndex(of: "#") {
+            filePath = String(path[..<anchorIndex])
+        }
+        
+        guard let resolvedPath = resolveRelativePath(from: documentPath, to: filePath) else {
+            brokenLinks.append(path)
+            continue
+        }
+        
+        if !fileExists(at: resolvedPath) {
+            brokenLinks.append(path)
+        }
+    }
+    
+    return brokenLinks
+}
+
+// MARK: - Run Tests
+
+func testLinkIntegrity(docsDirectory: String) -> (passed: Bool, failingExample: String?) {
+    let markdownFiles = getAllMarkdownFiles(in: docsDirectory)
+    
+    if markdownFiles.isEmpty {
+        return (true, nil)
+    }
+    
+    var filesWithBrokenLinks: [(String, [String])] = []
+    
+    for filePath in markdownFiles {
+        guard let content = readFileContent(filePath) else {
+            continue
+        }
+        
+        if content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            continue
+        }
+        
+        let brokenLinks = validateInternalLinks(in: filePath, content: content)
+        
+        if !brokenLinks.isEmpty {
+            filesWithBrokenLinks.append((filePath, brokenLinks))
+        }
+    }
+    
+    if filesWithBrokenLinks.isEmpty {
+        return (true, nil)
+    } else {
+        let failureDetails = filesWithBrokenLinks.map { file, links in
+            "\(file):\n  Broken links: \(links.joined(separator: ", "))"
+        }.joined(separator: "\n")
+        return (false, failureDetails)
+    }
+}
+
+// MARK: - Main Execution
+
+print("Running Link Integrity Property Tests...")
+print("**Feature: documentation-standardization, Property 5: 链接完整性**")
+print("**Validates: Requirements 3.5, 6.3**")
+print("=" * 70)
+print("")
+
+let docsDirectory = "Docs"
+let result = testLinkIntegrity(docsDirectory: docsDirectory)
+
+if result.passed {
+    print("✅ Property 5 (链接完整性): PASSED")
+    print("")
+    print("All internal links in documentation are valid.")
+} else {
+    print("❌ Property 5 (链接完整性): FAILED")
+    print("")
+    if let failing = result.failingExample {
+        print("Files with broken links:")
+        print(failing)
+    }
+}
+
+print("")
+print("=" * 70)
+print("Test execution complete.")

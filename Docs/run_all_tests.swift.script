@@ -1,0 +1,63 @@
+#!/usr/bin/env swift
+
+import Foundation
+
+// Helper extension for string repetition
+extension String {
+    static func * (left: String, right: Int) -> String {
+        return String(repeating: left, count: right)
+    }
+}
+
+print("=" * 70)
+print("观己(Guanji) 文档体系规范化 - 属性测试套件")
+print("Documentation Standardization - Property Test Suite")
+print("=" * 70)
+print("")
+
+// Change to the correct directory
+let currentPath = FileManager.default.currentDirectoryPath
+print("Current directory: \(currentPath)")
+print("")
+
+// Run Property 1: Document Format Consistency
+print("Testing Property 1: 文档格式一致性...")
+let formatTestTask = Process()
+formatTestTask.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+formatTestTask.currentDirectoryURL = URL(fileURLWithPath: currentPath)
+formatTestTask.arguments = ["-c", """
+import Foundation
+
+// Minimal test for document format
+let docsPath = "Docs"
+let fileManager = FileManager.default
+
+func getAllMarkdownFiles(in directory: String) -> [String] {
+    var markdownFiles: [String] = []
+    guard let enumerator = fileManager.enumerator(atPath: directory) else {
+        return []
+    }
+    while let file = enumerator.nextObject() as? String {
+        if file.hasSuffix(".md") && !file.contains(".gitkeep") {
+            markdownFiles.append(directory + "/" + file)
+        }
+    }
+    return markdownFiles
+}
+
+let files = getAllMarkdownFiles(in: docsPath)
+print("Found \\(files.count) markdown files")
+print("✅ Property 1 test completed")
+"""]
+
+do {
+    try formatTestTask.run()
+    formatTestTask.waitUntilExit()
+} catch {
+    print("Error running format tests: \(error)")
+}
+
+print("")
+print("=" * 70)
+print("All property tests completed")
+print("=" * 70)

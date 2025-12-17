@@ -1,4 +1,7 @@
 import SwiftUI
+import AVFoundation
+
+#if canImport(UIKit)
 import PhotosUI
 
 public struct PhotoPickerSheet: UIViewControllerRepresentable {
@@ -36,28 +39,36 @@ public struct PhotoPickerSheet: UIViewControllerRepresentable {
 }
 
 public struct CameraCaptureSheet: UIViewControllerRepresentable {
-    public var onCapture: (UIImage?) -> Void
-    public init(onCapture: @escaping (UIImage?) -> Void) { self.onCapture = onCapture }
+    public var onCapture: (UIImage?, URL?) -> Void
+    public init(onCapture: @escaping (UIImage?, URL?) -> Void) { self.onCapture = onCapture }
     public func makeCoordinator() -> Coordinator { Coordinator(onCapture: onCapture) }
     public func makeUIViewController(context: Context) -> UIImagePickerController {
         let vc = UIImagePickerController()
         vc.sourceType = .camera
+        vc.mediaTypes = ["public.image", "public.movie"]
         vc.cameraCaptureMode = .photo
+        vc.videoQuality = .typeHigh
         vc.delegate = context.coordinator
         return vc
     }
     public func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
     public final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        private let onCapture: (UIImage?) -> Void
-        init(onCapture: @escaping (UIImage?) -> Void) { self.onCapture = onCapture }
+        private let onCapture: (UIImage?, URL?) -> Void
+        init(onCapture: @escaping (UIImage?, URL?) -> Void) { self.onCapture = onCapture }
         public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            let img = info[.originalImage] as? UIImage
-            onCapture(img)
+            if let img = info[.originalImage] as? UIImage {
+                onCapture(img, nil)
+            } else if let url = info[.mediaURL] as? URL {
+                onCapture(nil, url)
+            } else {
+                onCapture(nil, nil)
+            }
             picker.dismiss(animated: true)
         }
         public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            onCapture(nil)
+            onCapture(nil, nil)
             picker.dismiss(animated: true)
         }
     }
 }
+#endif

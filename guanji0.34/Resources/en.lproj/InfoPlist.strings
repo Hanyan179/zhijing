@@ -2,3 +2,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Save images to your photo library";
 "NSCameraUsageDescription" = "Use the camera to capture photos or videos";
 "NSMicrophoneUsageDescription" = "Record audio for voice notes";
+"NSLocationWhenInUseUsageDescription" = "Match places and build journeys with your location";

@@ -15,19 +15,21 @@ public struct RenameSheet: View {
                     Image(systemName: "mappin.circle").foregroundColor(Colors.slatePrimary)
                     Text(Localization.tr("nameThisPlace", lang: lang)).font(.system(size: 14, weight: .bold))
                 }
-                Text("\(vo.displayText) " + Localization.tr("rawLabel", lang: lang)).font(.system(size: 12, weight: .regular, design: .monospaced)).foregroundColor(Colors.systemGray).frame(maxWidth: .infinity, alignment: .leading).padding(8).background(Color(.systemGray6)).clipShape(RoundedRectangle(cornerRadius: 12))
+                Text("\(vo.displayText) " + Localization.tr("rawLabel", lang: lang)).font(.system(size: 12, weight: .regular, design: .monospaced)).foregroundColor(Colors.systemGray).frame(maxWidth: .infinity, alignment: .leading).padding(8).background(Colors.slateLight).clipShape(RoundedRectangle(cornerRadius: 12))
                 TextField(Localization.tr("locationNamePlaceholder", lang: lang), text: $name)
+                    #if canImport(UIKit)
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
+                    #endif
                     .padding(12)
-                    .background(Color.white)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(.systemGray4)))
+                    .background(Colors.cardBackground)
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Colors.slateLight))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 HStack(spacing: 12) {
                     Button(Localization.tr("cancel", lang: lang)) { onClose() }
                         .frame(maxWidth: .infinity)
                         .padding(12)
-                        .background(Color(.systemGray6))
+                        .background(Colors.slateLight)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     Button(Localization.tr("save", lang: lang)) {
                         if !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { onConfirm(name) }

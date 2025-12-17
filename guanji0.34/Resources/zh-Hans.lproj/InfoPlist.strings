@@ -2,3 +2,4 @@
 "NSPhotoLibraryAddUsageDescription" = "用于保存图片到相册";
 "NSCameraUsageDescription" = "用于拍摄并附加照片或视频";
 "NSMicrophoneUsageDescription" = "用于语音记录与转写";
+"NSLocationWhenInUseUsageDescription" = "用于匹配地点并生成旅程记录";

@@ -15,6 +15,7 @@ public struct ContextMenuOverlay: View {
     public let onSelect: (EntryCategory) -> Void
     public let onEdit: (String) -> Void
     public let lang: Lang
+    @EnvironmentObject private var appState: AppState
     @State private var isEditing = false
     @State private var editValue: String
     public init(state: ContextMenuState, onClose: @escaping () -> Void, onSelect: @escaping (EntryCategory) -> Void, onEdit: @escaping (String) -> Void, lang: Lang) {
@@ -27,7 +28,7 @@ public struct ContextMenuOverlay: View {
     }
 
     private var isContentEditable: Bool { state.type == .text || state.type == .audio || state.type == .image }
-    private var categories: [EntryCategory] { [.emotion, .work, .idea, .social, .dream, .media] }
+    private var categories: [EntryCategory] { [.health, .emotion, .social, .work, .life] }
 
     public var body: some View {
         ZStack {
@@ -35,7 +36,7 @@ public struct ContextMenuOverlay: View {
             if isEditing {
                 VStack(spacing: 8) {
                     Text(Localization.tr("edit", lang: lang)).font(Typography.fontEngraved)
-                    TextEditor(text: $editValue).frame(height: 120).padding(8).background(Color.white.opacity(0.5)).overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(.systemGray4))).clipShape(RoundedRectangle(cornerRadius: 12))
+                    TextEditor(text: $editValue).frame(height: 120).padding(8).background(Color.white.opacity(0.5)).overlay(RoundedRectangle(cornerRadius: 12).stroke(Colors.slateLight)).clipShape(RoundedRectangle(cornerRadius: 12))
                     HStack { Spacer(); Button(Localization.tr("cancel", lang: lang)) { onClose() }; Button(Localization.tr("save", lang: lang)) { onEdit(editValue); onClose() } }
                 }
                 .padding(12)
@@ -43,30 +44,18 @@ public struct ContextMenuOverlay: View {
                 .modifier(Materials.card())
             } else {
                 GeometryReader { geo in
-                    VStack(spacing: 0) {
-                        if isContentEditable {
-                            Button(action: { isEditing = true }) {
-                                HStack(spacing: 8) { Image(systemName: "pencil").foregroundColor(Colors.systemGray); Text(Localization.tr("edit", lang: lang)).font(.system(size: 12, weight: .medium)).foregroundColor(Colors.slate600) }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .overlay(Rectangle().frame(height: 1).foregroundColor(Color.white.opacity(0.2)), alignment: .bottom)
-                        }
-                        HStack(spacing: 6) { Image(systemName: "tag").foregroundColor(Color(.systemGray3)); Text(Localization.tr("categoryLabel", lang: lang)).font(Typography.fontEngraved).foregroundColor(Color(.systemGray3)) }.padding(.horizontal, 12).padding(.vertical, 6)
-                        ForEach(categories, id: \.self) { cat in
-                            Button(action: { onSelect(cat); onClose() }) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: Icons.categoryIconName(cat)).foregroundColor(Colors.systemGray)
-                                    Text(Icons.categoryLabel(cat)).font(.system(size: 12)).foregroundColor(Colors.slate500)
-                                }
-                            }
-                            .padding(.horizontal, 12).padding(.vertical, 6)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                    .modifier(Materials.glass())
-                    .frame(width: 180)
-                    .position(x: min(state.x, geo.size.width - 180), y: min(state.y, geo.size.height - 300))
+                    let w: CGFloat = 320
+                    let h: CGFloat = 64
+                    let posX = max(w/2, min(state.x, geo.size.width - w/2))
+                    let upY = state.y - (h/2 + 20)
+                    let downY = state.y + (h/2 + 20)
+                    let posY = upY > h/2 ? upY : min(downY, geo.size.height - h/2)
+                    CategoryPillBar(categories: categories,
+                                    onSelect: { cat in onSelect(cat); onClose() },
+                                    onEdit: (isContentEditable ? { appState.editingEntryId = state.entryId; appState.editingDraft = state.currentContent ?? ""; onClose() } : nil),
+                                    dark: false)
+                        .frame(width: w, height: h)
+                        .position(x: posX, y: posY)
                 }
             }
         }

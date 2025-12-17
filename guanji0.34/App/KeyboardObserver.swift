@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 
+#if canImport(UIKit)
 public final class KeyboardObserver: ObservableObject {
     @Published public private(set) var height: CGFloat = 0
     private var cancellables: Set<AnyCancellable> = []
@@ -15,4 +16,9 @@ public final class KeyboardObserver: ObservableObject {
             .store(in: &cancellables)
     }
 }
-
+#else
+public final class KeyboardObserver: ObservableObject {
+    @Published public private(set) var height: CGFloat = 0
+    public init() {}
+}
+#endif

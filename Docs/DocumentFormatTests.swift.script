@@ -1,0 +1,1038 @@
+#!/usr/bin/env swift
+
+import Foundation
+
+// MARK: - Property-Based Testing for Document Format Consistency
+// **Feature: documentation-standardization, Property 1: 文档格式一致性**
+// **Validates: Requirements 1.3, 2.4, 5.3, 5.5**
+// These tests verify that all documentation files follow the standardized format
+
+/// Document metadata structure for validation
+struct DocumentMetadataValidation {
+    let hasNavigationLink: Bool
+    let hasVersion: Bool
+    let hasAuthor: Bool
+    let hasUpdateDate: Bool
+    let hasStatus: Bool
+    
+    var isValid: Bool {
+        return hasNavigationLink && hasVersion && hasAuthor && hasUpdateDate && hasStatus
+    }
+    
+    var missingFields: [String] {
+        var missing: [String] = []
+        if !hasNavigationLink { missing.append("导航链接") }
+        if !hasVersion { missing.append("版本号") }
+        if !hasAuthor { missing.append("作者") }
+        if !hasUpdateDate { missing.append("更新日期") }
+        if !hasStatus { missing.append("状态") }
+        return missing
+    }
+}
+
+/// Test utilities for document format validation
+enum DocumentFormatTestGenerators {
+    
+    /// Get all markdown files in the Docs directory
+    static func getAllMarkdownFiles(in directory: String) -> [String] {
+        let fileManager = FileManager.default
+        var markdownFiles: [String] = []
+        
+        guard let enumerator = fileManager.enumerator(atPath: directory) else {
+            return []
+        }
+        
+        while let file = enumerator.nextObject() as? String {
+            if file.hasSuffix(".md") && !file.contains(".gitkeep") {
+                markdownFiles.append(directory + "/" + file)
+            }
+        }
+        
+        return markdownFiles
+    }
+    
+    /// Read file content
+    static func readFileContent(_ path: String) -> String? {
+        return try? String(contentsOfFile: path, encoding: .utf8)
+    }
+    
+    /// Generate a random valid document for testing
+    static func randomValidDocument() -> String {
+        let titles = ["测试文档", "功能说明", "架构设计", "API 接口"]
+        let statuses = ["草稿", "审核中", "已发布", "已废弃"]
+        let authors = ["Kiro AI Assistant", "开发团队", "产品团队"]
+        
+        let title = titles.randomElement()!
+        let status = statuses.randomElement()!
+        let author = authors.randomElement()!
+        let version = "v\(Int.random(in: 1...3)).\(Int.random(in: 0...9)).\(Int.random(in: 0...9))"
+        let year = Int.random(in: 2024...2025)
+        let month = String(format: "%02d", Int.random(in: 1...12))
+        let day = String(format: "%02d", Int.random(in: 1...28))
+        
+        return """
+        # \(title)
+        
+        > 返回 [文档中心](../README.md)
+        
+        ## 概述
+        
+        这是一个测试文档的概述部分。
+        
+        ## 详细说明
+        
+        这里是详细说明内容。
+        
+        ---
+        **版本**: \(version)  
+        **作者**: \(author)  
+        **更新日期**: \(year)-\(month)-\(day)  
+        **状态**: \(status)
+        """
+    }
+    
+    /// Generate a document missing navigation link
+    static func documentMissingNavigation() -> String {
+        return """
+        # 测试文档
+        
+        ## 概述
+        
+        这是一个缺少导航链接的文档。
+        
+        ---
+        **版本**: v1.0.0  
+        **作者**: 测试  
+        **更新日期**: 2024-12-17  
+        **状态**: 已发布
+        """
+    }
+    
+    /// Generate a document missing metadata
+    static func documentMissingMetadata() -> String {
+        return """
+        # 测试文档
+        
+        > 返回 [文档中心](../README.md)
+        
+        ## 概述
+        
+        这是一个缺少元数据的文档。
+        """
+    }
+}
+
+// MARK: - Document Format Validators
+
+/// Validators for document format
+enum DocumentFormatValidators {
+    
+    /// Check if document has navigation link to documentation hub
+    /// **Validates: Requirements 1.3**
+    static func hasNavigationLink(_ content: String) -> Bool {
+        // Check for navigation link pattern: > 返回 [文档中心](../README.md)
+        // or similar patterns
+        let patterns = [
+            "返回.*\\[文档中心\\]",
+            "\\[文档中心\\]\\(.*README\\.md\\)",
+            "> 返回",
+            "返回.*README"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(content.startIndex..., in: content)
+                if regex.firstMatch(in: content, options: [], range: range) != nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    /// Check if document has version number
+    /// **Validates: Requirements 5.3**
+    static func hasVersion(_ content: String) -> Bool {
+        // Check for version pattern: **版本**: vX.X.X or 版本: vX.X.X
+        let patterns = [
+            "\\*\\*版本\\*\\*:\\s*v?\\d+\\.\\d+\\.\\d+",
+            "版本:\\s*v?\\d+\\.\\d+\\.\\d+",
+            "Version:\\s*v?\\d+\\.\\d+\\.\\d+"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(content.startIndex..., in: content)
+                if regex.firstMatch(in: content, options: [], range: range) != nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    /// Check if document has author
+    /// **Validates: Requirements 2.4**
+    static func hasAuthor(_ content: String) -> Bool {
+        let patterns = [
+            "\\*\\*作者\\*\\*:",
+            "作者:",
+            "Author:"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(content.startIndex..., in: content)
+                if regex.firstMatch(in: content, options: [], range: range) != nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    /// Check if document has update date
+    /// **Validates: Requirements 5.3**
+    static func hasUpdateDate(_ content: String) -> Bool {
+        let patterns = [
+            "\\*\\*更新日期\\*\\*:\\s*\\d{4}-\\d{2}-\\d{2}",
+            "更新日期:\\s*\\d{4}-\\d{2}-\\d{2}",
+            "\\*\\*最后更新\\*\\*:\\s*\\d{4}-\\d{2}-\\d{2}",
+            "最后更新:\\s*\\d{4}-\\d{2}-\\d{2}",
+            "Update.*Date.*\\d{4}"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(content.startIndex..., in: content)
+                if regex.firstMatch(in: content, options: [], range: range) != nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    /// Check if document has status
+    /// **Validates: Requirements 5.5**
+    static func hasStatus(_ content: String) -> Bool {
+        let patterns = [
+            "\\*\\*状态\\*\\*:\\s*(草稿|审核中|已发布|已废弃)",
+            "状态:\\s*(草稿|审核中|已发布|已废弃)",
+            "Status:\\s*(Draft|Review|Published|Deprecated)"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(content.startIndex..., in: content)
+                if regex.firstMatch(in: content, options: [], range: range) != nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    /// Validate complete document metadata
+    static func validateDocumentMetadata(_ content: String) -> DocumentMetadataValidation {
+        return DocumentMetadataValidation(
+            hasNavigationLink: hasNavigationLink(content),
+            hasVersion: hasVersion(content),
+            hasAuthor: hasAuthor(content),
+            hasUpdateDate: hasUpdateDate(content),
+            hasStatus: hasStatus(content)
+        )
+    }
+}
+
+// MARK: - Property Tests for Document Format
+
+/// Property-based tests for document format consistency
+/// **Feature: documentation-standardization, Property 1: 文档格式一致性**
+enum DocumentFormatPropertyTests {
+    
+    /// **Property 1: 文档格式一致性**
+    /// **Validates: Requirements 1.3, 2.4, 5.3, 5.5**
+    /// For any document file in the Docs directory, the document should contain:
+    /// - Navigation link at the top
+    /// - Metadata block at the bottom (version, author, update date, status)
+    static func testDocumentFormatConsistency(docsDirectory: String) -> (passed: Bool, failingExample: String?) {
+        let markdownFiles = DocumentFormatTestGenerators.getAllMarkdownFiles(in: docsDirectory)
+        
+        // Skip if no files found
+        if markdownFiles.isEmpty {
+            return (true, nil)
+        }
+        
+        var failedFiles: [(String, [String])] = []
+        
+        for filePath in markdownFiles {
+            // Skip README.md and CHANGELOG.md as they have different formats
+            let fileName = (filePath as NSString).lastPathComponent
+            if fileName == "README.md" || fileName == "CHANGELOG.md" {
+                continue
+            }
+            
+            // Skip .gitkeep files
+            if fileName == ".gitkeep" {
+                continue
+            }
+            
+            guard let content = DocumentFormatTestGenerators.readFileContent(filePath) else {
+                failedFiles.append((filePath, ["无法读取文件"]))
+                continue
+            }
+            
+            // Skip empty files
+            if content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                continue
+            }
+            
+            let validation = DocumentFormatValidators.validateDocumentMetadata(content)
+            
+            if !validation.isValid {
+                failedFiles.append((filePath, validation.missingFields))
+            }
+        }
+        
+        if failedFiles.isEmpty {
+            return (true, nil)
+        } else {
+            let failureDetails = failedFiles.map { file, missing in
+                "\(file): 缺少 \(missing.joined(separator: ", "))"
+            }.joined(separator: "\n")
+            return (false, failureDetails)
+        }
+    }
+    
+    /// Test that randomly generated valid documents pass validation
+    static func testValidDocumentGeneration(iterations: Int = 100) -> (passed: Bool, failingExample: String?) {
+        for _ in 0..<iterations {
+            let document = DocumentFormatTestGenerators.randomValidDocument()
+            let validation = DocumentFormatValidators.validateDocumentMetadata(document)
+            
+            if !validation.isValid {
+                return (false, "Generated valid document failed validation. Missing: \(validation.missingFields.joined(separator: ", "))\nDocument:\n\(document)")
+            }
+        }
+        
+        return (true, nil)
+    }
+    
+    /// Test that documents missing navigation are detected
+    static func testMissingNavigationDetection(iterations: Int = 100) -> (passed: Bool, failingExample: String?) {
+        for _ in 0..<iterations {
+            let document = DocumentFormatTestGenerators.documentMissingNavigation()
+            let hasNav = DocumentFormatValidators.hasNavigationLink(document)
+            
+            if hasNav {
+                return (false, "Document without navigation link was not detected:\n\(document)")
+            }
+        }
+        
+        return (true, nil)
+    }
+    
+    /// Test that documents missing metadata are detected
+    static func testMissingMetadataDetection(iterations: Int = 100) -> (passed: Bool, failingExample: String?) {
+        for _ in 0..<iterations {
+            let document = DocumentFormatTestGenerators.documentMissingMetadata()
+            let validation = DocumentFormatValidators.validateDocumentMetadata(document)
+            
+            // Should have navigation but missing other fields
+            if !validation.hasNavigationLink {
+                return (false, "Navigation link not detected in document with navigation")
+            }
+            
+            if validation.hasVersion || validation.hasAuthor || validation.hasUpdateDate || validation.hasStatus {
+                return (false, "Metadata detected in document without metadata block")
+            }
+        }
+        
+        return (true, nil)
+    }
+    
+    /// Run all property tests and print results
+    static func runAllTests(docsDirectory: String = "Docs") {
+        print("Running Document Format Property Tests...")
+        print("=" * 50)
+        
+        // Test 1: Document Format Consistency (actual files)
+        let consistencyResult = testDocumentFormatConsistency(docsDirectory: docsDirectory)
+        if consistencyResult.passed {
+            print("✅ Property 1 (文档格式一致性): PASSED")
+        } else {
+            print("❌ Property 1 (文档格式一致性): FAILED")
+            if let failing = consistencyResult.failingExample {
+                print("   Failing files:\n\(failing)")
+            }
+        }
+        
+        // Test 2: Valid Document Generation
+        let generationResult = testValidDocumentGeneration()
+        if generationResult.passed {
+            print("✅ Test (Valid Document Generation): PASSED")
+        } else {
+            print("❌ Test (Valid Document Generation): FAILED")
+            if let failing = generationResult.failingExample {
+                print("   Failing example: \(failing)")
+            }
+        }
+        
+        // Test 3: Missing Navigation Detection
+        let navDetectionResult = testMissingNavigationDetection()
+        if navDetectionResult.passed {
+            print("✅ Test (Missing Navigation Detection): PASSED")
+        } else {
+            print("❌ Test (Missing Navigation Detection): FAILED")
+            if let failing = navDetectionResult.failingExample {
+                print("   Failing example: \(failing)")
+            }
+        }
+        
+        // Test 4: Missing Metadata Detection
+        let metadataDetectionResult = testMissingMetadataDetection()
+        if metadataDetectionResult.passed {
+            print("✅ Test (Missing Metadata Detection): PASSED")
+        } else {
+            print("❌ Test (Missing Metadata Detection): FAILED")
+            if let failing = metadataDetectionResult.failingExample {
+                print("   Failing example: \(failing)")
+            }
+        }
+        
+        print("=" * 50)
+        
+        // Summary
+        let allPassed = consistencyResult.passed && generationResult.passed && 
+                        navDetectionResult.passed && metadataDetectionResult.passed
+        if allPassed {
+            print("All tests PASSED ✅")
+        } else {
+            print("Some tests FAILED ❌")
+        }
+    }
+}
+
+// MARK: - Property 4: Code Coverage Completeness Tests
+// **Feature: documentation-standardization, Property 4: 代码覆盖完整性**
+// **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
+
+/// Test utilities for code coverage validation
+enum CodeCoverageTestGenerators {
+    
+    /// Get all Swift files in a directory (non-recursive for specific folders)
+    static func getSwiftFiles(in directory: String) -> [String] {
+        let fileManager = FileManager.default
+        var swiftFiles: [String] = []
+        
+        guard let contents = try? fileManager.contentsOfDirectory(atPath: directory) else {
+            return []
+        }
+        
+        for file in contents {
+            if file.hasSuffix(".swift") && !file.contains("Tests") {
+                swiftFiles.append(file)
+            }
+        }
+        
+        return swiftFiles
+    }
+    
+    /// Get all feature directories
+    static func getFeatureDirectories(in featuresPath: String) -> [String] {
+        let fileManager = FileManager.default
+        var directories: [String] = []
+        
+        guard let contents = try? fileManager.contentsOfDirectory(atPath: featuresPath) else {
+            return []
+        }
+        
+        for item in contents {
+            let fullPath = featuresPath + "/" + item
+            var isDir: ObjCBool = false
+            if fileManager.fileExists(atPath: fullPath, isDirectory: &isDir) && isDir.boolValue {
+                directories.append(item)
+            }
+        }
+        
+        return directories
+    }
+    
+    /// Get all UI component directories (Atoms, Molecules, Organisms)
+    static func getUIComponentFiles(in uiPath: String) -> [String: [String]] {
+        var components: [String: [String]] = [:]
+        
+        let subdirs = ["Atoms", "Molecules", "Organisms"]
+        for subdir in subdirs {
+            let path = uiPath + "/" + subdir
+            components[subdir] = getSwiftFiles(in: path)
+        }
+        
+        return components
+    }
+}
+
+/// Validators for code coverage
+enum CodeCoverageValidators {
+    
+    /// Check if a model file is documented in the data documentation
+    /// **Validates: Requirements 4.1**
+    static func isModelDocumented(modelName: String, in docsContent: String) -> Bool {
+        // Remove .swift extension for matching
+        let baseName = modelName.replacingOccurrences(of: ".swift", with: "")
+        
+        // Check various patterns
+        let patterns = [
+            baseName,
+            baseName.replacingOccurrences(of: "Models", with: ""),
+            // Convert CamelCase to spaces for matching
+            baseName.replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
+        ]
+        
+        for pattern in patterns {
+            if docsContent.localizedCaseInsensitiveContains(pattern) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    /// Check if a repository is documented in the API documentation
+    /// **Validates: Requirements 4.2**
+    static func isRepositoryDocumented(repoName: String, in docsContent: String) -> Bool {
+        let baseName = repoName.replacingOccurrences(of: ".swift", with: "")
+        return docsContent.localizedCaseInsensitiveContains(baseName)
+    }
+    
+    /// Check if a feature module is documented
+    /// **Validates: Requirements 4.4**
+    static func isFeatureDocumented(featureName: String, in docsContent: String) -> Bool {
+        // Map feature directory names to expected documentation mentions
+        let featureNameMappings: [String: [String]] = [
+            "Timeline": ["时间轴", "Timeline", "timeline"],
+            "AIConversation": ["AI 对话", "AI对话", "AIConversation", "ai-conversation"],
+            "DailyTracker": ["每日追踪", "DailyTracker", "daily-tracker"],
+            "History": ["历史记录", "History", "history"],
+            "Input": ["输入", "Input", "input"],
+            "Insight": ["数据洞察", "洞察", "Insight", "insight"],
+            "MindState": ["心境", "MindState", "mind-state"],
+            "Profile": ["个人中心", "Profile", "profile"]
+        ]
+        
+        if let mappings = featureNameMappings[featureName] {
+            for mapping in mappings {
+                if docsContent.localizedCaseInsensitiveContains(mapping) {
+                    return true
+                }
+            }
+        }
+        
+        return docsContent.localizedCaseInsensitiveContains(featureName)
+    }
+    
+    /// Check if UI components are documented
+    /// **Validates: Requirements 4.3**
+    static func isUIComponentDocumented(componentName: String, in docsContent: String) -> Bool {
+        let baseName = componentName.replacingOccurrences(of: ".swift", with: "")
+        return docsContent.localizedCaseInsensitiveContains(baseName)
+    }
+}
+
+/// Property-based tests for code coverage completeness
+/// **Feature: documentation-standardization, Property 4: 代码覆盖完整性**
+enum CodeCoveragePropertyTests {
+    
+    /// **Property 4: 代码覆盖完整性**
+    /// **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
+    /// For any Swift file in Core/Models, there should be corresponding documentation in data/
+    /// For any Repository in DataLayer/Repositories, there should be corresponding documentation in api/
+    /// For any Feature module, there should be corresponding documentation in features/
+    static func testCodeCoverageCompleteness(
+        basePath: String = "."
+    ) -> (passed: Bool, failingExample: String?) {
+        
+        var undocumentedItems: [String] = []
+        
+        // 1. Check Models coverage (Requirements 4.1)
+        let modelsPath = basePath + "/Core/Models"
+        let modelFiles = CodeCoverageTestGenerators.getSwiftFiles(in: modelsPath)
+        
+        // Read all data documentation
+        let dataDocsPath = basePath + "/Docs/data"
+        let dataDocsContent = readAllDocsContent(in: dataDocsPath)
+        
+        // Also check models-overview if it exists
+        let modelsOverviewPath = basePath + "/Docs/data/models-overview.md"
+        let modelsOverviewContent = DocumentFormatTestGenerators.readFileContent(modelsOverviewPath) ?? ""
+        let combinedDataDocs = dataDocsContent + "\n" + modelsOverviewContent
+        
+        for modelFile in modelFiles {
+            if !CodeCoverageValidators.isModelDocumented(modelName: modelFile, in: combinedDataDocs) {
+                undocumentedItems.append("Model: \(modelFile)")
+            }
+        }
+        
+        // 2. Check Repositories coverage (Requirements 4.2)
+        let reposPath = basePath + "/DataLayer/Repositories"
+        let repoFiles = CodeCoverageTestGenerators.getSwiftFiles(in: reposPath)
+        
+        // Read API documentation
+        let apiDocsPath = basePath + "/Docs/api"
+        let apiDocsContent = readAllDocsContent(in: apiDocsPath)
+        
+        for repoFile in repoFiles {
+            if !CodeCoverageValidators.isRepositoryDocumented(repoName: repoFile, in: apiDocsContent) {
+                undocumentedItems.append("Repository: \(repoFile)")
+            }
+        }
+        
+        // 3. Check Features coverage (Requirements 4.4)
+        let featuresPath = basePath + "/Features"
+        let featureDirs = CodeCoverageTestGenerators.getFeatureDirectories(in: featuresPath)
+        
+        // Read features documentation
+        let featuresDocsPath = basePath + "/Docs/features"
+        let featuresDocsContent = readAllDocsContent(in: featuresDocsPath)
+        
+        for featureDir in featureDirs {
+            if !CodeCoverageValidators.isFeatureDocumented(featureName: featureDir, in: featuresDocsContent) {
+                undocumentedItems.append("Feature: \(featureDir)")
+            }
+        }
+        
+        // 4. Check UI Components coverage (Requirements 4.3) - Optional, less strict
+        // UI components are numerous, so we just check that the component docs exist
+        let componentsDocsPath = basePath + "/Docs/components"
+        let componentsDocsContent = readAllDocsContent(in: componentsDocsPath)
+        
+        // Check that at least atoms.md, molecules.md, organisms.md exist or are mentioned
+        let requiredComponentDocs = ["atoms", "molecules", "organisms"]
+        for docName in requiredComponentDocs {
+            let docPath = componentsDocsPath + "/" + docName + ".md"
+            let fileManager = FileManager.default
+            if !fileManager.fileExists(atPath: docPath) && !componentsDocsContent.localizedCaseInsensitiveContains(docName) {
+                undocumentedItems.append("Component Doc: \(docName).md")
+            }
+        }
+        
+        if undocumentedItems.isEmpty {
+            return (true, nil)
+        } else {
+            let failureDetails = "Undocumented items:\n" + undocumentedItems.joined(separator: "\n")
+            return (false, failureDetails)
+        }
+    }
+    
+    /// Helper to read all markdown content from a directory
+    private static func readAllDocsContent(in directory: String) -> String {
+        let fileManager = FileManager.default
+        var content = ""
+        
+        guard let files = try? fileManager.contentsOfDirectory(atPath: directory) else {
+            return content
+        }
+        
+        for file in files {
+            if file.hasSuffix(".md") {
+                let filePath = directory + "/" + file
+                if let fileContent = DocumentFormatTestGenerators.readFileContent(filePath) {
+                    content += "\n" + fileContent
+                }
+            }
+        }
+        
+        return content
+    }
+    
+    /// Run code coverage tests
+    static func runCodeCoverageTests(basePath: String = ".") {
+        print("\nRunning Code Coverage Property Tests...")
+        print("=" * 50)
+        
+        let result = testCodeCoverageCompleteness(basePath: basePath)
+        
+        if result.passed {
+            print("✅ Property 4 (代码覆盖完整性): PASSED")
+        } else {
+            print("❌ Property 4 (代码覆盖完整性): FAILED")
+            if let failing = result.failingExample {
+                print("   \(failing)")
+            }
+        }
+        
+        print("=" * 50)
+    }
+}
+
+// Update runAllTests to include Property 4
+extension DocumentFormatPropertyTests {
+    
+    /// Run all property tests including code coverage
+    static func runAllTestsWithCoverage(docsDirectory: String = "Docs", basePath: String = ".") {
+        // Run format tests
+        runAllTests(docsDirectory: docsDirectory)
+        
+        // Run code coverage tests
+        CodeCoveragePropertyTests.runCodeCoverageTests(basePath: basePath)
+    }
+}
+
+// MARK: - Property 5: Link Integrity Tests
+// **Feature: documentation-standardization, Property 5: 链接完整性**
+// **Validates: Requirements 3.5, 6.3**
+
+/// Test utilities for link integrity validation
+enum LinkIntegrityTestGenerators {
+    
+    /// Extract all markdown links from content
+    /// Returns array of (linkText, linkPath) tuples
+    static func extractMarkdownLinks(from content: String) -> [(text: String, path: String)] {
+        var links: [(String, String)] = []
+        
+        // Pattern: [text](path)
+        let pattern = "\\[([^\\]]+)\\]\\(([^\\)]+)\\)"
+        
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+            return links
+        }
+        
+        let range = NSRange(content.startIndex..., in: content)
+        let matches = regex.matches(in: content, options: [], range: range)
+        
+        for match in matches {
+            if match.numberOfRanges >= 3 {
+                if let textRange = Range(match.range(at: 1), in: content),
+                   let pathRange = Range(match.range(at: 2), in: content) {
+                    let text = String(content[textRange])
+                    let path = String(content[pathRange])
+                    links.append((text, path))
+                }
+            }
+        }
+        
+        return links
+    }
+    
+    /// Check if a link path is external (http/https)
+    static func isExternalLink(_ path: String) -> Bool {
+        return path.hasPrefix("http://") || path.hasPrefix("https://")
+    }
+    
+    /// Check if a link path is an anchor (starts with #)
+    static func isAnchorLink(_ path: String) -> Bool {
+        return path.hasPrefix("#")
+    }
+    
+    /// Resolve relative path from a document to a target
+    /// Returns absolute path if resolvable, nil otherwise
+    static func resolveRelativePath(from documentPath: String, to relativePath: String) -> String? {
+        // Get the directory of the document
+        let documentURL = URL(fileURLWithPath: documentPath)
+        let documentDir = documentURL.deletingLastPathComponent()
+        
+        // Resolve the relative path
+        let targetURL = documentDir.appendingPathComponent(relativePath)
+        
+        // Normalize the path (resolve .. and .)
+        let normalizedPath = targetURL.standardized.path
+        
+        return normalizedPath
+    }
+    
+    /// Check if a file exists at the given path
+    static func fileExists(at path: String) -> Bool {
+        let fileManager = FileManager.default
+        return fileManager.fileExists(atPath: path)
+    }
+}
+
+/// Validators for link integrity
+enum LinkIntegrityValidators {
+    
+    /// Validate all internal links in a document
+    /// Returns array of broken links
+    /// **Validates: Requirements 3.5, 6.3**
+    static func validateInternalLinks(in documentPath: String, content: String) -> [String] {
+        var brokenLinks: [String] = []
+        
+        let links = LinkIntegrityTestGenerators.extractMarkdownLinks(from: content)
+        
+        for (_, path) in links {
+            // Skip external links
+            if LinkIntegrityTestGenerators.isExternalLink(path) {
+                continue
+            }
+            
+            // Skip anchor links (they reference sections within the same document)
+            if LinkIntegrityTestGenerators.isAnchorLink(path) {
+                continue
+            }
+            
+            // Split path and anchor if present (e.g., "file.md#section")
+            var filePath = path
+            if let anchorIndex = path.firstIndex(of: "#") {
+                filePath = String(path[..<anchorIndex])
+            }
+            
+            // Resolve the relative path
+            guard let resolvedPath = LinkIntegrityTestGenerators.resolveRelativePath(
+                from: documentPath,
+                to: filePath
+            ) else {
+                brokenLinks.append(path)
+                continue
+            }
+            
+            // Check if the file exists
+            if !LinkIntegrityTestGenerators.fileExists(at: resolvedPath) {
+                brokenLinks.append(path)
+            }
+        }
+        
+        return brokenLinks
+    }
+    
+    /// Validate that a document has valid cross-references
+    /// **Validates: Requirements 6.3**
+    static func hasValidCrossReferences(in documentPath: String, content: String) -> Bool {
+        let brokenLinks = validateInternalLinks(in: documentPath, content: content)
+        return brokenLinks.isEmpty
+    }
+}
+
+/// Property-based tests for link integrity
+/// **Feature: documentation-standardization, Property 5: 链接完整性**
+enum LinkIntegrityPropertyTests {
+    
+    /// **Property 5: 链接完整性**
+    /// **Validates: Requirements 3.5, 6.3**
+    /// For any internal link in a document, the target file should exist
+    static func testLinkIntegrity(docsDirectory: String) -> (passed: Bool, failingExample: String?) {
+        let markdownFiles = DocumentFormatTestGenerators.getAllMarkdownFiles(in: docsDirectory)
+        
+        // Skip if no files found
+        if markdownFiles.isEmpty {
+            return (true, nil)
+        }
+        
+        var filesWithBrokenLinks: [(String, [String])] = []
+        
+        for filePath in markdownFiles {
+            guard let content = DocumentFormatTestGenerators.readFileContent(filePath) else {
+                continue
+            }
+            
+            // Skip empty files
+            if content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                continue
+            }
+            
+            let brokenLinks = LinkIntegrityValidators.validateInternalLinks(
+                in: filePath,
+                content: content
+            )
+            
+            if !brokenLinks.isEmpty {
+                filesWithBrokenLinks.append((filePath, brokenLinks))
+            }
+        }
+        
+        if filesWithBrokenLinks.isEmpty {
+            return (true, nil)
+        } else {
+            let failureDetails = filesWithBrokenLinks.map { file, links in
+                "\(file):\n  Broken links: \(links.joined(separator: ", "))"
+            }.joined(separator: "\n")
+            return (false, failureDetails)
+        }
+    }
+    
+    /// Test that documents with valid links pass validation
+    static func testValidLinksDetection(iterations: Int = 100) -> (passed: Bool, failingExample: String?) {
+        // Create a temporary document with valid links
+        let tempDir = NSTemporaryDirectory()
+        let testDocPath = tempDir + "test_doc.md"
+        let linkedDocPath = tempDir + "linked_doc.md"
+        
+        // Create the linked document
+        let linkedContent = "# Linked Document\n\nThis is a linked document."
+        try? linkedContent.write(toFile: linkedDocPath, atomically: true, encoding: .utf8)
+        
+        for _ in 0..<iterations {
+            // Create a document with a valid link
+            let testContent = """
+            # Test Document
+            
+            This document has a [valid link](linked_doc.md).
+            
+            ---
+            **版本**: v1.0.0  
+            **作者**: Test  
+            **更新日期**: 2024-12-17  
+            **状态**: 已发布
+            """
+            
+            try? testContent.write(toFile: testDocPath, atomically: true, encoding: .utf8)
+            
+            let brokenLinks = LinkIntegrityValidators.validateInternalLinks(
+                in: testDocPath,
+                content: testContent
+            )
+            
+            if !brokenLinks.isEmpty {
+                // Clean up
+                try? FileManager.default.removeItem(atPath: testDocPath)
+                try? FileManager.default.removeItem(atPath: linkedDocPath)
+                return (false, "Valid link was detected as broken: \(brokenLinks.joined(separator: ", "))")
+            }
+        }
+        
+        // Clean up
+        try? FileManager.default.removeItem(atPath: testDocPath)
+        try? FileManager.default.removeItem(atPath: linkedDocPath)
+        
+        return (true, nil)
+    }
+    
+    /// Test that documents with broken links are detected
+    static func testBrokenLinksDetection(iterations: Int = 100) -> (passed: Bool, failingExample: String?) {
+        let tempDir = NSTemporaryDirectory()
+        let testDocPath = tempDir + "test_broken_doc.md"
+        
+        for _ in 0..<iterations {
+            // Create a document with a broken link
+            let testContent = """
+            # Test Document
+            
+            This document has a [broken link](nonexistent_file.md).
+            
+            ---
+            **版本**: v1.0.0  
+            **作者**: Test  
+            **更新日期**: 2024-12-17  
+            **状态**: 已发布
+            """
+            
+            try? testContent.write(toFile: testDocPath, atomically: true, encoding: .utf8)
+            
+            let brokenLinks = LinkIntegrityValidators.validateInternalLinks(
+                in: testDocPath,
+                content: testContent
+            )
+            
+            if brokenLinks.isEmpty {
+                // Clean up
+                try? FileManager.default.removeItem(atPath: testDocPath)
+                return (false, "Broken link was not detected")
+            }
+            
+            if !brokenLinks.contains("nonexistent_file.md") {
+                // Clean up
+                try? FileManager.default.removeItem(atPath: testDocPath)
+                return (false, "Expected broken link 'nonexistent_file.md' not found in results: \(brokenLinks.joined(separator: ", "))")
+            }
+        }
+        
+        // Clean up
+        try? FileManager.default.removeItem(atPath: testDocPath)
+        
+        return (true, nil)
+    }
+    
+    /// Run all link integrity tests
+    static func runLinkIntegrityTests(docsDirectory: String = "Docs") {
+        print("\nRunning Link Integrity Property Tests...")
+        print("=" * 50)
+        
+        // Test 1: Link Integrity (actual files)
+        let integrityResult = testLinkIntegrity(docsDirectory: docsDirectory)
+        if integrityResult.passed {
+            print("✅ Property 5 (链接完整性): PASSED")
+        } else {
+            print("❌ Property 5 (链接完整性): FAILED")
+            if let failing = integrityResult.failingExample {
+                print("   Files with broken links:\n\(failing)")
+            }
+        }
+        
+        // Test 2: Valid Links Detection
+        let validLinksResult = testValidLinksDetection()
+        if validLinksResult.passed {
+            print("✅ Test (Valid Links Detection): PASSED")
+        } else {
+            print("❌ Test (Valid Links Detection): FAILED")
+            if let failing = validLinksResult.failingExample {
+                print("   Failing example: \(failing)")
+            }
+        }
+        
+        // Test 3: Broken Links Detection
+        let brokenLinksResult = testBrokenLinksDetection()
+        if brokenLinksResult.passed {
+            print("✅ Test (Broken Links Detection): PASSED")
+        } else {
+            print("❌ Test (Broken Links Detection): FAILED")
+            if let failing = brokenLinksResult.failingExample {
+                print("   Failing example: \(failing)")
+            }
+        }
+        
+        print("=" * 50)
+        
+        // Summary
+        let allPassed = integrityResult.passed && validLinksResult.passed && brokenLinksResult.passed
+        if allPassed {
+            print("All link integrity tests PASSED ✅")
+        } else {
+            print("Some link integrity tests FAILED ❌")
+        }
+    }
+}
+
+// Update runAllTestsWithCoverage to include Property 5
+extension DocumentFormatPropertyTests {
+    
+    /// Run all property tests including code coverage and link integrity
+    static func runAllTestsComplete(docsDirectory: String = "Docs", basePath: String = ".") {
+        // Run format tests
+        runAllTests(docsDirectory: docsDirectory)
+        
+        // Run code coverage tests
+        CodeCoveragePropertyTests.runCodeCoverageTests(basePath: basePath)
+        
+        // Run link integrity tests
+        LinkIntegrityPropertyTests.runLinkIntegrityTests(docsDirectory: docsDirectory)
+    }
+}
+
+// Helper extension for string repetition
+private extension String {
+    static func * (left: String, right: Int) -> String {
+        return String(repeating: left, count: right)
+    }
+}
+
+
+// MARK: - Main Entry Point
+
+print("")
+print("=" * 70)
+print("观己(Guanji) 文档体系规范化 - 属性测试套件")
+print("Documentation Standardization - Property Test Suite")
+print("=" * 70)
+print("")
+
+// Run all property tests
+DocumentFormatPropertyTests.runAllTestsComplete()
+
+print("")
+print("=" * 70)
+print("测试执行完成 / Test Execution Complete")
+print("=" * 70)
