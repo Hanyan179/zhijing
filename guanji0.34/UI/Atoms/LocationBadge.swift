@@ -58,10 +58,8 @@ public struct LocationBadge: View {
         .simultaneousGesture(LongPressGesture().onEnded { _ in 
              if location.status == .raw && location.displayText.hasPrefix("Location") {
                 // Try retry logic if it's still placeholder
-                LocationService.shared.resolveAddress(location: CLLocation(latitude: location.snapshot.lat, longitude: location.snapshot.lng)) { name in
-                    if let n = name {
-                        // We need a way to propagate this back. For now, we rely on the repository update logic which might need to be triggered manually here or just rely on the user to use the naming sheet.
-                    }
+                LocationService.shared.resolveAddress(location: CLLocation(latitude: location.snapshot.lat, longitude: location.snapshot.lng)) { _ in
+                    // We rely on the repository update logic which might need to be triggered manually here or just rely on the user to use the naming sheet.
                 }
             }
             // Mapped: Long press triggers

@@ -2,77 +2,38 @@
 
 > 返回 [文档中心](../INDEX.md) | [模型概览](models-overview.md)
 
+## ⚠️ 重要更新 (2024-12-22)
+
+**L4 扩展已实现**: 用户画像和关系画像已扩展支持**通用知识节点 (KnowledgeNode)**，可存储技能、价值观、目标、关系状态等动态维度。
+
+**新增模型文件**:
+- `KnowledgeNodeModels.swift` - 通用知识节点及相关类型
+- `AIPreferencesModels.swift` - AI 对话偏好设置
+
 ## 概述
 
-用户画像模型用于描述用户自身和用户关系的特征。观己采用双版本设计：旧版基于结构化字段，新版（叙事版）基于 AI 生成的自然语言描述。两个版本并存，支持平滑迁移。
+用户画像模型用于描述用户自身和用户关系的特征。观己采用**叙事版设计 + 通用知识节点**：
+- **静态核心 (StaticCore)**: 用户手动维护的基础信息
+- **知识节点 (KnowledgeNode)**: 动态的技能、价值观、目标等维度
+- **AI 偏好 (AIPreferences)**: 用户与 AI 交互的偏好设置
+- **事实锚点 (FactAnchors)**: 可验证的客观事实
 
 ## 模型架构
 
 ```mermaid
 graph TD
-    UserProfile[UserProfile 用户基础信息] --> RelationshipProfile[RelationshipProfile 关系画像 旧版]
-    UserProfile --> NarrativeUserProfile[NarrativeUserProfile 叙事用户画像 新版]
-    NarrativeUserProfile --> NarrativeRelationship[NarrativeRelationship 叙事关系画像 新版]
+    NarrativeUserProfile[NarrativeUserProfile 叙事用户画像] --> StaticCore[StaticCore 静态核心信息]
+    NarrativeUserProfile --> KnowledgeNodes[KnowledgeNode 知识节点列表]
+    NarrativeUserProfile --> AIPreferences[AIPreferences AI对话偏好]
+    NarrativeUserProfile --> NarrativeRelationship[NarrativeRelationship 叙事关系画像]
+    NarrativeRelationship --> FactAnchors[RelationshipFactAnchors 事实锚点]
+    NarrativeRelationship --> Mentions[RelationshipMention 提及记录]
+    NarrativeRelationship --> Attributes[KnowledgeNode 动态属性]
+    KnowledgeNodes --> NodeTracking[NodeTracking 追踪信息]
+    NodeTracking --> SourceLink[SourceLink 溯源链接]
 ```
 
-## 旧版模型 (结构化)
-
-### UserProfile (用户基础信息)
-
-```swift
-// 文件路径: Core/Models/UserProfileModels.swift
-public struct UserProfile: Codable, Identifiable {
-    public let id: String
-    public var name: String
-    public var avatar: String?
-    public var bio: String?
-    public var interests: [String]
-    public var values: [String]
-    public var goals: [String]
-    public var createdAt: Date
-    public var updatedAt: Date
-}
-```
-
-**字段说明**:
-- `name`: 用户姓名
-- `avatar`: 头像 URL
-- `bio`: 个人简介
-- `interests`: 兴趣爱好列表
-- `values`: 价值观列表
-- `goals`: 目标列表
-
-### RelationshipProfile (关系画像 - 旧版)
-
-```swift
-// 文件路径: Core/Models/RelationshipProfileModels.swift
-public struct RelationshipProfile: Codable, Identifiable {
-    public let id: String
-    public var name: String
-    public var relationship: String        // 关系类型：朋友、家人、同事等
-    public var avatar: String?
-    public var notes: String?              // 备注
-    public var traits: [String]            // 性格特征
-    public var sharedInterests: [String]   // 共同兴趣
-    public var importantDates: [ImportantDate]  // 重要日期
-    public var createdAt: Date
-    public var updatedAt: Date
-}
-
-public struct ImportantDate: Codable, Identifiable {
-    public let id: String
-    public let name: String      // 如 "生日"、"纪念日"
-    public let date: String      // 日期字符串
-    public let recurring: Bool   // 是否每年重复
-}
-```
-
-**特点**:
-- 结构化字段，易于编辑和查询
-- 支持重要日期提醒
-- 适合快速录入和展示
-
-## 新版模型 (叙事版)
+## 当前模型 (叙事版 + 知识节点)
 
 ### NarrativeUserProfile (叙事用户画像)
 
@@ -80,35 +41,146 @@ public struct ImportantDate: Codable, Identifiable {
 // 文件路径: Core/Models/NarrativeProfileModels.swift
 public struct NarrativeUserProfile: Codable, Identifiable {
     public let id: String
-    public var name: String
-    public var avatar: String?
-    
-    // 叙事内容（AI 生成）
-    public var narrative: String?           // 完整叙事文本
-    public var summary: String?             // 摘要
-    public var keyTraits: [String]          // 关键特征标签
-    
-    // 元数据
-    public var lastUpdatedBy: String?       // 最后更新来源（AI/用户）
-    public var confidence: Double?          // AI 生成的置信度
-    public var sourceEntryIds: [String]     // 来源日记 ID
-    
-    public var createdAt: Date
+    public let createdAt: Date
     public var updatedAt: Date
+    
+    // Static core (rarely changes)
+    public var staticCore: StaticCore
+    
+    // Recent portrait (AI generated, updates periodically)
+    public var recentPortrait: RecentPortrait?
+    
+    // 🆕 Dynamic knowledge nodes (L4 expansion)
+    public var knowledgeNodes: [KnowledgeNode]
+    
+    // 🆕 AI conversation preferences
+    public var aiPreferences: AIPreferences?
+    
+    // Relationship IDs
+    public var relationshipIds: [String]
+}
+
+public struct StaticCore: Codable {
+    // Basic identity
+    public var gender: Gender?
+    public var birthYearMonth: String?
+    public var hometown: String?
+    public var currentCity: String?
+    
+    // Career
+    public var occupation: String?
+    public var industry: String?
+    public var education: Education?
+    
+    // Self tags
+    public var selfTags: [String]
+    
+    // Update history
+    public var updateHistory: [ProfileUpdateRecord]
 }
 ```
 
-**叙事内容示例**:
-```
-你是一个热爱探索的人，喜欢在周末去不同的咖啡馆工作。
-你重视与朋友的深度交流，经常在晚上与他们分享生活感悟。
-你对健康生活方式有持续的追求，每天早上会进行冥想和运动。
+### KnowledgeNode (通用知识节点) 🆕
+
+```swift
+// 文件路径: Core/Models/KnowledgeNodeModels.swift
+public struct KnowledgeNode: Codable, Identifiable {
+    public let id: String
+    public let nodeType: String           // "skill", "value", "goal", etc.
+    public let nodeCategory: NodeCategory // common | personal
+    
+    public var name: String               // "Swift 编程", "家庭优先"
+    public var description: String?
+    public var tags: [String]
+    
+    public var attributes: [String: AttributeValue]  // 动态属性
+    public var tracking: NodeTracking                // 来源、置信度、历史
+    public var relations: [NodeRelation]             // 节点关联
+    
+    public let createdAt: Date
+    public var updatedAt: Date
+}
+
+// 节点分类
+public enum NodeCategory: String, Codable {
+    case common     // 共有维度：系统预定义
+    case personal   // 个人独特：用户/AI 创建
+}
+
+// 属性值类型
+public enum AttributeValue: Codable, Equatable {
+    case string(String)
+    case int(Int)
+    case double(Double)
+    case bool(Bool)
+    case array([String])
+    case date(Date)
+}
 ```
 
-**特点**:
-- 自然语言描述，更贴近人类思维
-- AI 自动从日记中提取和生成
-- 包含置信度和来源追溯
+**用户画像常用 nodeType**:
+| nodeType | 中文名 | 说明 | 示例 |
+|----------|--------|------|------|
+| `skill` | 技能 | 用户掌握的技能 | Swift 编程 (advanced) |
+| `value` | 价值观 | 核心价值观 | 家庭优先 (critical) |
+| `hobby` | 兴趣爱好 | 业余爱好 | 摄影 (weekly) |
+| `goal` | 目标 | 人生目标 | 学会日语 (in_progress) |
+| `trait` | 性格特质 | 性格特征 | 内向 (strong) |
+| `fear` | 恐惧担忧 | 焦虑点 | 公开演讲 (moderate) |
+| `fact` | 核心事实 | 不容篡改的事实 | 2020年结婚 |
+| `lifestyle` | 生活方式 | 生活习惯 | 早起跑步 (daily) |
+| `belief` | 信念 | 人生信念 | 努力必有回报 |
+| `preference` | 偏好 | 各类偏好 | 喜欢安静环境工作 |
+
+### NodeTracking (追踪信息)
+
+```swift
+public struct NodeTracking: Codable {
+    public var source: NodeSource         // 来源信息
+    public var timeline: NodeTimeline     // 时间线
+    public var verification: NodeVerification  // 确认状态
+    public var changeHistory: [NodeChange]     // 变化历史
+}
+
+public struct NodeSource: Codable {
+    public var type: SourceType           // userInput | aiExtracted | aiInferred
+    public var confidence: Double?        // 0.0 ~ 1.0
+    public var extractedFrom: [SourceLink]
+}
+
+public struct SourceLink: Codable, Identifiable {
+    public let id: String
+    public var sourceType: String         // diary | conversation | tracker
+    public var sourceId: String           // 原始记录 ID
+    public var dayId: String              // YYYY-MM-DD
+    public var snippet: String?           // 相关文本片段
+    public var extractedAt: Date
+}
+```
+
+### AIPreferences (AI 对话偏好) 🆕
+
+```swift
+// 文件路径: Core/Models/AIPreferencesModels.swift
+public struct AIPreferences: Codable {
+    public var style: AIStylePreference      // 风格偏好
+    public var response: AIResponsePreference // 回复偏好
+    public var topics: AITopicPreference     // 话题偏好
+    public var tracking: NodeTracking
+}
+
+public struct AIStylePreference: Codable {
+    public var tone: AITone?              // formal | casual | friendly | professional
+    public var verbosity: AIVerbosity?    // concise | balanced | detailed
+    public var personality: AIPersonality? // supportive | challenging | neutral
+}
+
+public struct AITopicPreference: Codable {
+    public var favorites: [String]        // 喜欢讨论的话题
+    public var avoid: [String]            // 避免的话题
+    public var expertise: [String]        // 用户擅长的领域
+}
+```
 
 ### NarrativeRelationship (叙事关系画像)
 
@@ -116,92 +188,120 @@ public struct NarrativeUserProfile: Codable, Identifiable {
 // 文件路径: Core/Models/NarrativeRelationshipModels.swift
 public struct NarrativeRelationship: Codable, Identifiable {
     public let id: String
-    public var name: String
-    public var avatar: String?
-    public var relationshipType: String?    // 关系类型
-    
-    // 叙事内容（AI 生成）
-    public var narrative: String?           // 关系叙事
-    public var summary: String?             // 关系摘要
-    public var keyMoments: [KeyMoment]      // 关键时刻
-    public var interactionPatterns: String? // 互动模式描述
-    
-    // 元数据
-    public var lastUpdatedBy: String?
-    public var confidence: Double?
-    public var sourceEntryIds: [String]
-    
-    public var createdAt: Date
+    public let createdAt: Date
     public var updatedAt: Date
+    
+    // Basic identity
+    public var type: CompanionType
+    public var displayName: String
+    public var realName: String?            // Optional, encrypted
+    public var avatar: String?              // Emoji or image path
+    
+    // Aliases for AI recognition (别名，用于 AI 识别同一个人)
+    public var aliases: [String]            // e.g., ["母亲", "老妈", "那个女人"]
+    
+    // Narrative description (user written)
+    public var narrative: String?           // "我的大学室友，一起经历了很多"
+    public var tags: [String]               // User defined tags ["室友", "游戏搭子"]
+    
+    // Fact anchors (verifiable objective facts)
+    public var factAnchors: RelationshipFactAnchors
+    
+    // Mention tracking (system generated)
+    public var mentions: [RelationshipMention]
+    
+    // 🆕 Dynamic attributes (L4 expansion)
+    public var attributes: [KnowledgeNode]
+    
+    // Type-specific metadata
+    public var metadata: [String: String]
+}
+```
+
+**关系画像常用 nodeType (attributes)**:
+| nodeType | 中文名 | 说明 | 示例 |
+|----------|--------|------|------|
+| `relationship_status` | 关系状态 | 当前关系状态 | 亲密 (healthy, active) |
+| `interaction_pattern` | 互动模式 | 互动习惯 | 每周视频通话 |
+| `emotional_connection` | 情感连接 | 情感纽带 | 深厚信任 |
+| `shared_memory` | 共同记忆 | 重要共同经历 | 一起去日本旅行 |
+| `health_status` | 健康状态 | 亲人健康（仅家人） | 高血压 (controlled) |
+| `life_event` | 人生事件 | 对方的重要事件 | 升职 (2024-06) |
+
+**关键辅助类型**:
+
+```swift
+// 事实锚点 - 可验证的客观事实
+public struct RelationshipFactAnchors: Codable {
+    public var firstMeetingDate: String?    // YYYY-MM-DD or YYYY-MM
+    public var anniversaries: [Anniversary] // 纪念日列表
+    public var sharedExperiences: [String]  // ["一起去日本旅行", "大学毕业"]
 }
 
-public struct KeyMoment: Codable, Identifiable {
+// 提及记录 - 系统自动从日记/对话中提取
+public struct RelationshipMention: Codable, Identifiable {
     public let id: String
-    public let date: String
-    public let description: String
-    public let entryId: String?  // 关联的日记 ID
+    public let date: Date
+    public let sourceType: MentionSource    // diary, dailyTracker, aiConversation
+    public let sourceId: String
+    public let contextSnippet: String       // "今天和小明一起吃了火锅..."
+}
+```
+
+**aliases 字段说明**:
+
+`aliases` 是为 AI 识别设计的别名列表。当用户在日记中用不同称呼提到同一个人时（如"妈妈"、"母亲"、"那个女人"），AI 可以通过别名识别出指的是同一个关系人。
+
+```swift
+// 辅助方法
+extension NarrativeRelationship {
+    /// All names for AI recognition (displayName + aliases)
+    public var allNames: [String] {
+        [displayName] + aliases
+    }
+    
+    /// Check if a given name matches this relationship
+    public func matches(name: String) -> Bool {
+        let lowercasedName = name.lowercased()
+        return displayName.lowercased() == lowercasedName ||
+               aliases.contains { $0.lowercased() == lowercasedName }
+    }
 }
 ```
 
 **叙事内容示例**:
 ```
-你和小明是大学时期的好友，经常一起讨论技术和创业想法。
-你们的友谊建立在相互尊重和共同成长的基础上。
-最近你们开始每周进行一次深度对话，分享各自的思考和困惑。
+我的大学室友，一起经历了很多。毕业后虽然在不同城市，但每年都会见面。
 ```
 
-**关键时刻示例**:
-- 2024.03.15: 一起参加技术分享会，讨论了 AI 的未来
-- 2024.06.20: 深夜长谈，分享了各自的人生目标
-- 2024.09.10: 一起完成了一个开源项目
+**事实锚点示例**:
+- 初次相识: 2018-09
+- 纪念日: 友谊纪念日 (09-01)
+- 共同经历: ["一起去日本旅行", "大学毕业典礼"]
 
-## 版本对比
+## 设计理念
 
-| 特性 | 旧版（结构化） | 新版（叙事版） |
-|------|--------------|--------------|
-| 数据形式 | 结构化字段 | 自然语言 + 标签 |
-| 生成方式 | 用户手动输入 | AI 自动生成 |
-| 可读性 | 列表形式 | 连贯叙事 |
-| 可编辑性 | 易于编辑 | 需要 AI 辅助 |
-| 信息密度 | 较低 | 较高 |
-| 来源追溯 | 无 | 有（sourceEntryIds） |
-| 置信度 | 无 | 有（confidence） |
+### 为什么选择叙事版？
 
-## 迁移策略
+**旧版问题**（已废弃的 UserProfile 和 RelationshipProfile）:
+- 包含主观评分字段（如 `intimacyLevel: 1-10`, `emotionalConnection: 1-10`）
+- 无法从用户日记中自动提取
+- 需要用户手动打分，增加使用负担
+- 主观性强，难以验证
 
-### 从旧版到新版
+**叙事版优势**:
+- 基于事实锚点（fact anchors），可验证
+- 使用自然语言描述，更符合人类思维
+- 支持 AI 自动提取和更新
+- 别名机制（aliases）支持 AI 识别同一人的不同称呼
+- 提及记录（mentions）自动追踪关系互动
 
-```swift
-// 概念性迁移流程
-func migrateToNarrative(oldProfile: UserProfile) -> NarrativeUserProfile {
-    // 1. 保留基础信息
-    var narrative = NarrativeUserProfile(
-        id: oldProfile.id,
-        name: oldProfile.name,
-        avatar: oldProfile.avatar
-    )
-    
-    // 2. 将结构化字段转换为叙事
-    let interests = oldProfile.interests.joined(separator: "、")
-    let values = oldProfile.values.joined(separator: "、")
-    narrative.narrative = """
-    你的兴趣包括：\(interests)。
-    你重视的价值观有：\(values)。
-    """
-    
-    // 3. 提取关键特征
-    narrative.keyTraits = oldProfile.interests + oldProfile.values
-    
-    return narrative
-}
-```
+### 核心原则
 
-### 双版本并存
-
-- 旧版数据保留，不删除
-- 新版数据逐步生成
-- UI 优先展示新版，降级到旧版
-- 用户可选择使用哪个版本
+1. **事实优先**: 只存储可验证的客观信息
+2. **自动化**: AI 从日记中自动提取，减少用户负担
+3. **可追溯**: 记录信息来源（sourceEntryIds, mentions）
+4. **灵活性**: 支持别名和自然语言描述
 
 ## 数据更新机制
 
@@ -253,37 +353,75 @@ let profile = NarrativeUserProfile(
 ```swift
 let relationship = NarrativeRelationship(
     id: UUID().uuidString,
-    name: "小明",
-    avatar: nil,
-    relationshipType: "好友",
-    narrative: "你和小明是大学时期的好友...",
-    summary: "技术伙伴、互相支持、共同成长",
-    keyMoments: [
-        KeyMoment(
-            id: UUID().uuidString,
-            date: "2024.03.15",
-            description: "一起参加技术分享会",
-            entryId: "entry_123"
-        )
-    ],
-    interactionPatterns: "每周深度对话，分享技术见解",
-    lastUpdatedBy: "AI",
-    confidence: 0.90,
-    sourceEntryIds: ["entry_123", "entry_456"],
-    createdAt: Date(),
-    updatedAt: Date()
+    type: .friend,
+    displayName: "小明",
+    realName: "张小明",
+    avatar: "👨‍💻",
+    aliases: ["明哥", "老明"],  // AI 识别用的别名
+    narrative: "我的大学室友，一起经历了很多技术探索",
+    tags: ["室友", "技术伙伴"],
+    factAnchors: RelationshipFactAnchors(
+        firstMeetingDate: "2018-09",
+        anniversaries: [
+            Anniversary(name: "友谊纪念日", date: "09-01", year: 2018)
+        ],
+        sharedExperiences: ["一起参加黑客马拉松", "大学毕业"]
+    ),
+    mentions: [],
+    metadata: [:]
 )
+
+// AI 分析时使用 allNames 获取所有可能的称呼
+let allNames = relationship.allNames  // ["小明", "明哥", "老明"]
+
+// 检查某个名字是否匹配这个关系
+let isMatch = relationship.matches(name: "明哥")  // true
 ```
 
 ## 相关文档
 
 - [模型概览](models-overview.md)
-- [ProfileMigrationService](../api/services.md#profilemigrationservice)
+- [L4 层画像数据扩展规划](../architecture/L4-PROFILE-EXPANSION-PLAN.md) - 完整设计文档
+- [数据架构](../architecture/data-architecture.md) - 四层记忆系统
 - [NarrativeUserProfileRepository](../api/repositories.md#narrativeuserprofilerepository)
 - [个人中心功能文档](../features/profile.md)
 
 ---
-**版本**: v1.0.0  
+
+## 置信度机制
+
+### 置信度来源
+
+| 来源类型 | 初始置信度 | 说明 |
+|----------|-----------|------|
+| `userInput` | 1.0 | 用户手动输入，完全可信 |
+| `aiExtracted` | 0.6 ~ 0.95 | AI 从原始数据提取 |
+| `aiInferred` | 0.3 ~ 0.7 | AI 推断得出 |
+
+### 置信度衰减
+
+AI 提取的信息如果长时间未被确认，置信度会逐渐衰减：
+- 衰减周期：180 天
+- 最大衰减：30%
+- 用户确认后重置为 1.0
+
+### 置信度展示
+
+| 置信度范围 | 展示方式 |
+|-----------|---------|
+| 0.9 ~ 1.0 | 正常显示 |
+| 0.7 ~ 0.9 | 显示 "AI 推测" 标签 |
+| 0.5 ~ 0.7 | 显示 "待确认" 标签 + 黄色高亮 |
+| < 0.5 | 显示 "低置信度" + 灰色 |
+
+---
+**版本**: v3.0.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-22  
 **状态**: 已发布
+
+**更新记录**:
+- v3.0.0 (2024-12-22): 实现 L4 扩展，添加 KnowledgeNode、AIPreferences 模型
+- v2.0.0 (2024-12-18): 完全移除旧版模型（UserProfile, RelationshipProfile）
+- v1.1.0 (2024-12-18): 新增 `aliases` 字段用于 AI 识别
+- v1.0.0 (2024-12-17): 初始版本

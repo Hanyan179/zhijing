@@ -46,6 +46,10 @@ flowchart TD
     L -->|失败| N[显示错误+重试]
     
     M --> O[更新消息列表]
+    
+    P[从日记模式切换] --> Q{是否有历史对话}
+    Q -->|有| R[加载最近对话]
+    Q -->|无| C
 ```
 
 ## 模块结构
@@ -111,6 +115,7 @@ public struct AIConversationScreen: View {
 - 协调 AIService 和 AIConversationRepository
 - 处理流式响应回调
 - 管理思考模式设置
+- 支持消息重新生成
 
 ```swift
 // 文件路径: Features/AIConversation/AIConversationViewModel.swift
@@ -127,6 +132,7 @@ public final class AIConversationViewModel: ObservableObject {
     public func createNewConversation()
     public func sendMessage(_ content: String)
     public func retryLastMessage()
+    public func regenerateMessage(_ message: AIMessage)  // 新增
     public func cancelStreaming()
     public func toggleThinkingMode()
 }
@@ -175,11 +181,14 @@ aiService.sendMessage(
 
 ### 3. 消息渲染
 
-`MessageBubble` 支持富文本渲染：
+`MessageBubble` 支持富文本渲染和交互：
 - Markdown 格式解析
 - 代码块语法高亮
 - 用户/AI 消息样式区分
 - 思考内容折叠展示
+- **长按上下文菜单**：复制消息、重新生成（AI消息）、复制含思考过程
+- **消息操作按钮**：快速复制、重新生成
+- **文本选择**：支持选择和复制任意文本内容
 
 ### 4. 对话管理
 
@@ -187,6 +196,36 @@ aiService.sendMessage(
 - 首条消息自动生成标题
 - 对话历史持久化
 - 支持删除对话
+- 模式切换智能加载：从日记模式切换到AI模式时，自动加载最近的对话
+
+### 5. 消息交互增强 (v1.1.0)
+
+**长按上下文菜单**：
+- 复制消息内容到剪贴板
+- 重新生成 AI 回复（仅 AI 消息）
+- 复制含思考过程（仅带推理的 AI 消息）
+
+**快速操作按钮**：
+- AI 消息底部显示复制和重新生成按钮
+- 复制后显示视觉反馈（对勾图标）
+- 触觉反馈增强用户体验
+
+**重新生成机制**：
+```swift
+// 重新生成会删除该消息及之后的所有消息，然后请求新响应
+public func regenerateMessage(_ message: AIMessage) {
+    guard message.role == .assistant else { return }
+    
+    // 找到消息索引并删除该消息及后续消息
+    if let index = conversation.messages.firstIndex(where: { $0.id == message.id }) {
+        conversation.messages.removeSubrange(index...)
+        repository.save(conversation)
+        
+        // 重新请求响应
+        startStreamingResponse()
+    }
+}
+```
 
 ## 依赖关系
 
@@ -206,8 +245,30 @@ aiService.sendMessage(
 - [MVVM 模式](../architecture/mvvm-pattern.md)
 - [RichTextRenderer 组件](../components/molecules.md)
 
+## 本地化字符串
+
+```swift
+// 消息操作
+"AI.Message.Copy" = "复制消息"
+"AI.Message.Regenerate" = "重新生成"
+"AI.Message.CopyWithThinking" = "复制（含思考过程）"
+
+// 代码块操作
+"AI.Code.Copy" = "复制"
+"AI.Code.Copied" = "已复制"
+"AI.Code.CopyHint" = "点击复制代码到剪贴板"
+```
+
+## 测试覆盖
+
+- `MessageBubbleTests.swift`: 消息气泡交互功能测试
+  - 复制功能测试
+  - 上下文菜单测试
+  - 重新生成回调测试
+  - 消息操作可见性测试
+
 ---
-**版本**: v1.0.0  
+**版本**: v1.1.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-18  
 **状态**: 已发布

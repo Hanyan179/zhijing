@@ -46,12 +46,8 @@ public final class LocationService: NSObject, CLLocationManagerDelegate {
 
     public func currentStatus() -> LocationAuthStatus {
         if !CLLocationManager.locationServicesEnabled() { return .denied }
-        let status: CLAuthorizationStatus
-        if #available(iOS 14.0, *) {
-            status = manager.authorizationStatus
-        } else {
-            status = CLLocationManager.authorizationStatus()
-        }
+        // Use instance property to avoid main thread warning
+        let status = manager.authorizationStatus
         switch status {
         case .authorizedAlways, .authorizedWhenInUse: return .authorized
         case .denied: return .denied

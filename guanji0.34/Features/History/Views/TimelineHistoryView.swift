@@ -59,63 +59,70 @@ public struct TimelineHistoryView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     
-                    ForEach(vm.timelines.filter { vm.searchText.isEmpty ? true : ($0.title?.contains(vm.searchText) ?? false) || $0.date.contains(vm.searchText) }, id: \.id) { timeline in
-                        Button(action: { 
-                            appState.selectedDate = timeline.date
-                            onSelectDate?()
-                        }) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                // Date & Status
-                                HStack {
-                                    Text(timeline.date)
-                                        .font(.caption)
-                                        .foregroundColor(Colors.slate500)
-                                    Spacer()
-                                    if timeline.date == DateUtilities.today {
-                                        Text(NSLocalizedString("backToToday", comment: ""))
-                                            .font(.caption2)
-                                            .fontWeight(.bold)
-                                            .foregroundColor(Colors.indigo)
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 2)
-                                            .background(Colors.indigo.opacity(0.1))
-                                            .cornerRadius(4)
-                                    }
-                                }
+                    ForEach(vm.timelines.filter { timeline in
+                        // Filter out days with no data
+                        guard !timeline.items.isEmpty else { return false }
+                        // Apply search filter
+                        if vm.searchText.isEmpty { return true }
+                        return (timeline.title?.contains(vm.searchText) ?? false) || timeline.date.contains(vm.searchText)
+                    }, id: \.id) { timeline in
+                        VStack(alignment: .leading, spacing: 8) {
+                            // Date & Status
+                            HStack {
+                                Text(timeline.date)
+                                    .font(.caption)
+                                    .foregroundColor(Colors.slate500)
+                                Spacer()
                                 
-                                // Title (or Placeholder)
-                                Text(timeline.title ?? Localization.tr("noTitle"))
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(Colors.slateText)
-                                    .lineLimit(1)
-                                
-                                // Tags (Icons)
-                                if !timeline.tags.isEmpty {
-                                    HStack(spacing: 8) {
-                                        ForEach(timeline.tags.prefix(5), id: \.self) { tag in
-                                            Image(systemName: Icons.categoryIconName(tag))
-                                                .font(.system(size: 12))
-                                                .foregroundColor(Colors.slate500)
-                                        }
-                                        if timeline.tags.count > 5 {
-                                            Text("+\(timeline.tags.count - 5)")
-                                                .font(.caption2)
-                                                .foregroundColor(Colors.slate500)
-                                        }
-                                    }
-                                } else {
-                                    // Empty State Placeholder to keep height consistent or show something
-                                    Text(Localization.tr("noTags"))
+                                if timeline.date == DateUtilities.today {
+                                    Text(NSLocalizedString("backToToday", comment: ""))
                                         .font(.caption2)
-                                        .foregroundColor(Colors.systemGray.opacity(0.5))
+                                        .fontWeight(.bold)
+                                        .foregroundColor(Colors.indigo)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Colors.indigo.opacity(0.1))
+                                        .cornerRadius(4)
                                 }
                             }
-                            .padding(12)
-                            .background(Colors.cardBackground)
-                            .cornerRadius(12)
-                            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
-                            .padding(.horizontal, 4) // Added subtle horizontal padding for breathing room inside scroll
+                            
+                            // Title (or Placeholder) - Tappable
+                            Button(action: { 
+                                appState.selectedDate = timeline.date
+                                onSelectDate?()
+                            }) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    // Show title if exists, otherwise show first text content
+                                    Text(timeline.title ?? firstTextContent(from: timeline))
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(Colors.slateText)
+                                        .lineLimit(1)
+                                    
+                                    // Tags (Icons) - Only show if tags exist
+                                    if !timeline.tags.isEmpty {
+                                        HStack(spacing: 8) {
+                                            ForEach(timeline.tags.prefix(5), id: \.self) { tag in
+                                                Image(systemName: Icons.categoryIconName(tag))
+                                                    .font(.system(size: 12))
+                                                    .foregroundColor(Colors.slate500)
+                                            }
+                                            if timeline.tags.count > 5 {
+                                                Text("+\(timeline.tags.count - 5)")
+                                                    .font(.caption2)
+                                                    .foregroundColor(Colors.slate500)
+                                            }
+                                        }
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .buttonStyle(.plain)
                         }
+                        .padding(12)
+                        .background(Colors.cardBackground)
+                        .cornerRadius(12)
+                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                        .padding(.horizontal, 4) // Added subtle horizontal padding for breathing room inside scroll
                     }
                 }
                 .padding(.horizontal, 16) // Reduced from 20 to align better with standard margins
@@ -151,5 +158,29 @@ public struct TimelineHistoryView: View {
         let f = DateFormatter()
         f.dateFormat = "yyyy.MM"
         return f.string(from: date)
+    }
+    
+    /// Extract first text content from timeline items
+    private func firstTextContent(from timeline: DailyTimeline) -> String {
+        // Iterate through items to find first text content
+        for item in timeline.items {
+            let entries: [JournalEntry]
+            switch item {
+            case .scene(let scene):
+                entries = scene.entries
+            case .journey(let journey):
+                entries = journey.entries
+            }
+            
+            // Find first entry with text content
+            for entry in entries {
+                if let content = entry.content, !content.isEmpty {
+                    return content
+                }
+            }
+        }
+        
+        // Fallback if no content found
+        return Localization.tr("noContent")
     }
 }

@@ -36,6 +36,9 @@ public struct InputDock: View {
                     onFile: { handleFileUpload() },
                     onMore: { showMoreActions = true },
                     onModeToggle: { handleModeToggle() },
+                    // Hide time capsule and mood buttons in AI mode
+                    showTimeCapsule: appState.currentMode == .journal,
+                    showMood: appState.currentMode == .journal,
                     showMore: false,
                     showModeToggle: true,
                     currentMode: appState.currentMode,
@@ -110,22 +113,38 @@ public struct InputDock: View {
         
         .sheet(isPresented: $showPhotoPicker) {
             PhotoPickerSheet { imgs in
-                // Direct send logic for photos
                 if !imgs.isEmpty {
-                    vm.pendingImages = imgs
-                    vm.submit()
+                    // In AI mode, attach images instead of direct send
+                    if appState.currentMode == .ai {
+                        vm.pendingImages = imgs
+                        for (index, img) in imgs.enumerated() {
+                            vm.addPhoto(name: "Image \(index + 1)", image: img)
+                        }
+                    } else {
+                        // In journal mode, direct send
+                        vm.pendingImages = imgs
+                        vm.submit()
+                    }
                 }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraCaptureSheet { img, url in
                 if let i = img {
-                    // Direct send logic for camera
-                    vm.pendingImages = [i]
-                    vm.submit()
+                    // In AI mode, attach image instead of direct send
+                    if appState.currentMode == .ai {
+                        vm.pendingImages = [i]
+                        vm.addPhoto(name: "Camera Photo", image: i)
+                    } else {
+                        // In journal mode, direct send
+                        vm.pendingImages = [i]
+                        vm.submit()
+                    }
                 } else if let u = url {
                     vm.importFile(url: u)
-                    vm.submit()
+                    if appState.currentMode == .journal {
+                        vm.submit()
+                    }
                 }
             }
             .ignoresSafeArea()
@@ -135,8 +154,10 @@ public struct InputDock: View {
                 for url in urls {
                     vm.importFile(url: url)
                 }
-                // Submit immediately after selection as per user request
-                vm.submit()
+                // In journal mode, submit immediately; in AI mode, just attach
+                if appState.currentMode == .journal {
+                    vm.submit()
+                }
             }
         }
         .sheet(isPresented: $showAudioPicker) {
@@ -144,7 +165,10 @@ public struct InputDock: View {
                 for url in urls {
                     vm.importFile(url: url, isAudio: true)
                 }
-                vm.submit()
+                // In journal mode, submit immediately; in AI mode, just attach
+                if appState.currentMode == .journal {
+                    vm.submit()
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("gj_initiate_reply"))) { note in
@@ -205,7 +229,19 @@ public struct InputDock: View {
     /// Requirements: 6.3, 6.4
     private func handleModeToggle() {
         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            let previousMode = appState.currentMode
             appState.currentMode = appState.currentMode == .journal ? .ai : .journal
+            
+            // When switching to AI mode, load most recent conversation
+            if previousMode == .journal && appState.currentMode == .ai {
+                let conversations = AIConversationRepository.shared.loadAll()
+                if let mostRecent = conversations.first {
+                    appState.currentConversationId = mostRecent.id
+                }
+                // If no conversations exist, currentConversationId remains nil
+                // and AIConversationScreen will show welcome view
+            }
+            
             // Clear conversation ID when switching to journal mode
             if appState.currentMode == .journal {
                 appState.currentConversationId = nil

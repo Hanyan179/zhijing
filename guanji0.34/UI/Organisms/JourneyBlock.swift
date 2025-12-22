@@ -41,7 +41,6 @@ public struct JourneyBlockView: View {
     private var headerView: some View {
         JourneyHeaderChip(mode: journey.mode,
                           destination: journey.destination,
-                          durationText: journey.duration,
                           onTapDestination: {
             if journey.destination.status == .raw {
                 appState.pendingLocation = journey.destination

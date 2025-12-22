@@ -74,7 +74,7 @@ public enum BodyEnergyLevel: Int, CaseIterable, Identifiable {
 /// Main record for daily quick tracking
 public struct DailyTrackerRecord: Codable, Identifiable {
     public let id: String
-    public let date: String                    // YYYY-MM-DD
+    public let date: String                    // yyyy.MM.dd (统一日期格式)
     public let createdAt: Date
     public let updatedAt: Date
     
@@ -111,7 +111,7 @@ public struct ActivityContext: Codable, Identifiable {
     public let id: String
     public let activityType: ActivityType
     public var companions: [CompanionType]
-    public var companionDetails: [String]?     // RelationshipProfile IDs
+    public var companionDetails: [String]?     // NarrativeRelationship IDs
     public var details: String?
     public var tags: [String]                  // ActivityTag IDs
     

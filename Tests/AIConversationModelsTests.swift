@@ -63,10 +63,14 @@ enum AIConversationTestGenerators {
             return DateUtilities.formatDate(date)
         }
         
+        // dayId should be one of the associated days (typically the first or most recent)
+        let dayId = days.first ?? DateUtilities.today
+        
         return AIConversation(
             id: UUID().uuidString,
             title: Bool.random() ? randomString(length: Int.random(in: 5...20)) : nil,
             messages: messages,
+            dayId: dayId,
             associatedDays: days,
             createdAt: randomDate(),
             updatedAt: randomDate()
@@ -103,6 +107,7 @@ enum AIConversationPropertyTests {
                 guard original.id == decoded.id,
                       original.title == decoded.title,
                       original.messages.count == decoded.messages.count,
+                      original.dayId == decoded.dayId,
                       original.associatedDays == decoded.associatedDays else {
                     return (false, original)
                 }
@@ -473,13 +478,19 @@ extension AIConversationPropertyTests {
         
         for _ in 0..<iterations {
             // Test 1: Simulate repository's createConversation() behavior
-            // The repository creates conversations with today in associatedDays
+            // The repository creates conversations with today in associatedDays and dayId
             let conversationFromRepo = AIConversation(
                 id: UUID().uuidString,
+                dayId: today,
                 associatedDays: [today],
                 createdAt: Date(),
                 updatedAt: Date()
             )
+            
+            // Verify dayId is set to today
+            guard conversationFromRepo.dayId == today else {
+                return (false, "New conversation dayId (\(conversationFromRepo.dayId)) does not match today (\(today))")
+            }
             
             // Verify today is in associatedDays
             guard conversationFromRepo.associatedDays.contains(today) else {

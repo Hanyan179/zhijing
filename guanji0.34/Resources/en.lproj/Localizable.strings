@@ -320,6 +320,7 @@
 "go" = "Go";
 "noTitle" = "No Title";
 "noTags" = "No Tags";
+"noContent" = "No Content";
 "dayEndTime" = "Daily End Time";
 "dayEndTimeDescription" = "Determine when a new day starts. Late night entries before this time belong to the previous day.";
 "allMemories" = "All Memories";
@@ -784,6 +785,7 @@
 "Profile.UpdateHistory" = "Update History";
 "Profile.SelfTags" = "Self Description Tags";
 "Profile.AddTag" = "Add Tag";
+"Profile.DataStats" = "Data Statistics";
 
 // Relationship
 "Relationship.NoMentions" = "No interactions yet";
@@ -865,6 +867,11 @@
 "AI.Code.Copy" = "Copy";
 "AI.Code.Copied" = "Copied";
 "AI.Code.CopyHint" = "Tap to copy code to clipboard";
+
+// Message Actions
+"AI.Message.Copy" = "Copy Message";
+"AI.Message.Regenerate" = "Regenerate";
+"AI.Message.CopyWithThinking" = "Copy with Thinking";
 
 // AI Settings Screen
 "AI.Settings.Title" = "AI Settings";
@@ -953,3 +960,66 @@
 "filter_last_year" = "Last Year";
 
 
+
+
+// Data Export
+"Export.Title" = "Data Export";
+"Export.Options" = "Export Options";
+"Export.DateRange" = "Date Range";
+"Export.Range.Last7Days" = "Last 7 Days";
+"Export.Range.Last30Days" = "Last 30 Days";
+"Export.Range.Last90Days" = "Last 90 Days";
+"Export.Range.AllTime" = "All Time";
+"Export.AvailableDates" = "Available Dates";
+"Export.NoData" = "No data available in this date range";
+"Export.Footer" = "Tap export button to share or save data to file";
+"Export.Action" = "Export";
+"Export.Error" = "Export Failed";
+"Action.Close" = "Close";
+"Action.OK" = "OK";
+
+// MARK: - Insight Feature
+"Insight.Title" = "Data Statistics";
+"Insight.Loading" = "Loading...";
+"Insight.Engine" = "Insight Engine";
+"Insight.Overview" = "Overview";
+"Insight.Streak" = "Streak";
+"Insight.TotalDays" = "Total Days";
+"Insight.TotalEntries" = "Total Entries";
+"Insight.TotalWords" = "Total Words";
+
+// Zone 2: Feature Usage
+"Insight.FeatureUsage" = "Feature Usage";
+"Insight.AIConversation" = "AI Conversation";
+"Insight.AIConversationValue" = "%d conversations / %d messages";
+"Insight.DailyTracker" = "Daily Tracker";
+"Insight.DailyTrackerValue" = "%d days tracked";
+"Insight.MindState" = "Mind State";
+"Insight.MindStateValue" = "%d records";
+"Insight.TimeCapsule" = "Time Capsule";
+"Insight.TimeCapsuleValue" = "%d capsules / %d pending";
+"Insight.LoveLog" = "Love Log";
+"Insight.LoveLogValue" = "%d records";
+"Insight.Relationships" = "Relationships";
+"Insight.RelationshipsValue" = "%d relationships";
+
+// Zone 3: Data Insight
+"Insight.DataInsight" = "Data Insight";
+"Insight.HourDistribution" = "Entry Time Distribution";
+"Insight.ActivityDistribution" = "Activity Distribution";
+"Insight.MoodTrend" = "Mood Trend";
+"Insight.TopLocations" = "Top Locations";
+"Insight.LoveSources" = "Love Sources";
+"Insight.NoData" = "No Data";
+"Insight.AndMore" = "and more...";
+"Insight.MoodPositive" = "Positive";
+"Insight.MoodNeutral" = "Neutral";
+"Insight.MoodNegative" = "Negative";
+
+// Activity Types
+"Activity.Work" = "Work";
+"Activity.Exercise" = "Exercise";
+"Activity.Social" = "Social";
+"Activity.Leisure" = "Leisure";
+"Activity.Learning" = "Learning";
+"Activity.Rest" = "Rest";

@@ -43,5 +43,9 @@ public final class AppState: ObservableObject {
         // Load default mode preference on app launch - Requirements 5.3, 5.5
         currentMode = UserPreferencesRepository.shared.loadDefaultMode()
         thinkingModeEnabled = UserPreferencesRepository.shared.thinkingModeEnabled
+        
+        // Note: Background timeline recording removed for battery efficiency
+        // Location is now only captured when user submits input
+        print("[AppState] App initialized - location tracking on-demand only")
     }
 }

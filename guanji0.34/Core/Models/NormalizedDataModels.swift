@@ -21,7 +21,7 @@ public struct UserCustomData: Codable, Identifiable {
     
     // Related information
     public var relatedActivity: ActivityType?
-    public var relatedPersonID: String?         // RelationshipProfile ID
+    public var relatedPersonID: String?         // NarrativeRelationship ID
     
     // Profile extraction status
     public var extractedToProfile: Bool

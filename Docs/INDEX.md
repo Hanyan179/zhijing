@@ -24,8 +24,9 @@
 
 ### 架构文档 (Architecture)
 - [x] [系统架构](architecture/system-architecture.md) - MVVM 架构与分层结构
-- [x] [数据架构](architecture/data-architecture.md) - 数据模型关系
+- [x] [数据架构](architecture/data-architecture.md) - 四层记忆系统设计
 - [x] [MVVM 模式](architecture/mvvm-pattern.md) - ViewModel 与 View 职责
+- [x] [L4 画像扩展规划](architecture/L4-PROFILE-EXPANSION-PLAN.md) - 🆕 通用知识节点设计 (规划中)
 
 ### 功能模块文档 (Features)
 - [x] [时间轴](features/timeline.md) - Timeline 主页模块
@@ -115,11 +116,16 @@ swift Docs/DocumentFormatTests.swift
 - ✅ 内部链接有效
 - ✅ 代码覆盖完整（所有模型、Repository、功能都有对应文档）
 
+## 实用指南
+
+- [x] [数据格式标准](DATA_FORMAT_STANDARD.md) - 统一的日期格式规范
+- [x] [每日数据导出指南](DAILY_EXPORT_GUIDE.md) - 导出每日数据为纯文本
+
 ## 变更日志
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解文档版本变更历史。
 
 ---
-**版本**: v1.1.0  
-**最后更新**: 2024-12-17  
+**版本**: v1.3.0  
+**最后更新**: 2024-12-22  
 **状态**: 已发布

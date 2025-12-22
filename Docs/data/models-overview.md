@@ -29,10 +29,10 @@
 
 | 模型文件 | 主要类型 | 职责 |
 |---------|---------|------|
-| `UserProfileModels.swift` | `UserProfile` | 用户基础信息 |
-| `RelationshipProfileModels.swift` | `RelationshipProfile` | 关系画像（旧版） |
-| `NarrativeProfileModels.swift` | `NarrativeUserProfile` | 叙事用户画像（新版） |
-| `NarrativeRelationshipModels.swift` | `NarrativeRelationship` | 叙事关系画像（新版） |
+| `NarrativeProfileModels.swift` | `NarrativeUserProfile`, `StaticCore` | 叙事用户画像 |
+| `NarrativeRelationshipModels.swift` | `NarrativeRelationship`, `RelationshipFactAnchors` | 叙事关系画像 |
+| `KnowledgeNodeModels.swift` | `KnowledgeNode`, `NodeTracking`, `SourceLink` | 🆕 通用知识节点 (L4 扩展) |
+| `AIPreferencesModels.swift` | `AIPreferences`, `AIStylePreference` | 🆕 AI 对话偏好 |
 
 ### 追踪器模型 (Tracker Models)
 
@@ -51,8 +51,26 @@
 | `NormalizedDataModels.swift` | 标准化数据类型 | 数据标准化和转换 |
 | `ResonanceDateStat.swift` | `ResonanceDateStat` | 共鸣日期统计 |
 | `SystemPermission.swift` | `SystemPermission` | 系统权限状态 |
+| `DailyExtractionModels.swift` | `DailyExtractionPackage`, `SanitizedJournalEntry` | 🆕 AI 知识提取数据包 |
 
 ## 核心枚举类型
+
+### NodeCategory (知识节点分类) 🆕
+```swift
+public enum NodeCategory: String, Codable {
+    case common     // 共有维度：系统预定义
+    case personal   // 个人独特：用户/AI 创建
+}
+```
+
+### SourceType (来源类型) 🆕
+```swift
+public enum SourceType: String, Codable {
+    case userInput      // 用户手动输入
+    case aiExtracted    // AI 从原始数据提取
+    case aiInferred     // AI 推断得出
+}
+```
 
 ### EntryType (日记类型)
 ```swift
@@ -129,7 +147,12 @@ graph TD
 - [数据架构文档](../architecture/data-architecture.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.2.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-22  
 **状态**: 已发布
+
+**更新记录**:
+- v1.2.0 (2024-12-22): 添加 DailyExtractionModels.swift (AI 知识提取数据包)
+- v1.1.0 (2024-12-22): 添加 KnowledgeNodeModels.swift 和 AIPreferencesModels.swift
+- v1.0.0 (2024-12-17): 初始版本

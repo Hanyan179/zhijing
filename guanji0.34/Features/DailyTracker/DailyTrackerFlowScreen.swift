@@ -46,7 +46,7 @@ public struct DailyTrackerFlowScreen: View {
                 }
         }
         .sheet(item: $editingActivity) { activity in
-            if var context = vm.activityContexts[activity] {
+            if let context = vm.activityContexts[activity] {
                 ContextDetailSheet(
                     activity: activity,
                     context: Binding(

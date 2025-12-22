@@ -52,7 +52,7 @@ struct MarkdownBlockView: View {
                 BlockQuoteView(quote: quote, isUserMessage: isUserMessage)
             } else if let table = markup as? Markdown.Table {
                 MarkdownTableView(table: table, isUserMessage: isUserMessage)
-            } else if let thematicBreak = markup as? ThematicBreak {
+            } else if markup is ThematicBreak {
                 ThematicBreakView()
             } else {
                 // Fallback: render as plain text for unknown markup types
@@ -172,11 +172,12 @@ extension CodeBlockView {
         // Create a temporary CodeBlock for initialization
         let markdown = "```\(language ?? "")\n\(code)\n```"
         let doc = Document(parsing: markdown)
-        if let codeBlock = doc.children.first as? CodeBlock {
+        if let codeBlock = doc.children.first(where: { $0 is CodeBlock }) as? CodeBlock {
             self.codeBlock = codeBlock
         } else {
             // Fallback: create a minimal code block
-            self.codeBlock = Document(parsing: "```\n\(code)\n```").children.first as! CodeBlock
+            let fallbackDoc = Document(parsing: "```\n\(code)\n```")
+            self.codeBlock = fallbackDoc.children.first(where: { $0 is CodeBlock }) as! CodeBlock
         }
     }
 }
@@ -551,11 +552,11 @@ enum InlineFormatter {
             return attr
         }
         
-        if let softBreak = markup as? SoftBreak {
+        if markup is SoftBreak {
             return AttributedString(" ")
         }
         
-        if let lineBreak = markup as? LineBreak {
+        if markup is LineBreak {
             return AttributedString("\n")
         }
         

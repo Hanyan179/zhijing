@@ -89,7 +89,7 @@ public struct ChatCompletionRequest: Codable {
 // MARK: - SiliconFlow API Response Models
 
 /// Chat completion response from SiliconFlow API
-public struct ChatCompletionResponse: Codable {
+public struct ChatCompletionResponse: Codable, Sendable {
     public let id: String
     public let object: String?
     public let created: Int?
@@ -97,7 +97,7 @@ public struct ChatCompletionResponse: Codable {
     public let choices: [Choice]
     public let usage: Usage?
     
-    public struct Choice: Codable {
+    public struct Choice: Codable, Sendable {
         public let index: Int?
         public let message: Message
         public let finishReason: String?
@@ -107,7 +107,7 @@ public struct ChatCompletionResponse: Codable {
             case finishReason = "finish_reason"
         }
         
-        public struct Message: Codable {
+        public struct Message: Codable, Sendable {
             public let role: String
             public let content: String
             public let reasoningContent: String?
@@ -119,7 +119,7 @@ public struct ChatCompletionResponse: Codable {
         }
     }
     
-    public struct Usage: Codable {
+    public struct Usage: Codable, Sendable {
         public let promptTokens: Int
         public let completionTokens: Int
         public let totalTokens: Int
@@ -168,10 +168,10 @@ public struct StreamChunk: Codable {
 // MARK: - API Error Models
 
 /// Error response from SiliconFlow API
-public struct APIErrorResponse: Codable {
+public struct APIErrorResponse: Codable, Sendable {
     public let error: APIError
     
-    public struct APIError: Codable {
+    public struct APIError: Codable, Sendable {
         public let message: String
         public let type: String?
         public let code: String?

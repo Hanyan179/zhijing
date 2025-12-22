@@ -10,7 +10,7 @@ public struct ContextDetailSheet: View {
     
     @State private var newTagText: String = ""
     @State private var tags: [ActivityTag] = []
-    @StateObject private var relationshipVM = RelationshipProfileViewModel()
+    @StateObject private var relationshipVM = NarrativeRelationshipViewModel()
     
     // Quick add person state
     @State private var showAddPerson = false
@@ -97,7 +97,7 @@ public struct ContextDetailSheet: View {
     private var peopleSelectionView: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Show all people, grouped by type
-            let groupedProfiles = Dictionary(grouping: relationshipVM.profiles, by: { $0.type })
+            let groupedProfiles = Dictionary(grouping: relationshipVM.relationships, by: { $0.type })
             
             // Show "Alone" option first
             AloneChip(
@@ -107,7 +107,7 @@ public struct ContextDetailSheet: View {
             
             // Show people by type groups
             ForEach(CompanionType.allCases.filter { $0 != .alone }, id: \.self) { type in
-                if let profiles = groupedProfiles[type], !profiles.isEmpty {
+                if let relationships = groupedProfiles[type], !relationships.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         // Type header
                         HStack {
@@ -120,12 +120,12 @@ public struct ContextDetailSheet: View {
                         
                         // People chips
                         TrackerFlowLayout(spacing: 8) {
-                            ForEach(profiles) { profile in
+                            ForEach(relationships) { relationship in
                                 PersonChip(
-                                    profile: profile,
-                                    isSelected: context.companionDetails?.contains(profile.id) ?? false
+                                    relationship: relationship,
+                                    isSelected: context.companionDetails?.contains(relationship.id) ?? false
                                 ) {
-                                    togglePerson(profile)
+                                    togglePerson(relationship)
                                 }
                             }
                         }
@@ -159,7 +159,7 @@ public struct ContextDetailSheet: View {
         }
     }
     
-    private func togglePerson(_ profile: RelationshipProfile) {
+    private func togglePerson(_ relationship: NarrativeRelationship) {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             // Remove "alone" if selecting a person
             context.companions.removeAll { $0 == .alone }
@@ -168,21 +168,21 @@ public struct ContextDetailSheet: View {
                 context.companionDetails = []
             }
             
-            if context.companionDetails?.contains(profile.id) ?? false {
+            if context.companionDetails?.contains(relationship.id) ?? false {
                 // Deselect person
-                context.companionDetails?.removeAll { $0 == profile.id }
+                context.companionDetails?.removeAll { $0 == relationship.id }
                 // Remove type if no more people of this type selected
                 let remainingOfType = context.companionDetails?.compactMap { id in
-                    relationshipVM.profiles.first { $0.id == id }
-                }.filter { $0.type == profile.type } ?? []
+                    relationshipVM.relationships.first { $0.id == id }
+                }.filter { $0.type == relationship.type } ?? []
                 if remainingOfType.isEmpty {
-                    context.companions.removeAll { $0 == profile.type }
+                    context.companions.removeAll { $0 == relationship.type }
                 }
             } else {
                 // Select person and auto-add their type
-                context.companionDetails?.append(profile.id)
-                if !context.companions.contains(profile.type) {
-                    context.companions.append(profile.type)
+                context.companionDetails?.append(relationship.id)
+                if !context.companions.contains(relationship.type) {
+                    context.companions.append(relationship.type)
                 }
             }
         }
@@ -233,20 +233,20 @@ public struct ContextDetailSheet: View {
         let trimmed = newPersonName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         
-        // Create new profile
-        let profile = RelationshipProfile(
+        // Create new relationship
+        let relationship = NarrativeRelationship(
             type: newPersonType,
             displayName: trimmed
         )
         
         // Add to VM (will persist later)
-        relationshipVM.create(profile)
+        relationshipVM.create(relationship)
         
         // Auto-select the new person
         if context.companionDetails == nil {
             context.companionDetails = []
         }
-        context.companionDetails?.append(profile.id)
+        context.companionDetails?.append(relationship.id)
         if !context.companions.contains(newPersonType) {
             context.companions.append(newPersonType)
         }
@@ -355,23 +355,23 @@ struct AloneChip: View {
 
 // MARK: - Person Chip
 
-/// Chip for displaying a relationship profile person
+/// Chip for displaying a narrative relationship person
 struct PersonChip: View {
-    let profile: RelationshipProfile
+    let relationship: NarrativeRelationship
     let isSelected: Bool
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
             HStack(spacing: 4) {
-                if let avatar = profile.avatar, !avatar.isEmpty {
+                if let avatar = relationship.avatar, !avatar.isEmpty {
                     Text(avatar)
                         .font(.system(size: 14))
                 } else {
-                    Image(systemName: profile.type.iconName)
+                    Image(systemName: relationship.type.iconName)
                         .font(.system(size: 12))
                 }
-                Text(profile.displayName)
+                Text(relationship.displayName)
                     .font(.subheadline)
             }
             .foregroundColor(isSelected ? .white : .primary)

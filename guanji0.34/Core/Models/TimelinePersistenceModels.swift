@@ -48,7 +48,7 @@ public struct SceneRecord: Codable {
         case .journey(let j):
             self.id = j.id
             self.type = "journey"
-            self.duration = j.duration
+            self.duration = nil  // Duration field removed in v0.34.1
             self.origin = j.origin
             self.destination = j.destination
             self.transportMode = j.mode
@@ -66,8 +66,8 @@ public struct SceneRecord: Codable {
             let s = SceneGroup(type: "scene", id: id, timeRange: tr, location: loc, entries: entries)
             return .scene(s)
         } else if type == "journey" {
-            guard let org = origin, let dest = destination, let mode = transportMode, let dur = duration else { return nil }
-            let j = JourneyBlock(type: "journey", id: id, origin: org, destination: dest, mode: mode, duration: dur, entries: entries)
+            guard let org = origin, let dest = destination, let mode = transportMode else { return nil }
+            let j = JourneyBlock(type: "journey", id: id, origin: org, destination: dest, mode: mode, entries: entries)
             return .journey(j)
         }
         return nil

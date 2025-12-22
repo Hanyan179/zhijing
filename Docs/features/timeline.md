@@ -153,14 +153,55 @@ flowchart LR
 - 问题回复 (有 `questionId`)
 - 时间胶囊源条目
 
-### 2. 地点映射
+### 2. 按需定位策略 (v0.34.1+)
+
+**核心理念**: 仅在用户提交输入时获取位置，不进行后台追踪。
+
+**场景/旅程判断逻辑**:
+
+```swift
+// 文件路径: Features/Timeline/TimelineViewModel.swift
+
+// 当用户提交输入时
+public func addEntry(_ entry: JournalEntry) {
+    // 1. 获取当前位置
+    let currentLocation = LocationService.shared.lastKnownLocation
+    
+    // 2. 查询围栏匹配
+    let fenceMatches = LocationRepository.shared.suggestMappings(lat, lng)
+    
+    // 3. 判断是否创建新块
+    if lastBlock is Scene:
+        if currentLocation in sameFence:
+            append to current scene  // 同一围栏 → 追加
+        else:
+            create journey block     // 不同围栏/无围栏 → 创建旅程
+    
+    if lastBlock is Journey:
+        if currentLocation in anyFence:
+            create scene block       // 到达围栏 → 创建场景
+        else:
+            append to current journey // 无围栏 → 继续旅程
+}
+```
+
+**Fallback 机制**: 当没有围栏定义时，使用距离阈值 (500m) 判断是否移动。
+
+**优势**:
+- ✅ 省电：无后台追踪
+- ✅ 简单：无复杂状态机
+- ✅ 鲁棒：不依赖后台进程
+- ✅ 连续性：同一状态不重复创建块
+- ✅ 支持长途旅程：用户可能一整天都在旅途中
+
+### 3. 地点映射
 
 系统自动将 GPS 坐标映射到用户定义的地点：
-- 使用 `LocationService.suggestMappings()` 查找匹配
+- 使用 `LocationRepository.suggestMappings()` 查找围栏匹配
 - 支持用户手动命名新地点
-- 支持将新坐标追加到已有地点
+- 支持将新坐标追加到已有地点（扩展围栏）
 
-### 3. 时间涟漪
+### 4. 时间涟漪
 
 时间涟漪展示今日到期的时间胶囊：
 - 显示已回复/总数统计
@@ -175,9 +216,8 @@ flowchart LR
 - `LocationRepository`: 地点映射管理
 
 ### Service 依赖
-- `LocationService`: GPS 定位和地理编码
+- `LocationService`: GPS 定位和地理编码（按需获取）
 - `WeatherService`: 天气信息获取
-- `TimelineRecorder`: 后台时间轴记录
 
 ### 通知监听
 - `gj_addresses_changed`: 地址映射变更
@@ -196,7 +236,8 @@ flowchart LR
 - [InputDock 组件](../components/organisms.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.1.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
-**状态**: 已发布
+**更新日期**: 2024-12-19  
+**状态**: 已发布  
+**重大变更**: 移除后台追踪，改为按需定位策略

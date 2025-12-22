@@ -4,22 +4,31 @@ import Markdown
 /// Chat message bubble for AI conversation
 /// Displays user and AI messages with distinct visual styles
 /// Supports rich Markdown rendering for AI responses
+/// Enhanced with long-press menu and copy functionality
 /// Requirements: 1.1-1.9, 3.1-3.4, 4.1, 4.6, 4.7, 4.8
 public struct MessageBubble: View {
     let message: AIMessage
     let showThinking: Bool
+    let onRegenerate: (() -> Void)?
     
     /// Parsed Markdown document for AI messages
     @State private var parsedDocument: Document?
     /// Flag indicating if parsing is in progress
     @State private var isParsing: Bool = false
+    /// Flag for copy feedback
+    @State private var showCopied: Bool = false
     
     /// Threshold for async parsing (characters)
     private static let asyncParsingThreshold = 5000
     
-    public init(message: AIMessage, showThinking: Bool = true) {
+    public init(
+        message: AIMessage,
+        showThinking: Bool = true,
+        onRegenerate: (() -> Void)? = nil
+    ) {
         self.message = message
         self.showThinking = showThinking
+        self.onRegenerate = onRegenerate
     }
     
     private var isUser: Bool {
@@ -62,12 +71,22 @@ public struct MessageBubble: View {
                     }
                 )
                 
-                // Timestamp
-                Text(formatTime(message.timestamp))
-                    .font(Typography.caption)
-                    .foregroundColor(Colors.slate500)
+                // Timestamp and actions
+                HStack(spacing: 8) {
+                    Text(formatTime(message.timestamp))
+                        .font(Typography.caption)
+                        .foregroundColor(Colors.slate500)
+                    
+                    // Action buttons for AI messages
+                    if !isUser {
+                        messageActionsView
+                    }
+                }
             }
             .frame(maxWidth: isUser ? nil : .infinity, alignment: .leading)
+            .contextMenu {
+                contextMenuItems
+            }
             
             if !isUser {
                 Spacer(minLength: 0)
@@ -138,6 +157,109 @@ public struct MessageBubble: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
+    }
+    
+    // MARK: - Message Actions View
+    
+    @ViewBuilder
+    private var messageActionsView: some View {
+        HStack(spacing: 12) {
+            // Copy button
+            Button(action: copyMessage) {
+                Image(systemName: showCopied ? "checkmark" : "doc.on.doc")
+                    .font(.system(size: 12))
+                    .foregroundColor(showCopied ? Colors.emerald : Colors.slate500)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Localization.tr("AI.Message.Copy"))
+            
+            // Regenerate button (if callback provided)
+            if onRegenerate != nil {
+                Button(action: { onRegenerate?() }) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 12))
+                        .foregroundColor(Colors.slate500)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Localization.tr("AI.Message.Regenerate"))
+            }
+        }
+    }
+    
+    // MARK: - Context Menu
+    
+    @ViewBuilder
+    private var contextMenuItems: some View {
+        // Copy action
+        Button(action: copyMessage) {
+            Label(Localization.tr("AI.Message.Copy"), systemImage: "doc.on.doc")
+        }
+        
+        // Regenerate action (for AI messages only)
+        if !isUser, let regenerate = onRegenerate {
+            Button(action: regenerate) {
+                Label(Localization.tr("AI.Message.Regenerate"), systemImage: "arrow.clockwise")
+            }
+        }
+        
+        // Copy with thinking (for AI messages with reasoning)
+        if !isUser, let reasoning = message.reasoningContent, !reasoning.isEmpty {
+            Button(action: copyWithThinking) {
+                Label(Localization.tr("AI.Message.CopyWithThinking"), systemImage: "doc.on.doc.fill")
+            }
+        }
+    }
+    
+    // MARK: - Copy Actions
+    
+    private func copyMessage() {
+        #if canImport(UIKit)
+        UIPasteboard.general.string = message.content
+        
+        // Haptic feedback
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        #endif
+        
+        // Show feedback
+        withAnimation(.easeInOut(duration: 0.2)) {
+            showCopied = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showCopied = false
+            }
+        }
+    }
+    
+    private func copyWithThinking() {
+        guard let reasoning = message.reasoningContent else { return }
+        
+        let fullContent = """
+        [Thinking]
+        \(reasoning)
+        
+        [Response]
+        \(message.content)
+        """
+        
+        #if canImport(UIKit)
+        UIPasteboard.general.string = fullContent
+        
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        #endif
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            showCopied = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showCopied = false
+            }
+        }
     }
 }
 

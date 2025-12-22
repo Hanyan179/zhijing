@@ -2,9 +2,14 @@ import SwiftUI
 
 /// Edit sheet for NarrativeRelationship - no score sliders
 public struct NarrativeRelationshipEditSheet: View {
-    let relationship: NarrativeRelationship
+    let relationship: NarrativeRelationship?
     @ObservedObject var viewModel: NarrativeRelationshipViewModel
+    let onSave: ((NarrativeRelationship) -> Void)?
     @Environment(\.dismiss) private var dismiss
+    
+    private var isNewRelationship: Bool {
+        relationship == nil
+    }
     
     // Basic Info
     @State private var displayName: String = ""
@@ -63,7 +68,8 @@ public struct NarrativeRelationshipEditSheet: View {
                     name: $newAnniversaryName,
                     date: $newAnniversaryDate
                 ) {
-                    if !newAnniversaryName.isEmpty && !newAnniversaryDate.isEmpty {
+                    if let relationship = relationship,
+                       !newAnniversaryName.isEmpty && !newAnniversaryDate.isEmpty {
                         viewModel.addAnniversary(
                             relationshipId: relationship.id,
                             name: newAnniversaryName,
@@ -77,7 +83,8 @@ public struct NarrativeRelationshipEditSheet: View {
             }
             .sheet(isPresented: $showAddExperience) {
                 AddExperienceSheet(experience: $newExperience) {
-                    if !newExperience.isEmpty {
+                    if let relationship = relationship,
+                       !newExperience.isEmpty {
                         viewModel.addSharedExperience(
                             relationshipId: relationship.id,
                             experience: newExperience
@@ -164,7 +171,8 @@ public struct NarrativeRelationshipEditSheet: View {
             }
             
             // Anniversaries
-            if let currentRelationship = viewModel.getRelationship(id: relationship.id) {
+            if let relationship = relationship,
+               let currentRelationship = viewModel.getRelationship(id: relationship.id) {
                 ForEach(currentRelationship.factAnchors.anniversaries) { anniversary in
                     HStack {
                         Text(anniversary.name)
@@ -185,14 +193,17 @@ public struct NarrativeRelationshipEditSheet: View {
                 }
             }
             
-            Button {
-                showAddAnniversary = true
-            } label: {
-                Label(Localization.tr("Relationship.AddAnniversary"), systemImage: "plus.circle")
+            if relationship != nil {
+                Button {
+                    showAddAnniversary = true
+                } label: {
+                    Label(Localization.tr("Relationship.AddAnniversary"), systemImage: "plus.circle")
+                }
             }
             
             // Shared Experiences
-            if let currentRelationship = viewModel.getRelationship(id: relationship.id) {
+            if let relationship = relationship,
+               let currentRelationship = viewModel.getRelationship(id: relationship.id) {
                 ForEach(currentRelationship.factAnchors.sharedExperiences, id: \.self) { experience in
                     HStack {
                         Text(experience)
@@ -212,10 +223,12 @@ public struct NarrativeRelationshipEditSheet: View {
                 }
             }
             
-            Button {
-                showAddExperience = true
-            } label: {
-                Label(Localization.tr("Relationship.AddExperience"), systemImage: "plus.circle")
+            if relationship != nil {
+                Button {
+                    showAddExperience = true
+                } label: {
+                    Label(Localization.tr("Relationship.AddExperience"), systemImage: "plus.circle")
+                }
             }
         }
     }
@@ -223,6 +236,7 @@ public struct NarrativeRelationshipEditSheet: View {
     // MARK: - Data Loading & Saving
     
     private func loadCurrentValues() {
+        guard let relationship = relationship else { return }
         displayName = relationship.displayName
         realName = relationship.realName ?? ""
         avatar = relationship.avatar ?? ""
@@ -233,16 +247,40 @@ public struct NarrativeRelationshipEditSheet: View {
     }
     
     private func saveChanges() {
-        var updated = relationship
-        updated.displayName = displayName
-        updated.realName = realName.isEmpty ? nil : realName
-        updated.avatar = avatar.isEmpty ? nil : avatar
-        updated.type = type
-        updated.narrative = narrative.isEmpty ? nil : narrative
-        updated.tags = tagsText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-        updated.factAnchors.firstMeetingDate = firstMeetingDate.isEmpty ? nil : firstMeetingDate
-        
-        viewModel.update(updated)
+        if let existing = relationship {
+            // Update existing relationship
+            var updated = existing
+            updated.displayName = displayName
+            updated.realName = realName.isEmpty ? nil : realName
+            updated.avatar = avatar.isEmpty ? nil : avatar
+            updated.type = type
+            updated.narrative = narrative.isEmpty ? nil : narrative
+            updated.tags = tagsText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            updated.factAnchors.firstMeetingDate = firstMeetingDate.isEmpty ? nil : firstMeetingDate
+            
+            viewModel.update(updated)
+            onSave?(updated)
+        } else {
+            // Create new relationship
+            let newRelationship = NarrativeRelationship(
+                id: UUID().uuidString,
+                type: type,
+                displayName: displayName,
+                realName: realName.isEmpty ? nil : realName,
+                avatar: avatar.isEmpty ? nil : avatar,
+                narrative: narrative.isEmpty ? nil : narrative,
+                tags: tagsText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) },
+                factAnchors: RelationshipFactAnchors(
+                    firstMeetingDate: firstMeetingDate.isEmpty ? nil : firstMeetingDate,
+                    anniversaries: [],
+                    sharedExperiences: []
+                ),
+                mentions: []
+            )
+            
+            viewModel.create(newRelationship)
+            onSave?(newRelationship)
+        }
     }
 }
 

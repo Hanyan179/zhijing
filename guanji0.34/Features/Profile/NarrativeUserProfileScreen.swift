@@ -142,7 +142,7 @@ public struct NarrativeUserProfileScreen: View {
                 
                 if relationshipViewModel.relationships.count > 5 {
                     NavigationLink {
-                        RelationshipManagementScreen()
+                        NarrativeRelationshipListScreen(viewModel: relationshipViewModel)
                     } label: {
                         Text("\(Localization.tr("all")) (\(relationshipViewModel.relationships.count))")
                             .foregroundStyle(Colors.indigo)
@@ -154,7 +154,7 @@ public struct NarrativeUserProfileScreen: View {
                 ProfileSectionHeader(icon: "person.2.fill", title: "peopleManagement")
                 Spacer()
                 NavigationLink {
-                    RelationshipManagementScreen()
+                    NarrativeRelationshipListScreen(viewModel: relationshipViewModel)
                 } label: {
                     Image(systemName: "chevron.right")
                         .font(.caption)
@@ -286,48 +286,7 @@ private struct ProfileTagChip: View {
     }
 }
 
-private struct RelationshipRow: View {
-    let relationship: NarrativeRelationship
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(relationship.avatar ?? "👤")
-                .font(.title2)
-                .frame(width: 40, height: 40)
-                .background(Color(.systemGray6))
-                .clipShape(Circle())
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(relationship.displayName)
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                
-                HStack(spacing: 4) {
-                    Image(systemName: relationship.type.iconName)
-                        .font(.caption2)
-                    Text(Localization.tr(relationship.type.localizedKey))
-                        .font(.caption)
-                }
-                .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            // Mention count instead of intimacy score
-            if relationship.mentionCount > 0 {
-                Text("\(relationship.mentionCount)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color(.systemGray5))
-                    .clipShape(Capsule())
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
+
 
 private struct AddTagSheet: View {
     @Binding var newTag: String
@@ -379,7 +338,7 @@ private struct NarrativeProfileEditSheet: View {
                 Section(Localization.tr("Profile.StaticCore")) {
                     Picker(Localization.tr("field_gender"), selection: $gender) {
                         Text(Localization.tr("Profile.NotSet")).tag(nil as Gender?)
-                        ForEach([Gender.male, .female, .other], id: \.self) { g in
+                        ForEach(Gender.allCases, id: \.self) { g in
                             Text(g.localizedValue).tag(g as Gender?)
                         }
                     }
@@ -397,7 +356,7 @@ private struct NarrativeProfileEditSheet: View {
                     
                     Picker(Localization.tr("field_education"), selection: $education) {
                         Text(Localization.tr("Profile.NotSet")).tag(nil as Education?)
-                        ForEach([Education.highSchool, .bachelor, .master, .phd], id: \.self) { e in
+                        ForEach(Education.allCases, id: \.self) { e in
                             Text(e.localizedValue).tag(e as Education?)
                         }
                     }

@@ -13,6 +13,7 @@ public struct TimelineScreen: View {
     @State private var showTimeRippleSheet = false
     @State private var selectedRippleQuestion: QuestionEntry?
     @State private var editingTrackerRecord: DailyTrackerRecord? = nil
+
     
     public init() {}
     public var body: some View { content.environmentObject(vm) }
@@ -188,6 +189,7 @@ public struct TimelineScreen: View {
                     }
                 }
             }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: ProfileScreen()) {
                     Image(systemName: "person.crop.circle")
@@ -238,8 +240,9 @@ public struct TimelineScreen: View {
             .environmentObject(appState)
             .environmentObject(vm)
         }
+
         .onAppear {
-            TimelineRecorder.shared.startRecording()
+            // TimelineRecorder is now started in AppState.init() on app launch
             hasDynamicIsland = DynamicIslandSupport.hasDynamicIsland()
             // LiveActivityManager removed
             vm.load(date: appState.selectedDate)

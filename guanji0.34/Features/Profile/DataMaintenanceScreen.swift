@@ -5,6 +5,8 @@ public struct DataMaintenanceScreen: View {
     @ObservedObject public var vm: ProfileViewModel
     public init(vm: ProfileViewModel) { self.vm = vm }
     @EnvironmentObject private var appState: AppState
+    @State private var showExportSheet = false
+    
     public var body: some View {
         List {
             Section {
@@ -40,13 +42,13 @@ public struct DataMaintenanceScreen: View {
                 NavigationLink(destination: LocationListScreen(vm: vm)) {
                     Label(Localization.tr("locationManagement"), systemImage: "map")
                 }
-                NavigationLink(destination: RelationshipManagementScreen()) {
+                NavigationLink(destination: NarrativeRelationshipListScreen(viewModel: NarrativeRelationshipViewModel())) {
                     Label(Localization.tr("peopleManagement"), systemImage: "person.2.fill")
                 }
             }
             
             Section {
-                Button(action: {}) {
+                Button(action: { showExportSheet = true }) {
                     Label(Localization.tr("exportData"), systemImage: "square.and.arrow.up")
                 }
                 .foregroundStyle(.primary)
@@ -61,5 +63,8 @@ public struct DataMaintenanceScreen: View {
         .tint(Colors.indigo)
         .navigationTitle(Localization.tr("dataMaintenance"))
         .id(appState.lang.rawValue)
+        .sheet(isPresented: $showExportSheet) {
+            DataExportScreen()
+        }
     }
 }

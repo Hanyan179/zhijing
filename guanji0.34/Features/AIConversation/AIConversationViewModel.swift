@@ -137,6 +137,33 @@ public final class AIConversationViewModel: ObservableObject {
         messages = []
     }
     
+    /// Regenerate a specific AI message
+    /// Removes the message and all subsequent messages, then requests a new response
+    /// - Parameter message: The AI message to regenerate
+    public func regenerateMessage(_ message: AIMessage) {
+        guard !isStreaming else { return }
+        guard message.role == .assistant else { return }
+        guard var currentConversation = conversation else { return }
+        
+        // Find the index of the message to regenerate
+        guard let messageIndex = currentConversation.messages.firstIndex(where: { $0.id == message.id }) else {
+            return
+        }
+        
+        // Remove this message and all subsequent messages
+        currentConversation.messages.removeSubrange(messageIndex...)
+        
+        // Save the updated conversation
+        repository.save(currentConversation)
+        
+        // Update local state
+        conversation = currentConversation
+        messages = currentConversation.sortedMessages
+        
+        // Start a new streaming response
+        startStreamingResponse()
+    }
+    
     // MARK: - Private Methods
     
     private func startStreamingResponse() {

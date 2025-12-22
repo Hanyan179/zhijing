@@ -4,11 +4,34 @@ public struct QuestionEntry: Codable, Identifiable {
     public let id: String
     public let created_at: String
     public let updated_at: String
+    public let dayId: String  // Primary day index (format: "yyyy.MM.dd") - L1 DayIndex association
     public let system_prompt: String?
     public let journal_now_id: String
     public let journal_future_id: String?
     public let interval_days: Int
     public let delivery_date: String
+    
+    public init(
+        id: String = UUID().uuidString,
+        created_at: String = DateUtilities.today,
+        updated_at: String = DateUtilities.today,
+        dayId: String = DateUtilities.today,
+        system_prompt: String? = nil,
+        journal_now_id: String,
+        journal_future_id: String? = nil,
+        interval_days: Int,
+        delivery_date: String
+    ) {
+        self.id = id
+        self.created_at = created_at
+        self.updated_at = updated_at
+        self.dayId = dayId
+        self.system_prompt = system_prompt
+        self.journal_now_id = journal_now_id
+        self.journal_future_id = journal_future_id
+        self.interval_days = interval_days
+        self.delivery_date = delivery_date
+    }
 }
 
 public struct LoveLog: Codable, Identifiable {

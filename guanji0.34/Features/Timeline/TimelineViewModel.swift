@@ -139,11 +139,11 @@ public final class TimelineViewModel: ObservableObject {
         // We do not force fetch here anymore as TimelineRecorder handles the continuous stream.
         // However, we can use this to update weather if needed.
         
-        LocationService.shared.requestCurrentSnapshot { [weak self] lat, lng, rawName in
+        LocationService.shared.requestCurrentSnapshot { lat, lng, _ in
             guard lat != 0 && lng != 0 else { return }
             
             // 2. Fetch Weather if we have location
-            WeatherService.shared.fetchCurrentWeather(lat: lat, lng: lng) { symbol, temp in
+            WeatherService.shared.fetchCurrentWeather(lat: lat, lng: lng) { _, _ in
                 // Update Live Activity removed
             }
         }
@@ -151,42 +151,195 @@ public final class TimelineViewModel: ObservableObject {
 
     public func addEntry(_ entry: JournalEntry) {
         let ts = entry.timestamp
-        // Use the last item regardless of type, or create new scene if empty
-        if var last = items.last {
-            switch last {
-            case .scene(let s):
-                let newScene = SceneGroup(type: s.type, id: s.id, timeRange: s.timeRange, location: s.location, entries: s.entries + [entry])
-                items[items.count - 1] = .scene(newScene)
-                // Fixed: Removed double-save via appendItem which caused race conditions and duplicates
-                TimelineRepository.shared.saveItems(items, for: currentDate)
-                
-            case .journey(let j):
-                let newJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: j.entries + [entry])
-                items[items.count - 1] = .journey(newJourney)
-                TimelineRepository.shared.saveItems(items, for: currentDate)
+        
+        // Get current location
+        let currentLoc = LocationService.shared.lastKnownLocation
+        let lat = currentLoc?.coordinate.latitude ?? 0
+        let lng = currentLoc?.coordinate.longitude ?? 0
+        let snapshot = LocationSnapshot(lat: lat, lng: lng)
+        
+        // Check fence matching
+        let fenceMatches = LocationRepository.shared.suggestMappings(lat: lat, lng: lng)
+        let currentFence = fenceMatches.first
+        
+        // Determine if we should create a new block
+        if let last = items.last {
+            let shouldCreateNew = shouldCreateNewBlock(
+                lastItem: last,
+                currentFence: currentFence,
+                currentSnapshot: snapshot
+            )
+            
+            if shouldCreateNew {
+                // Create new block based on last item type
+                switch last {
+                case .scene:
+                    // Was in a scene, now moving or in different fence -> Create Journey
+                    createJourneyBlock(from: last, currentSnapshot: snapshot, currentFence: currentFence, entry: entry)
+                case .journey:
+                    // Was traveling, now arrived at a fence -> Create Scene
+                    createSceneBlock(currentSnapshot: snapshot, currentFence: currentFence, entry: entry)
+                }
+            } else {
+                // Append to existing block
+                appendToLastBlock(entry: entry)
             }
         } else {
-             // Create new scene if timeline is empty
-             // Try to use current location if available, otherwise fallback to 0,0
-            let currentLoc = LocationService.shared.lastKnownLocation
-            let lat = currentLoc?.coordinate.latitude ?? 0
-            let lng = currentLoc?.coordinate.longitude ?? 0
-            let snapshot = LocationSnapshot(lat: lat, lng: lng)
-            
-            // If we have a real location, we might want to resolve address? 
-            // For now, use "Location" placeholder which triggers auto-resolve in UI if raw
-            let displayText = (lat != 0) ? "Location \(String(format: "%.2f", lat))" : "Unknown Location"
-            
-            let loc = LocationVO(status: .raw, mappingId: nil, snapshot: snapshot, displayText: displayText, originalRawName: displayText, icon: nil, color: nil)
-            let newScene = SceneGroup(type: "scene", id: "scene_\(UUID().uuidString)", timeRange: ts, location: loc, entries: [entry])
-            items.append(.scene(newScene))
-            TimelineRepository.shared.saveItems(items, for: currentDate)
-            
-            // Trigger a refresh to try resolving the address if we have coordinates
-            if lat != 0 {
-                refreshLocationMappings()
-            }
+            // First entry of the day -> Create initial Scene
+            createSceneBlock(currentSnapshot: snapshot, currentFence: currentFence, entry: entry)
         }
+        
+        // Refresh location mappings to update UI
+        if lat != 0 {
+            refreshLocationMappings()
+        }
+    }
+    
+    // MARK: - Location Block Logic
+    
+    private func shouldCreateNewBlock(lastItem: TimelineItem, currentFence: AddressMapping?, currentSnapshot: LocationSnapshot) -> Bool {
+        switch lastItem {
+        case .scene(let s):
+            // Check if we're still in the same fence
+            if let fence = currentFence, let lastMappingId = s.location.mappingId {
+                // Same fence -> Stay in scene
+                return fence.id != lastMappingId
+            } else if currentFence != nil {
+                // New fence detected -> Move to journey
+                return true
+            } else {
+                // No fence, check distance (fallback)
+                let distance = calculateDistance(s.location.snapshot, currentSnapshot)
+                return distance > 500 // 500m threshold
+            }
+            
+        case .journey(let j):
+            // If we're in any fence, we've arrived -> Create scene
+            if currentFence != nil {
+                return true
+            }
+            // Still no fence -> Continue journey
+            return false
+        }
+    }
+    
+    private func createSceneBlock(currentSnapshot: LocationSnapshot, currentFence: AddressMapping?, entry: JournalEntry) {
+        let displayText: String
+        let status: LocationStatus
+        let mappingId: String?
+        let icon: String?
+        let color: String?
+        
+        if let fence = currentFence {
+            displayText = fence.name
+            status = .mapped
+            mappingId = fence.id
+            icon = fence.icon
+            color = fence.color
+        } else if currentSnapshot.lat != 0 {
+            displayText = "Location"
+            status = .raw
+            mappingId = nil
+            icon = nil
+            color = nil
+        } else {
+            displayText = "Unknown Location"
+            status = .no_permission
+            mappingId = nil
+            icon = nil
+            color = nil
+        }
+        
+        let loc = LocationVO(
+            status: status,
+            mappingId: mappingId,
+            snapshot: currentSnapshot,
+            displayText: displayText,
+            originalRawName: displayText,
+            icon: icon,
+            color: color
+        )
+        
+        let newScene = SceneGroup(
+            type: "scene",
+            id: "scene_\(UUID().uuidString)",
+            timeRange: entry.timestamp,
+            location: loc,
+            entries: [entry]
+        )
+        
+        items.append(.scene(newScene))
+        TimelineRepository.shared.saveItems(items, for: currentDate)
+    }
+    
+    private func createJourneyBlock(from lastItem: TimelineItem, currentSnapshot: LocationSnapshot, currentFence: AddressMapping?, entry: JournalEntry) {
+        // Get origin from last scene
+        let origin: LocationVO
+        switch lastItem {
+        case .scene(let s):
+            origin = s.location
+        case .journey(let j):
+            origin = j.origin // Should not happen, but defensive
+        }
+        
+        // Destination is current location (may be updated later)
+        let destDisplayText = currentFence?.name ?? "Moving..."
+        let destStatus: LocationStatus = currentFence != nil ? .mapped : .raw
+        let destination = LocationVO(
+            status: destStatus,
+            mappingId: currentFence?.id,
+            snapshot: currentSnapshot,
+            displayText: destDisplayText,
+            originalRawName: destDisplayText,
+            icon: currentFence?.icon,
+            color: currentFence?.color
+        )
+        
+        let newJourney = JourneyBlock(
+            type: "journey",
+            id: "journey_\(UUID().uuidString)",
+            origin: origin,
+            destination: destination,
+            mode: .car, // Default mode
+            entries: [entry]
+        )
+        
+        items.append(.journey(newJourney))
+        TimelineRepository.shared.saveItems(items, for: currentDate)
+    }
+    
+    private func appendToLastBlock(entry: JournalEntry) {
+        guard let last = items.last else { return }
+        
+        switch last {
+        case .scene(let s):
+            let newScene = SceneGroup(
+                type: s.type,
+                id: s.id,
+                timeRange: s.timeRange,
+                location: s.location,
+                entries: s.entries + [entry]
+            )
+            items[items.count - 1] = .scene(newScene)
+            
+        case .journey(let j):
+            let newJourney = JourneyBlock(
+                type: j.type,
+                id: j.id,
+                origin: j.origin,
+                destination: j.destination,
+                mode: j.mode,
+                entries: j.entries + [entry]
+            )
+            items[items.count - 1] = .journey(newJourney)
+        }
+        
+        TimelineRepository.shared.saveItems(items, for: currentDate)
+    }
+    
+    private func calculateDistance(_ a: LocationSnapshot, _ b: LocationSnapshot) -> Double {
+        // Approximate distance in meters
+        return hypot((a.lat - b.lat) * 111_000, (a.lng - b.lng) * 111_000)
     }
     
     private func saveFileToDisk(_ url: URL) -> String? {
@@ -323,13 +476,13 @@ public final class TimelineViewModel: ObservableObject {
                 TimelineRepository.shared.appendItem(.scene(SceneGroup(type: "scene", id: "scene_\(UUID().uuidString)", timeRange: ts, location: LocationVO(status: .raw, mappingId: nil, snapshot: LocationSnapshot(lat: 0, lng: 0), displayText: "Review", originalRawName: nil, icon: nil, color: nil), entries: [e])), for: DateUtilities.today)
                 
                 // Add to local display items so user sees it immediately
-                if var last = items.last {
+                if let last = items.last {
                     switch last {
                     case .scene(let s):
                         let newScene = SceneGroup(type: s.type, id: s.id, timeRange: s.timeRange, location: s.location, entries: s.entries + [e])
                         items[items.count - 1] = .scene(newScene)
                     case .journey(let j):
-                        let newJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: j.entries + [e])
+                        let newJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: j.entries + [e])
                         items[items.count - 1] = .journey(newJourney)
                     }
                 } else {
@@ -656,7 +809,7 @@ public final class TimelineViewModel: ObservableObject {
                 return .scene(SceneGroup(type: s.type, id: s.id, timeRange: s.timeRange, location: s.location, entries: updated))
             case .journey(let j):
                 let updated = j.entries.map { e in e.id == id ? JournalEntry(id: e.id, type: e.type, subType: e.subType, chronology: e.chronology, content: e.content, url: e.url, timestamp: e.timestamp, category: category, metadata: e.metadata) : e }
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: updated))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: updated))
             }
         }
         TimelineRepository.shared.saveItems(items, for: currentDate)
@@ -670,7 +823,7 @@ public final class TimelineViewModel: ObservableObject {
                 return .scene(SceneGroup(type: s.type, id: s.id, timeRange: s.timeRange, location: s.location, entries: updated))
             case .journey(let j):
                 let updated = j.entries.map { e in e.id == id ? JournalEntry(id: e.id, type: e.type, subType: e.subType, chronology: e.chronology, content: newContent, url: e.url, timestamp: e.timestamp, category: e.category, metadata: e.metadata) : e }
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: updated))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: updated))
             }
         }
         TimelineRepository.shared.saveItems(items, for: currentDate)
@@ -689,7 +842,7 @@ public final class TimelineViewModel: ObservableObject {
             case .journey(let j):
                 let updated = j.entries.filter { $0.id != id }
                 if updated.isEmpty { return nil } // Remove journey if empty
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: updated))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: updated))
             }
         }
         TimelineRepository.shared.saveItems(items, for: currentDate)
@@ -707,7 +860,7 @@ public final class TimelineViewModel: ObservableObject {
                 let d = j.destination
                 let newO = (o.originalRawName == rawName && o.status == .raw) ? LocationVO(status: .mapped, mappingId: mappingId ?? UUID().uuidString, snapshot: o.snapshot, displayText: newName, originalRawName: o.originalRawName, icon: icon, color: color) : o
                 let newD = (d.originalRawName == rawName && d.status == .raw) ? LocationVO(status: .mapped, mappingId: mappingId ?? UUID().uuidString, snapshot: d.snapshot, displayText: newName, originalRawName: d.originalRawName, icon: icon, color: color) : d
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, duration: j.duration, entries: j.entries))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, entries: j.entries))
             }
         }
     }
@@ -783,7 +936,7 @@ public final class TimelineViewModel: ObservableObject {
                                       icon: nil,
                                       color: nil)
                 }
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, duration: j.duration, entries: j.entries))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, entries: j.entries))
             }
         }
     }
@@ -797,7 +950,7 @@ public final class TimelineViewModel: ObservableObject {
             case .journey(let j):
                 let newO = isNear(j.origin.snapshot, newLoc.snapshot, thresholdMeters: thresholdMeters) ? newLoc : j.origin
                 let newD = isNear(j.destination.snapshot, newLoc.snapshot, thresholdMeters: thresholdMeters) ? newLoc : j.destination
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, duration: j.duration, entries: j.entries))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: newO, destination: newD, mode: j.mode, entries: j.entries))
             }
         }
         refreshLocationMappings()
@@ -836,7 +989,7 @@ public final class TimelineViewModel: ObservableObject {
                     return true
                 }
                 if visible.isEmpty { return nil }
-                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: visible))
+                return .journey(JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: visible))
             }
         }
     }

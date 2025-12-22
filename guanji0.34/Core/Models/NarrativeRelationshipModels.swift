@@ -14,6 +14,10 @@ public struct NarrativeRelationship: Codable, Identifiable, Hashable {
     public var realName: String?                // Optional, encrypted
     public var avatar: String?                  // Emoji or image path
     
+    // Aliases for AI recognition (别名，用于 AI 识别同一个人)
+    // e.g., displayName = "妈妈", aliases = ["母亲", "老妈", "那个女人"]
+    public var aliases: [String]
+    
     // Narrative description (user written)
     public var narrative: String?               // "我的大学室友，一起经历了很多"
     public var tags: [String]                   // User defined tags ["室友", "游戏搭子"]
@@ -23,6 +27,10 @@ public struct NarrativeRelationship: Codable, Identifiable, Hashable {
     
     // Mention tracking (system generated)
     public var mentions: [RelationshipMention]
+    
+    // 🆕 Dynamic attributes (L4 expansion)
+    // Stores relationship_status, interaction_pattern, emotional_connection, health_status, etc.
+    public var attributes: [KnowledgeNode]
     
     // Type-specific metadata
     public var metadata: [String: String]
@@ -35,10 +43,12 @@ public struct NarrativeRelationship: Codable, Identifiable, Hashable {
         displayName: String,
         realName: String? = nil,
         avatar: String? = nil,
+        aliases: [String] = [],
         narrative: String? = nil,
         tags: [String] = [],
         factAnchors: RelationshipFactAnchors = RelationshipFactAnchors(),
         mentions: [RelationshipMention] = [],
+        attributes: [KnowledgeNode] = [],
         metadata: [String: String] = [:]
     ) {
         self.id = id
@@ -48,10 +58,12 @@ public struct NarrativeRelationship: Codable, Identifiable, Hashable {
         self.displayName = displayName
         self.realName = realName
         self.avatar = avatar
+        self.aliases = aliases
         self.narrative = narrative
         self.tags = tags
         self.factAnchors = factAnchors
         self.mentions = mentions
+        self.attributes = attributes
         self.metadata = metadata
     }
     
@@ -163,30 +175,19 @@ extension NarrativeRelationship {
         !factAnchors.anniversaries.isEmpty ||
         !factAnchors.sharedExperiences.isEmpty
     }
-}
-
-// MARK: - Migration Helper
-
-extension NarrativeRelationship {
-    /// Create from legacy RelationshipProfile (for migration)
-    public static func fromLegacy(_ legacy: RelationshipProfile) -> NarrativeRelationship {
-        NarrativeRelationship(
-            id: legacy.id,
-            createdAt: legacy.createdAt,
-            updatedAt: legacy.updatedAt,
-            type: legacy.type,
-            displayName: legacy.displayName,
-            realName: legacy.realName,
-            avatar: legacy.avatar,
-            narrative: legacy.notes,
-            tags: legacy.tags,
-            factAnchors: RelationshipFactAnchors(
-                firstMeetingDate: legacy.metadata[RelationshipMetadataKey.anniversaryMet],
-                anniversaries: [],
-                sharedExperiences: []
-            ),
-            mentions: [],
-            metadata: legacy.metadata
-        )
+    
+    /// All names for AI recognition (displayName + aliases)
+    /// Used when sending context to AI for entity recognition
+    public var allNames: [String] {
+        [displayName] + aliases
+    }
+    
+    /// Check if a given name matches this relationship (case insensitive)
+    public func matches(name: String) -> Bool {
+        let lowercasedName = name.lowercased()
+        return displayName.lowercased() == lowercasedName ||
+               aliases.contains { $0.lowercased() == lowercasedName }
     }
 }
+
+

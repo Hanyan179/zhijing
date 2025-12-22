@@ -75,7 +75,7 @@ public final class TimelineRepository {
         // Optimization: Try to guess date from timestamp or require date in API.
         // But `timestamp` is HH:mm.
         
-        for (date, var timeline) in timelineCache {
+        for (_, var timeline) in timelineCache {
             var changed = false
             for (i, item) in timeline.items.enumerated() {
                 switch item {
@@ -91,7 +91,7 @@ public final class TimelineRepository {
                     if let idx = j.entries.firstIndex(where: { $0.id == entry.id }) {
                         var newEntries = j.entries
                         newEntries[idx] = entry
-                        let newJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, duration: j.duration, entries: newEntries)
+                        let newJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: j.destination, mode: j.mode, entries: newEntries)
                         timeline.items[i] = .journey(newJourney)
                         changed = true
                     }
@@ -125,18 +125,18 @@ public final class TimelineRepository {
             switch item {
             case .journey(let j):
                 let newOrigin = LocationVO(status: j.origin.status, mappingId: j.origin.mappingId, snapshot: j.origin.snapshot, displayText: newName, originalRawName: newName, icon: j.origin.icon, color: j.origin.color)
-                timeline.items[idx] = .journey(JourneyBlock(type: j.type, id: j.id, origin: newOrigin, destination: j.destination, mode: j.mode, duration: j.duration, entries: j.entries))
+                timeline.items[idx] = .journey(JourneyBlock(type: j.type, id: j.id, origin: newOrigin, destination: j.destination, mode: j.mode, entries: j.entries))
             case .scene: break
             }
             save(timeline: timeline)
         }
     }
     
-    public func updateJourneyDestination(itemId: String, newDestination: LocationVO, duration: String, for date: String) {
+    public func updateJourneyDestination(itemId: String, newDestination: LocationVO, for date: String) {
         var timeline = getDailyTimeline(for: date)
         if let idx = timeline.items.firstIndex(where: { $0.id == itemId }) {
             if case .journey(let j) = timeline.items[idx] {
-                let updatedJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: newDestination, mode: j.mode, duration: duration, entries: j.entries)
+                let updatedJourney = JourneyBlock(type: j.type, id: j.id, origin: j.origin, destination: newDestination, mode: j.mode, entries: j.entries)
                 timeline.items[idx] = .journey(updatedJourney)
                 save(timeline: timeline)
             }

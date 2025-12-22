@@ -9,12 +9,6 @@ import SwiftUI
 
 @main
 struct guanji0_34App: App {
-    
-    init() {
-        // Migrate old MindState data to new DailyTracker format
-        DailyTrackerRepository.shared.migrateFromMindState()
-    }
-    
     var body: some Scene {
         WindowGroup {
             ContentView()

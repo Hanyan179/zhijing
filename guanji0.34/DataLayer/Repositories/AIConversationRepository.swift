@@ -103,6 +103,7 @@ public final class AIConversationRepository {
         let today = DateUtilities.today
         let conversation = AIConversation(
             id: UUID().uuidString,
+            dayId: today,
             associatedDays: [today],
             createdAt: Date(),
             updatedAt: Date()

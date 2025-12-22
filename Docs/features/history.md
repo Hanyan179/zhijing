@@ -162,13 +162,45 @@ if isCurrentMonth {
 }
 ```
 
-### 3. 展开动画
+### 3. 智能标题显示
+
+时间轴历史列表的标题显示逻辑：
+- 如果 `DailyTimeline.title` 存在：显示标题（粗体）
+- 如果标题为 `null`：显示当天第一段文字内容（常规字体，单行省略）
+- 提取逻辑：遍历 `items` → `entries`，找到第一个非空 `content`
+
+```swift
+// 提取第一段文字内容
+private func firstTextContent(from timeline: DailyTimeline) -> String {
+    for item in timeline.items {
+        let entries: [JournalEntry]
+        switch item {
+        case .scene(let scene): entries = scene.entries
+        case .journey(let journey): entries = journey.entries
+        }
+        for entry in entries {
+            if let content = entry.content, !content.isEmpty {
+                return content
+            }
+        }
+    }
+    return Localization.tr("noContent")
+}
+```
+
+### 4. 智能标签显示
+
+标签显示逻辑：
+- 如果 `timeline.tags` 不为空：显示标签图标（最多5个，超出显示 "+N"）
+- 如果 `timeline.tags` 为空：不显示标签区域（避免显示 "无标签" 占位符）
+
+### 5. 展开动画
 
 侧边栏支持拖拽展开到全屏：
 - 使用 `spring` 动画
 - 支持手势拖拽触发
 
-### 4. 上下文枚举
+### 6. 上下文枚举
 
 ```swift
 public enum HistoryContext {
@@ -195,7 +227,7 @@ public enum HistoryContext {
 - [时间轴模型](../data/timeline-models.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.1.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-19  
 **状态**: 已发布

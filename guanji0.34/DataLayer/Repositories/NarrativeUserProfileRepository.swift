@@ -127,44 +127,4 @@ public final class NarrativeUserProfileRepository {
     }
 }
 
-// MARK: - Migration Support
 
-extension NarrativeUserProfileRepository {
-    
-    /// Migrate from legacy UserProfile format
-    public func migrateFromLegacy(_ legacy: UserProfile) -> NarrativeUserProfile {
-        let staticCore = StaticCore(
-            gender: legacy.identity.kernel.gender,
-            birthYearMonth: legacy.identity.kernel.birthDate,
-            hometown: legacy.identity.kernel.hometown,
-            currentCity: legacy.identity.kernel.currentCity,
-            occupation: legacy.competence.kernel.occupation,
-            industry: legacy.competence.kernel.industry,
-            education: legacy.identity.kernel.education,
-            selfTags: [],
-            updateHistory: []
-        )
-        
-        let profile = NarrativeUserProfile(
-            id: legacy.id,
-            createdAt: legacy.createdAt,
-            updatedAt: Date(),
-            staticCore: staticCore,
-            recentPortrait: nil,
-            relationshipIds: legacy.social.kernel.coreRelationshipIDs
-        )
-        
-        return profile
-    }
-    
-    /// Check if migration is needed
-    public func needsMigration() -> Bool {
-        let migrationKey = "has_migrated_narrative_profile"
-        return !UserDefaults.standard.bool(forKey: migrationKey)
-    }
-    
-    /// Mark migration as complete
-    public func markMigrationComplete() {
-        UserDefaults.standard.set(true, forKey: "has_migrated_narrative_profile")
-    }
-}

@@ -59,7 +59,6 @@ public struct JourneyBlock: Codable, Identifiable {
     public let origin: LocationVO
     public let destination: LocationVO
     public let mode: TransportMode
-    public let duration: String
     public let entries: [JournalEntry]
 }
 

@@ -66,6 +66,10 @@ ExpandedInputView(vm: inputViewModel, isPresented: $showExpanded)
 - 附件管理
 - 录音功能
 - 权限管理
+- 模式感知行为：
+  - 日记模式：图片/文件选择后立即提交
+  - AI模式：图片/文件选择后挂载为附件，需手动发送
+  - AI模式：隐藏"心情"和"时间胶囊"按钮
 
 ```swift
 // 文件路径: UI/Organisms/InputDock.swift
@@ -268,7 +272,7 @@ graph TD
 - [输入模块](../features/input.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.1.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-18  
 **状态**: 已发布

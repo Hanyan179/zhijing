@@ -328,6 +328,7 @@
 "go" = "前往";
 "noTitle" = "无标题";
 "noTags" = "无标签";
+"noContent" = "暂无内容";
 "daysAgoSuffix" = "天前";
 "today" = "今天";
 "replySameDay" = "当天回复";
@@ -799,6 +800,7 @@
 "Profile.UpdateHistory" = "更新历史";
 "Profile.SelfTags" = "自我描述标签";
 "Profile.AddTag" = "添加标签";
+"Profile.DataStats" = "数据统计";
 
 // Relationship
 "Relationship.NoMentions" = "暂无互动记录";
@@ -871,6 +873,11 @@
 "AI.Code.Copy" = "复制";
 "AI.Code.Copied" = "已复制";
 "AI.Code.CopyHint" = "点击复制代码到剪贴板";
+
+// Message Actions
+"AI.Message.Copy" = "复制消息";
+"AI.Message.Regenerate" = "重新生成";
+"AI.Message.CopyWithThinking" = "复制（含思考过程）";
 
 // AI Settings Screen
 "AI.Settings.Title" = "AI 设置";
@@ -959,3 +966,66 @@
 "filter_last_year" = "最近一年";
 
 
+
+
+// Data Export
+"Export.Title" = "数据导出";
+"Export.Options" = "导出选项";
+"Export.DateRange" = "日期范围";
+"Export.Range.Last7Days" = "最近 7 天";
+"Export.Range.Last30Days" = "最近 30 天";
+"Export.Range.Last90Days" = "最近 90 天";
+"Export.Range.AllTime" = "全部时间";
+"Export.AvailableDates" = "可导出日期";
+"Export.NoData" = "该时间范围内没有数据";
+"Export.Footer" = "点击导出按钮将数据分享或保存到文件";
+"Export.Action" = "导出";
+"Export.Error" = "导出失败";
+"Action.Close" = "关闭";
+"Action.OK" = "确定";
+
+// MARK: - Insight Feature
+"Insight.Title" = "数据统计";
+"Insight.Loading" = "加载中...";
+"Insight.Engine" = "洞察引擎";
+"Insight.Overview" = "记录概览";
+"Insight.Streak" = "连续天数";
+"Insight.TotalDays" = "总天数";
+"Insight.TotalEntries" = "总条目";
+"Insight.TotalWords" = "总字数";
+
+// Zone 2: Feature Usage
+"Insight.FeatureUsage" = "功能使用";
+"Insight.AIConversation" = "AI 对话";
+"Insight.AIConversationValue" = "%d次对话 / %d条消息";
+"Insight.DailyTracker" = "每日追踪";
+"Insight.DailyTrackerValue" = "%d天追踪";
+"Insight.MindState" = "心境记录";
+"Insight.MindStateValue" = "%d次记录";
+"Insight.TimeCapsule" = "时间胶囊";
+"Insight.TimeCapsuleValue" = "%d个胶囊 / %d个待开启";
+"Insight.LoveLog" = "爱的表达";
+"Insight.LoveLogValue" = "%d条记录";
+"Insight.Relationships" = "关系数量";
+"Insight.RelationshipsValue" = "%d个关系";
+
+// Zone 3: Data Insight
+"Insight.DataInsight" = "数据洞察";
+"Insight.HourDistribution" = "记录时间分布";
+"Insight.ActivityDistribution" = "活动分布";
+"Insight.MoodTrend" = "情绪趋势";
+"Insight.TopLocations" = "常去地点";
+"Insight.LoveSources" = "爱的来源";
+"Insight.NoData" = "暂无数据";
+"Insight.AndMore" = "及更多...";
+"Insight.MoodPositive" = "积极";
+"Insight.MoodNeutral" = "中性";
+"Insight.MoodNegative" = "消极";
+
+// Activity Types
+"Activity.Work" = "工作";
+"Activity.Exercise" = "运动";
+"Activity.Social" = "社交";
+"Activity.Leisure" = "休闲";
+"Activity.Learning" = "学习";
+"Activity.Rest" = "休息";

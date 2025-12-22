@@ -21,6 +21,18 @@ public struct ProfileScreen: View {
                 }
                 
                 Section(Localization.tr("lifeInsight")) {
+                    // Data Stats Entry - Requirements 1.1, 1.2, 1.3
+                    Button(action: { showInsight = true }) {
+                        HStack {
+                            Label(Localization.tr("Profile.DataStats"), systemImage: "chart.bar.fill")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .foregroundStyle(.primary)
+                    
                     NavigationLink(destination: MembershipScreen(vm: vm)) {
                         HStack {
                             Label(Localization.tr("insightPlan"), systemImage: "crown.fill")

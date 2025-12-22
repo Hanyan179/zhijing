@@ -42,7 +42,8 @@ public struct NarrativeRelationshipDetailScreen: View {
         .sheet(isPresented: $showEditSheet) {
             NarrativeRelationshipEditSheet(
                 relationship: relationship,
-                viewModel: viewModel
+                viewModel: viewModel,
+                onSave: { _ in showEditSheet = false }
             )
         }
         .alert(Localization.tr("deleteConfirmTitle"), isPresented: $showDeleteAlert) {

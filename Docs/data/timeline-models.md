@@ -124,10 +124,11 @@ public struct JourneyBlock: Codable, Identifiable {
     public let origin: LocationVO        // 起点
     public let destination: LocationVO   // 终点
     public let mode: TransportMode       // 交通方式: car/walk/subway/bicycle
-    public let duration: String          // 时长
     public let entries: [JournalEntry]   // 旅程中的日记
 }
 ```
+
+**注意**: `duration` 字段已在 v0.34.1 中移除。时间信息通过 `entries` 的 `timestamp` 推断。
 
 ## 持久化模型
 

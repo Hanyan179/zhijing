@@ -98,42 +98,4 @@ public final class DailyTrackerRepository {
     }
 }
 
-// MARK: - Migration Support
 
-extension DailyTrackerRepository {
-    
-    /// Migrate from old MindStateRecord format
-    public func migrateFromMindState() {
-        let migrationKey = "has_migrated_daily_tracker"
-        guard !UserDefaults.standard.bool(forKey: migrationKey) else { return }
-        
-        let oldRepo = MindStateRepository()
-        let oldRecords = oldRepo.loadAll()
-        
-        for old in oldRecords {
-            // Check if already migrated
-            if load(for: old.date) != nil { continue }
-            
-            // Both old valenceValue and new moodWeather use 0-100 scale
-            let newRecord = DailyTrackerRecord(
-                id: old.id,
-                date: old.date,
-                createdAt: old.createdAt,
-                updatedAt: old.createdAt,
-                bodyEnergy: 50,          // Default to normal (50 = middle of 0-100)
-                moodWeather: old.valenceValue,  // Direct mapping, same 0-100 scale
-                activities: []           // Old format has no activity data
-            )
-            
-            // Save without notification to avoid spam during migration
-            loadIfNeeded()
-            cache.removeAll { $0.date == newRecord.date }
-            cache.append(newRecord)
-        }
-        
-        persistToDisk()
-        UserDefaults.standard.set(true, forKey: migrationKey)
-        
-        print("DailyTrackerRepository: Migrated \(oldRecords.count) records from MindState")
-    }
-}

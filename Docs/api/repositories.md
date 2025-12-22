@@ -25,6 +25,7 @@
 | AISettingsRepository | AI 设置管理 | `DataLayer/Repositories/AISettingsRepository.swift` |
 | DailyTrackerRepository | 每日追踪数据管理 | `DataLayer/Repositories/DailyTrackerRepository.swift` |
 | ActivityTagRepository | 活动标签管理 | `DataLayer/Repositories/ActivityTagRepository.swift` |
+| LoveLogRepository | 爱的表达记录管理 | `DataLayer/Repositories/LoveLogRepository.swift` |
 | NarrativeUserProfileRepository | 叙事用户画像管理 | `DataLayer/Repositories/NarrativeUserProfileRepository.swift` |
 | NarrativeRelationshipRepository | 叙事关系管理 | `DataLayer/Repositories/NarrativeRelationshipRepository.swift` |
 | UserPreferencesRepository | 用户偏好设置管理 | `DataLayer/Repositories/UserPreferencesRepository.swift` |
@@ -316,6 +317,43 @@ public func reload()
 
 - **ActivityTag**: 活动标签
 
+## LoveLogRepository
+
+**职责**: 管理爱的表达记录
+
+### 核心方法
+
+```swift
+// 获取所有爱的表达记录
+public func getAllLogs() -> [LoveLog]
+
+// 添加爱的表达记录
+public func addLog(_ log: LoveLog)
+
+// 按发送者统计记录数量
+public func getLogsBySender() -> [String: Int]
+
+// 获取指定发送者的记录
+public func getLogs(bySender sender: String) -> [LoveLog]
+
+// 删除记录
+public func deleteLog(id: String)
+```
+
+### 通知事件
+
+- `gj_love_logs_updated`: 爱的表达数据更新时发送
+
+### 数据模型
+
+- **LoveLog**: 爱的表达记录
+
+### 持久化
+
+- 文件路径: `Documents/love_logs.json`
+- 内存缓存: 缓存所有 LoveLog
+- 异步写入: 后台线程持久化
+
 ## NarrativeUserProfileRepository
 
 **职责**: 管理叙事用户画像
@@ -405,6 +443,7 @@ Documents/
 │   └── questions.json
 ├── Addresses.json
 ├── activity_tags.json
+├── love_logs.json
 └── [其他数据文件]
 ```
 
@@ -441,7 +480,7 @@ DispatchQueue.global(qos: .background).async {
 - [Service 接口](./services.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.1.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
+**更新日期**: 2024-12-19  
 **状态**: 已发布

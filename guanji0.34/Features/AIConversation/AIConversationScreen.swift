@@ -51,7 +51,10 @@ public struct AIConversationScreen: View {
                     ForEach(vm.messages) { message in
                         MessageBubble(
                             message: message,
-                            showThinking: vm.thinkingModeEnabled
+                            showThinking: vm.thinkingModeEnabled,
+                            onRegenerate: message.role == .assistant ? {
+                                vm.regenerateMessage(message)
+                            } : nil
                         )
                         .id(message.id)
                     }

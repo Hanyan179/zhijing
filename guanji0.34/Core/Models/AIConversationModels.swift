@@ -83,11 +83,12 @@ public struct AIMessage: Codable, Identifiable, Equatable {
 // MARK: - AI Conversation
 
 /// A complete AI conversation session containing multiple messages
-public struct AIConversation: Codable, Identifiable, Equatable {
+public struct AIConversation: Codable, Identifiable, Equatable, Sendable {
     public let id: String
     public var title: String?
     public var messages: [AIMessage]
-    public var associatedDays: [String]  // ["2025.12.15", "2025.12.16"]
+    public var dayId: String  // Primary day index (format: "yyyy.MM.dd") - L1 DayIndex association
+    public var associatedDays: [String]  // ["2025.12.15", "2025.12.16"] - All days this conversation spans
     public let createdAt: Date
     public var updatedAt: Date
     
@@ -95,6 +96,7 @@ public struct AIConversation: Codable, Identifiable, Equatable {
         id: String = UUID().uuidString,
         title: String? = nil,
         messages: [AIMessage] = [],
+        dayId: String = DateUtilities.today,
         associatedDays: [String] = [],
         createdAt: Date = Date(),
         updatedAt: Date = Date()
@@ -102,6 +104,7 @@ public struct AIConversation: Codable, Identifiable, Equatable {
         self.id = id
         self.title = title
         self.messages = messages
+        self.dayId = dayId
         self.associatedDays = associatedDays
         self.createdAt = createdAt
         self.updatedAt = updatedAt
@@ -138,6 +141,11 @@ public struct AIConversation: Codable, Identifiable, Equatable {
         let dayString = DateUtilities.formatDate(message.timestamp)
         if !associatedDays.contains(dayString) {
             associatedDays.append(dayString)
+        }
+        
+        // Update dayId to the most recent day if conversation spans multiple days
+        if let latestDay = associatedDays.last {
+            dayId = latestDay
         }
     }
     

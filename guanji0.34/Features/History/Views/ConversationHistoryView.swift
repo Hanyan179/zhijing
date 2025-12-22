@@ -40,9 +40,6 @@ public struct ConversationHistoryView: View {
             }
         }
         .background(Colors.background)
-        .onAppear {
-            vm.loadConversations()
-        }
         .gesture(
             DragGesture()
                 .onEnded { value in
@@ -274,6 +271,9 @@ public final class ConversationHistoryViewModel: ObservableObject {
     private let repository = AIConversationRepository.shared
     
     public init() {
+        // Load conversations immediately on init
+        loadConversations()
+        
         // Listen for conversation updates
         NotificationCenter.default.addObserver(
             self,

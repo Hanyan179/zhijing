@@ -1,5 +1,23 @@
 import Foundation
 
+// MARK: - Basic Enums
+
+public enum Gender: String, Codable, CaseIterable {
+    case male, female, other
+    
+    public var localizedValue: String {
+        Localization.tr("gender_\(rawValue)")
+    }
+}
+
+public enum Education: String, Codable, CaseIterable {
+    case highSchool, bachelor, master, phd
+    
+    public var localizedValue: String {
+        Localization.tr("education_\(rawValue)")
+    }
+}
+
 // MARK: - L3 Layer: Narrative User Profile (叙事用户画像)
 
 /// Main user profile with narrative-based design (no scores)
@@ -14,6 +32,13 @@ public struct NarrativeUserProfile: Codable, Identifiable {
     // Recent portrait - AI generated based on recent data (implemented later)
     public var recentPortrait: RecentPortrait?
     
+    // 🆕 Dynamic knowledge nodes (L4 expansion)
+    // Stores skills, values, goals, traits, hobbies, etc.
+    public var knowledgeNodes: [KnowledgeNode]
+    
+    // 🆕 AI conversation preferences
+    public var aiPreferences: AIPreferences?
+    
     // Relationship constellation references
     public var relationshipIds: [String]
     
@@ -23,6 +48,8 @@ public struct NarrativeUserProfile: Codable, Identifiable {
         updatedAt: Date = Date(),
         staticCore: StaticCore = StaticCore(),
         recentPortrait: RecentPortrait? = nil,
+        knowledgeNodes: [KnowledgeNode] = [],
+        aiPreferences: AIPreferences? = nil,
         relationshipIds: [String] = []
     ) {
         self.id = id
@@ -30,6 +57,8 @@ public struct NarrativeUserProfile: Codable, Identifiable {
         self.updatedAt = updatedAt
         self.staticCore = staticCore
         self.recentPortrait = recentPortrait
+        self.knowledgeNodes = knowledgeNodes
+        self.aiPreferences = aiPreferences
         self.relationshipIds = relationshipIds
     }
 }

@@ -197,29 +197,4 @@ public final class NarrativeRelationshipRepository {
     }
 }
 
-// MARK: - Migration Support
 
-extension NarrativeRelationshipRepository {
-    
-    /// Migrate from legacy RelationshipProfile format
-    public func migrateFromLegacy(_ legacyList: [RelationshipProfile]) {
-        let migrationKey = "has_migrated_narrative_relationships"
-        guard !UserDefaults.standard.bool(forKey: migrationKey) else { return }
-        
-        for legacy in legacyList {
-            // Skip if already exists
-            if load(id: legacy.id) != nil { continue }
-            
-            let newRelationship = NarrativeRelationship.fromLegacy(legacy)
-            
-            // Save without notification during migration
-            loadIfNeeded()
-            cache.append(newRelationship)
-        }
-        
-        persistToDisk()
-        UserDefaults.standard.set(true, forKey: migrationKey)
-        
-        print("NarrativeRelationshipRepository: Migrated \(legacyList.count) relationships")
-    }
-}

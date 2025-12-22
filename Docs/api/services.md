@@ -20,9 +20,9 @@
 | WeatherService | 天气信息获取 | WeatherKit | `DataLayer/SystemServices/WeatherService.swift` |
 | PermissionsService | 统一权限管理 | Photos, AVFoundation, CoreLocation | `DataLayer/SystemServices/PermissionsService.swift` |
 | HealthKitService | 健康数据访问 | HealthKit | `DataLayer/SystemServices/HealthKitService.swift` |
-| TimelineRecorder | 自动时间轴记录 | CoreLocation, Combine | `DataLayer/SystemServices/TimelineRecorder.swift` |
 | AIService | AI 对话服务 | URLSession | `DataLayer/SystemServices/AIService.swift` |
 | ProfileMigrationService | 用户画像迁移 | - | `DataLayer/SystemServices/ProfileMigrationService.swift` |
+| DailyExtractionService | 🆕 每日数据提取（AI 知识提取） | - | `DataLayer/SystemServices/DailyExtractionService.swift` |
 
 ## LocationService
 
@@ -228,66 +228,55 @@ if HealthKitService().isAvailable {
 }
 ```
 
-## TimelineRecorder
+## ~~TimelineRecorder~~ (已移除)
 
-**职责**: 自动记录用户移动轨迹，生成场景块和旅程块
+**注意**: `TimelineRecorder` 已在 v0.34.1 中移除，改为按需定位策略。
 
-### 状态机设计
+### 移除原因
 
-```swift
-private enum RecorderState {
-    case unknown
-    case stationary(center: CLLocation, startTime: Date)  // 静止状态
-    case moving(startTime: Date)                          // 移动状态
-}
-```
+- **电量优化**: 后台持续追踪消耗大量电量
+- **简化架构**: 减少状态机复杂度
+- **隐私友好**: 仅在用户主动输入时获取位置
+- **鲁棒性提升**: 避免后台进程被杀死导致的状态不一致
 
-### 核心参数
+### 新的定位策略
 
-```swift
-// 静止半径（米）
-private let stationaryRadius: Double = 100.0
+**按需定位 (On-Demand Location)**:
+- 仅在用户提交输入时获取当前位置
+- 使用 `LocationRepository.suggestMappings()` 进行围栏匹配
+- 通过 `TimelineViewModel.addEntry()` 智能判断场景/旅程块
 
-// 移动持续时间阈值（秒）
-private let movingDurationThreshold: TimeInterval = 120  // 2 分钟
-
-// 静止持续时间阈值（秒）
-private let stationaryDurationThreshold: TimeInterval = 300  // 5 分钟
-```
-
-### 核心方法
+### 场景/旅程判断逻辑
 
 ```swift
-// 开始自动记录
-public func startRecording()
+// 文件路径: Features/Timeline/TimelineViewModel.swift
 
-// 停止自动记录
-public func stopRecording()
+// 场景块逻辑
+if lastBlock is Scene:
+    if currentLocation in sameFence:
+        append to current scene  // 同一围栏 → 追加
+    else:
+        create journey block     // 不同围栏/无围栏 → 创建旅程
+
+// 旅程块逻辑
+if lastBlock is Journey:
+    if currentLocation in anyFence:
+        create scene block       // 到达围栏 → 创建场景
+    else:
+        append to current journey // 无围栏 → 继续旅程
 ```
 
-### 工作原理
+### Fallback 机制
 
-1. **初始化**: 从 TimelineRepository 恢复最后状态
-2. **场景 → 旅程**: 离开静止半径 > 2 分钟 → 创建 JourneyBlock
-3. **旅程 → 场景**: 在新位置停留 > 5 分钟 → 创建 SceneGroup
-4. **区域监控**: 使用 CLCircularRegion 在后台唤醒应用
+当没有围栏定义时，使用距离阈值 (500m) 判断是否移动。
 
-### 数据操作
+### 优势
 
-```swift
-// 创建新场景
-private func createNewScene(at location: CLLocation?)
-
-// 创建新旅程
-private func createNewJourney(from: CLLocation?, to: CLLocation?)
-```
-
-### 使用示例
-
-```swift
-// 文件路径: App/AppState.swift
-TimelineRecorder.shared.startRecording()
-```
+- ✅ 省电：无后台追踪
+- ✅ 简单：无状态机
+- ✅ 鲁棒：不依赖后台进程
+- ✅ 连续性：同一状态不重复创建块
+- ✅ 支持长途旅程：用户可能一整天都在旅途中
 
 ## AIService
 
@@ -361,6 +350,98 @@ if ProfileMigrationService.shared.needsMigration() {
 }
 ```
 
+## DailyExtractionService 🆕
+
+**职责**: 从 L1 原始数据生成脱敏后的每日数据包，用于 AI 知识提取
+
+### 核心功能
+
+- **自动脱敏**: 所有人物名称统一为 `[REL_ID:displayName]` 格式
+- **敏感数字过滤**: 手机号、身份证、邮箱、银行卡自动脱敏
+- **数据聚合**: 按日聚合所有数据源（日记、追踪、爱表、AI对话）
+- **关系上下文**: 提供已知关系列表供 AI 匹配
+
+### 核心方法
+
+```swift
+// 提取指定日期的数据包
+public func extractDailyPackage(for dayId: String) async throws -> DailyExtractionPackage
+```
+
+### 数据结构
+
+```swift
+// 每日数据提取包
+struct DailyExtractionPackage {
+    let dayId: String                          // "2024.12.22"
+    let extractedAt: Date
+    
+    // L1 数据（已脱敏）
+    let journalEntries: [SanitizedJournalEntry]
+    let trackerRecord: SanitizedTrackerRecord?
+    let loveLogs: [SanitizedLoveLog]
+    let aiConversations: [AIConversationSummary]
+    
+    // 上下文
+    let knownRelationships: [RelationshipContext]
+    
+    // 统计
+    let stats: ExtractionStats
+}
+```
+
+### 脱敏规则
+
+| 数据类型 | 脱敏方式 | 示例 |
+|---------|---------|------|
+| 已知关系名称 | `[REL_ID:displayName]` | 妈妈、张美丽 → `[REL_001:妈妈]` |
+| 未知人物 | `[UNKNOWN_PERSON:原名]` | 李老师 → `[UNKNOWN_PERSON:李老师]` |
+| 手机号 | `[PHONE]` | 13812345678 → `[PHONE]` |
+| 身份证 | `[ID_CARD]` | 110101199001011234 → `[ID_CARD]` |
+| 邮箱 | `[EMAIL]` | test@example.com → `[EMAIL]` |
+| AI对话内容 | 无需脱敏 | 用户已发送给 AI |
+
+### 使用示例
+
+```swift
+// 文件路径: Features/AIConversation/AIConversationViewModel.swift
+
+// 1. 提取今天的数据
+let today = DateUtilities.today
+let package = try await DailyExtractionService.shared.extractDailyPackage(for: today)
+
+// 2. 检查是否有数据
+if package.stats.isEmpty {
+    print("今天没有数据")
+    return
+}
+
+// 3. 格式化为 AI 可读文本
+var text = "# \(package.dayId) 数据\n\n"
+for entry in package.journalEntries {
+    text += "[\(entry.timestamp)] \(entry.content ?? "")\n"
+}
+
+// 4. 发送给 AI 进行知识提取
+let response = try await AIService.shared.sendMessage(text)
+
+// 5. 解析 AI 返回的人物引用
+if let identifier = PersonIdentifier.parse("[REL_001:妈妈]") {
+    print("关系ID: \(identifier.relationshipId)")  // "001"
+    print("显示名: \(identifier.displayName)")      // "妈妈"
+}
+```
+
+### 相关工具
+
+- **TextSanitizer**: 文本脱敏工具 (`Core/Utilities/TextSanitizer.swift`)
+- **PersonIdentifier**: 统一人物标识符解析 (`Core/Models/DailyExtractionModels.swift`)
+
+### 相关文档
+
+- [AI 知识提取流程规划](../architecture/AI-KNOWLEDGE-EXTRACTION-PLAN.md)
+- [L4 画像数据扩展规划](../architecture/L4-PROFILE-EXPANSION-PLAN.md)
+
 ## 系统框架集成
 
 ### CoreLocation
@@ -407,14 +488,9 @@ manager.allowsBackgroundLocationUpdates = true
 manager.pausesLocationUpdatesAutomatically = false
 ```
 
-### TimelineRecorder
+### ~~TimelineRecorder~~ (已移除)
 
-```swift
-// 使用区域监控在后台唤醒应用
-let region = CLCircularRegion(center: center.coordinate, radius: stationaryRadius, identifier: "current_stay")
-region.notifyOnExit = true
-LocationService.shared.startRegionMonitoring(region: region)
-```
+后台追踪已移除，改为按需定位策略。详见上文 "TimelineRecorder (已移除)" 章节。
 
 ## 性能优化
 
@@ -427,10 +503,11 @@ LocationService.shared.startRegionMonitoring(region: region)
 
 - 使用 `kCLLocationAccuracyHundredMeters` 平衡精度和电量
 
-### TimelineRecorder 阈值
+### 场景/旅程判断
 
-- 移动阈值 2 分钟：避免短暂移动误判
-- 静止阈值 5 分钟：确保真正停留
+- 围栏匹配：使用 `LocationRepository.suggestMappings()` 判断是否在已知地点
+- 距离阈值：无围栏时使用 500m 判断是否移动
+- 连续性保证：同一状态不重复创建块
 
 ## 相关文档
 
@@ -440,7 +517,8 @@ LocationService.shared.startRegionMonitoring(region: region)
 - [时间轴功能](../features/timeline.md)
 
 ---
-**版本**: v1.0.0  
+**版本**: v1.2.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-17  
-**状态**: 已发布
+**更新日期**: 2024-12-19  
+**状态**: 已发布  
+**重大变更**: 移除 TimelineRecorder，改为按需定位策略

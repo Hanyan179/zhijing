@@ -1,28 +1,76 @@
 import SwiftUI
 
+/// Insight Sheet - Three-Zone Layout
+/// Zone 1: Overview (Always displayed)
+/// Zone 2: Feature Usage (Conditionally displayed when hasAnyData)
+/// Zone 3: Data Insight (Conditionally displayed when sufficient data)
 public struct InsightSheet: View {
     @StateObject private var vm = InsightViewModel()
+    
     public init() {}
+    
     public var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                Picker("", selection: Binding(get: { "All" }, set: { _ in })) {
-                    Text(NSLocalizedString("week", comment: "")).tag("Week")
-                    Text(NSLocalizedString("month", comment: "")).tag("Month")
-                    Text(NSLocalizedString("year", comment: "")).tag("Year")
-                    Text(NSLocalizedString("all", comment: "")).tag("All")
+        NavigationStack {
+            ZStack {
+                // Background
+                Colors.background
+                    .ignoresSafeArea()
+                
+                if vm.isLoading {
+                    // Loading indicator
+                    VStack {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text(Localization.tr("Insight.Loading"))
+                            .font(.caption)
+                            .foregroundColor(Colors.slate600)
+                            .padding(.top, 8)
+                    }
+                } else {
+                    // Main content
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            // Zone 1: Overview Section (Always displayed)
+                            OverviewSection(stats: vm.overview)
+                            
+                            // Zone 2: Feature Usage Section (Conditionally displayed)
+                            if vm.showZone2 {
+                                FeatureUsageSection(stats: vm.featureUsage)
+                            }
+                            
+                            // Zone 3: Data Insight Section (Conditionally displayed)
+                            if vm.showZone3 {
+                                DataInsightSection(
+                                    stats: vm.dataInsight,
+                                    showHourChart: vm.showHourChart,
+                                    showActivityChart: vm.showActivityChart,
+                                    showMoodChart: vm.showMoodChart,
+                                    showLocationRank: vm.showLocationRank,
+                                    showLoveRank: vm.showLoveRank
+                                )
+                            }
+                            
+                            // Footer: "洞察引擎" label
+                            HStack {
+                                Spacer()
+                                Text(Localization.tr("Insight.Engine"))
+                                    .font(Typography.fontEngraved)
+                                    .foregroundColor(Colors.systemGray)
+                            }
+                            .padding(.top, 8)
+                        }
+                        .padding(16)
+                    }
                 }
-                .pickerStyle(.segmented)
             }
-            OverviewCard(streak: vm.streak, totalDays: vm.totalDays, totalEntries: vm.totalEntries)
-            StateAnalysisCard(vm: vm)
-            HeatmapGrid(hourCounts: vm.hourCounts)
-            RankingListView(vm: vm)
-            KeywordsCloudView(words: vm.topCategories)
-            HStack { Spacer(); Text(NSLocalizedString("insightEngine", comment: "")).font(Typography.fontEngraved).foregroundColor(Colors.systemGray) }
+            .navigationTitle(Localization.tr("Insight.Title"))
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding(16)
     }
 }
 
-#Preview { InsightSheet() }
+// MARK: - Preview
+
+#Preview {
+    InsightSheet()
+}

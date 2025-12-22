@@ -252,17 +252,20 @@ JournalRow(
 
 ### JourneyHeaderChip
 
-旅程头部标签，显示交通方式、目的地和时长。
+旅程头部标签，显示交通方式和目的地。
 
 ```swift
 // 文件路径: UI/Molecules/JourneyHeaderChip.swift
 JourneyHeaderChip(
     mode: .walking,
     destination: locationVO,
-    durationText: "15分钟",
     onTapDestination: { /* 点击目的地 */ }
 )
 ```
+
+**显示格式**: `🚗 → 📍公司`
+
+**注意**: `durationText` 参数已在 v0.34.1 中移除，不再显示时长信息。
 
 ### RichTextRenderer
 
