@@ -45,8 +45,9 @@ public final class LocationService: NSObject, CLLocationManagerDelegate {
     }
 
     public func currentStatus() -> LocationAuthStatus {
-        if !CLLocationManager.locationServicesEnabled() { return .denied }
         // Use instance property to avoid main thread warning
+        // Note: We no longer call CLLocationManager.locationServicesEnabled() as it can block the main thread.
+        // The authorizationStatus already reflects the appropriate state when location services are disabled.
         let status = manager.authorizationStatus
         switch status {
         case .authorizedAlways, .authorizedWhenInUse: return .authorized

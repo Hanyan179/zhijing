@@ -37,31 +37,6 @@ public final class NarrativeUserProfileRepository {
         )
     }
     
-    /// Update a static core field with history tracking
-    public func updateStaticCoreField(
-        fieldName: String,
-        oldValue: String?,
-        newValue: String?,
-        updateBlock: (inout StaticCore) -> Void
-    ) {
-        var profile = load()
-        
-        // Create update record
-        let record = ProfileUpdateRecord(
-            fieldName: fieldName,
-            oldValue: oldValue,
-            newValue: newValue
-        )
-        
-        // Apply update
-        updateBlock(&profile.staticCore)
-        
-        // Add to history
-        profile.staticCore.updateHistory.append(record)
-        
-        save(profile)
-    }
-    
     /// Add a relationship ID to the profile
     public func addRelationship(id: String) {
         var profile = load()

@@ -10,12 +10,13 @@ public struct SubscriptionInfoScreen: View {
             Section(Localization.tr("subscriptionInfo")) {
                 HStack {
                     Label(Localization.tr("statusActive"), systemImage: "checkmark.seal.fill")
-                        .foregroundStyle(.green)
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(Colors.green)
                     Spacer()
                     Button(Localization.tr("manageSubscription")) {}
                         .font(.caption)
                         .buttonStyle(.bordered)
-                        .tint(.indigo)
+                        .tint(Colors.indigo)
                 }
             }
             

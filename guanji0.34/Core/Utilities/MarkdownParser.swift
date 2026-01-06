@@ -3,19 +3,20 @@ import Markdown
 
 /// Wrapper around swift-markdown library with streaming support
 /// Provides parsing functionality for Markdown content in AI responses
+/// All methods are nonisolated to allow calling from any actor context
 public enum MarkdownParser {
     
     /// Parse Markdown string using swift-markdown
     /// - Parameter markdown: The Markdown string to parse
     /// - Returns: A parsed Document AST
-    public static func parse(_ markdown: String) -> Document {
+    nonisolated public static func parse(_ markdown: String) -> Document {
         return Document(parsing: markdown)
     }
     
     /// Parse incrementally for streaming (handles incomplete syntax)
     /// - Parameter markdown: The Markdown string to parse
     /// - Returns: Tuple of parsed document and flag indicating if syntax is complete
-    public static func parseIncremental(_ markdown: String) -> (document: Document, isComplete: Bool) {
+    nonisolated public static func parseIncremental(_ markdown: String) -> (document: Document, isComplete: Bool) {
         let isComplete = !hasIncompleteSyntax(markdown)
         let doc = Document(parsing: markdown)
         return (doc, isComplete)
@@ -24,7 +25,7 @@ public enum MarkdownParser {
     /// Check if the Markdown string has incomplete syntax
     /// - Parameter text: The text to check
     /// - Returns: True if there is incomplete syntax (e.g., unclosed code blocks)
-    public static func hasIncompleteSyntax(_ text: String) -> Bool {
+    nonisolated public static func hasIncompleteSyntax(_ text: String) -> Bool {
         // Check for unclosed code blocks (odd number of ```)
         let codeBlockDelimiters = text.components(separatedBy: "```")
         let codeBlockCount = codeBlockDelimiters.count - 1

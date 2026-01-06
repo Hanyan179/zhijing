@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import StoreKit
 
 public struct ProfileScreen: View {
     @StateObject private var vm = ProfileViewModel()
@@ -8,23 +9,64 @@ public struct ProfileScreen: View {
     @State private var showAISettings = false
     @EnvironmentObject private var appState: AppState
     public init() {}
+    
     public var body: some View {
         NavigationStack {
             List {
-                Section(Localization.tr("osModules")) {
-                    NavigationLink(destination: NotificationsScreen(vm: vm)) {
-                        Label(Localization.tr("notifications"), systemImage: "bell.badge.fill")
-                    }
-                    NavigationLink(destination: DataMaintenanceScreen(vm: vm)) {
-                        Label(Localization.tr("dataMaintenance"), systemImage: "externaldrive.fill")
+                // MARK: - Section 1: 用户信息 (无标题)
+                // Requirements: 1.1, 1.2, 1.3, 1.4
+                Section {
+                    NavigationLink(destination: ProfileEditScreen()) {
+                        UserHeaderRow()
                     }
                 }
                 
-                Section(Localization.tr("lifeInsight")) {
-                    // Data Stats Entry - Requirements 1.1, 1.2, 1.3
+                // MARK: - Section 2: 功能与服务
+                // Requirements: 2.2
+                Section(Localization.tr("Profile.Section.Features")) {
+                    // 人生回顾
+                    NavigationLink(destination: LifeReviewScreen()) {
+                        Label {
+                            Text(Localization.tr("Profile.LifeReview"))
+                        } icon: {
+                            Image(systemName: "brain.head.profile")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 我的羁绊（人员管理）
+                    NavigationLink(destination: NarrativeRelationshipListScreen(viewModel: NarrativeRelationshipViewModel())) {
+                        Label {
+                            Text(Localization.tr("Profile.MyBonds"))
+                        } icon: {
+                            Image(systemName: "person.2.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 地点管理
+                    NavigationLink(destination: LocationListScreen(vm: vm)) {
+                        Label {
+                            Text(Localization.tr("locationManagement"))
+                        } icon: {
+                            Image(systemName: "map")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 数据统计
                     Button(action: { showInsight = true }) {
                         HStack {
-                            Label(Localization.tr("Profile.DataStats"), systemImage: "chart.bar.fill")
+                            Label {
+                                Text(Localization.tr("Profile.DataStats"))
+                            } icon: {
+                                Image(systemName: "chart.bar.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Colors.indigo)
+                            }
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .font(.caption)
@@ -33,25 +75,37 @@ public struct ProfileScreen: View {
                     }
                     .foregroundStyle(.primary)
                     
+                    // 会员计划
                     NavigationLink(destination: MembershipScreen(vm: vm)) {
                         HStack {
-                            Label(Localization.tr("insightPlan"), systemImage: "crown.fill")
+                            Label {
+                                Text(Localization.tr("insightPlan"))
+                            } icon: {
+                                Image(systemName: "crown.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Colors.indigo)
+                            }
                             Spacer()
                             Text(vm.userPlan)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    NavigationLink(destination: ComponentGalleryScreen()) {
-                        Label(Localization.tr("componentLibrary"), systemImage: "square.stack.3d.up.fill")
-                    }
                 }
                 
-                // AI Settings Section - Requirements 5.1, 5.2
-                Section(Localization.tr("AI.Settings.Section")) {
+                // MARK: - Section 3: 偏好设置
+                // Requirements: 2.3
+                Section(Localization.tr("Profile.Section.Preferences")) {
+                    // AI设置
                     Button(action: { showAISettings = true }) {
                         HStack {
-                            Label(Localization.tr("AI.Settings.Title"), systemImage: "sparkles")
+                            Label {
+                                Text(Localization.tr("AI.Settings.Title"))
+                            } icon: {
+                                Image(systemName: "sparkles")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Colors.indigo)
+                            }
                             Spacer()
                             Text(AISettingsRepository.shared.isAPIKeyConfigured ? Localization.tr("AI.Configured") : Localization.tr("AI.NotConfigured"))
                                 .font(.caption)
@@ -63,9 +117,15 @@ public struct ProfileScreen: View {
                     }
                     .foregroundStyle(.primary)
                     
-                    // Default Mode Setting - Requirements 5.1, 5.2
+                    // 默认模式
                     HStack {
-                        Label(Localization.tr("AI.DefaultMode"), systemImage: "rectangle.stack")
+                        Label {
+                            Text(Localization.tr("AI.DefaultMode"))
+                        } icon: {
+                            Image(systemName: "rectangle.stack")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
                         Spacer()
                         Picker("", selection: Binding(
                             get: { UserPreferencesRepository.shared.defaultMode },
@@ -77,12 +137,28 @@ public struct ProfileScreen: View {
                         .pickerStyle(.menu)
                         .tint(Colors.indigo)
                     }
-                }
-                
-                Section(Localization.tr("system")) {
+                    
+                    // 通知
+                    NavigationLink(destination: NotificationsScreen(vm: vm)) {
+                        Label {
+                            Text(Localization.tr("notifications"))
+                        } icon: {
+                            Image(systemName: "bell.badge.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 语言
                     Button(action: { showLangPicker = true }) {
                         HStack {
-                            Label(Localization.tr("language"), systemImage: "globe")
+                            Label {
+                                Text(Localization.tr("language"))
+                            } icon: {
+                                Image(systemName: "globe")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Colors.indigo)
+                            }
                             Spacer()
                             Text(Localization.displayName(appState.lang))
                                 .font(.caption)
@@ -91,19 +167,137 @@ public struct ProfileScreen: View {
                     }
                     .foregroundStyle(.primary)
                     
+                    // 外观
+                    NavigationLink(destination: AppearanceSettingsScreen()) {
+                        Label {
+                            Text(Localization.tr("Profile.Appearance"))
+                        } icon: {
+                            Image(systemName: "circle.lefthalf.filled")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                }
+                
+                // MARK: - Section 4: 隐私与安全
+                // Requirements: 2.4
+                Section(Localization.tr("Profile.Section.Privacy")) {
+                    // 数据同步
                     HStack {
-                        Label(Localization.tr("dataSync"), systemImage: "arrow.triangle.2.circlepath")
+                        Label {
+                            Text(Localization.tr("dataSync"))
+                        } icon: {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
                         Spacer()
                         Text("On")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                     
-                    NavigationLink(destination: AboutScreen()) {
-                        Label(Localization.tr("about"), systemImage: "info.circle")
+                    // 数据维护
+                    NavigationLink(destination: DataMaintenanceScreen(vm: vm)) {
+                        Label {
+                            Text(Localization.tr("dataMaintenance"))
+                        } icon: {
+                            Image(systemName: "externaldrive.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
                     }
+                    
+                    // 隐私政策
+                    NavigationLink(destination: PrivacyPolicyScreen()) {
+                        Label {
+                            Text(Localization.tr("Profile.PrivacyPolicy"))
+                        } icon: {
+                            Image(systemName: "hand.raised.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                }
+                
+                // MARK: - Section 5: 支持与反馈
+                // Requirements: 2.5
+                Section(Localization.tr("Profile.Section.Support")) {
+                    // 帮助中心
+                    NavigationLink(destination: HelpCenterScreen()) {
+                        Label {
+                            Text(Localization.tr("Profile.HelpCenter"))
+                        } icon: {
+                            Image(systemName: "questionmark.circle")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 意见反馈
+                    NavigationLink(destination: FeedbackScreen()) {
+                        Label {
+                            Text(Localization.tr("Profile.Feedback"))
+                        } icon: {
+                            Image(systemName: "envelope.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 给我们评分
+                    Button(action: requestAppStoreReview) {
+                        HStack {
+                            Label {
+                                Text(Localization.tr("Profile.RateUs"))
+                            } icon: {
+                                Image(systemName: "star.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Colors.indigo)
+                            }
+                            Spacer()
+                            Image(systemName: "arrow.up.forward")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .foregroundStyle(.primary)
+                }
+                
+                // MARK: - Section 6: 关于
+                // Requirements: 2.6
+                Section(Localization.tr("Profile.Section.About")) {
+                    // 关于
+                    NavigationLink(destination: AboutScreen()) {
+                        Label {
+                            Text(Localization.tr("about"))
+                        } icon: {
+                            Image(systemName: "info.circle")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 订阅信息
                     NavigationLink(destination: SubscriptionInfoScreen(vm: vm)) {
-                        Label(Localization.tr("subscriptionInfo"), systemImage: "doc.text.fill")
+                        Label {
+                            Text(Localization.tr("subscriptionInfo"))
+                        } icon: {
+                            Image(systemName: "doc.text.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
+                    }
+                    
+                    // 组件库（开发者选项）
+                    NavigationLink(destination: ComponentGalleryScreen()) {
+                        Label {
+                            Text(Localization.tr("componentLibrary"))
+                        } icon: {
+                            Image(systemName: "square.stack.3d.up.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(Colors.indigo)
+                        }
                     }
                 }
             }
@@ -115,6 +309,14 @@ public struct ProfileScreen: View {
         .sheet(isPresented: $showInsight) { InsightSheet() }
         .sheet(isPresented: $showLangPicker) { LanguagePickerSheet(selected: $appState.lang) }
         .sheet(isPresented: $showAISettings) { AISettingsScreen() }
+    }
+    
+    // MARK: - App Store Review
+    // Requirements: 5.4
+    private func requestAppStoreReview() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: windowScene)
+        }
     }
 }
 
@@ -145,6 +347,8 @@ struct LanguagePickerSheet: View {
                     }
                 }
             }
+            .listStyle(.insetGrouped)
+            .tint(Colors.indigo)
             .navigationTitle(Localization.tr("language"))
             .navigationBarTitleDisplayMode(.inline)
         }

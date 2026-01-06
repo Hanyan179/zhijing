@@ -19,18 +19,11 @@ public struct DailyExtractionPackage: Codable {
     /// 爱表（sender/receiver/content 已脱敏）
     public let loveLogs: [SanitizedLoveLog]
     
-    /// AI 对话（无需脱敏，用户已发送给 AI）
+    /// AI 对话（包含用户消息和AI回复，不含思考过程）
     public let aiConversations: [AIConversationSummary]
     
-    // MARK: - Context (供 AI 参考)
-    
-    /// 已知关系列表（供 AI 匹配人物）
-    public let knownRelationships: [RelationshipContext]
-    
-    // MARK: - Metadata
-    
-    /// 数据统计
-    public let stats: ExtractionStats
+    /// 问题表（当天显示的问题）
+    public let questions: [SanitizedQuestion]
     
     public init(
         dayId: String,
@@ -39,8 +32,7 @@ public struct DailyExtractionPackage: Codable {
         trackerRecord: SanitizedTrackerRecord? = nil,
         loveLogs: [SanitizedLoveLog] = [],
         aiConversations: [AIConversationSummary] = [],
-        knownRelationships: [RelationshipContext] = [],
-        stats: ExtractionStats
+        questions: [SanitizedQuestion] = []
     ) {
         self.dayId = dayId
         self.extractedAt = extractedAt
@@ -48,39 +40,38 @@ public struct DailyExtractionPackage: Codable {
         self.trackerRecord = trackerRecord
         self.loveLogs = loveLogs
         self.aiConversations = aiConversations
-        self.knownRelationships = knownRelationships
-        self.stats = stats
+        self.questions = questions
     }
 }
 
 // MARK: - Sanitized Data Types
 
 /// 脱敏后的日记条目
-public struct SanitizedJournalEntry: Codable, Identifiable {
-    public let id: String
+public struct SanitizedJournalEntry: Codable {
     public let timestamp: String                      // HH:mm
     public let type: String                           // EntryType.rawValue
     public let chronology: String                     // past | present | future
     public let category: String?                      // EntryCategory.rawValue
     public let content: String?                       // 已脱敏的文本内容
     public let sender: String?                        // 已转换为 [REL_ID:name] 或保留原样
+    public let targetDate: String?                    // 目标日期（past类型：发送给哪一天）
     
     public init(
-        id: String,
         timestamp: String,
         type: String,
         chronology: String,
         category: String?,
         content: String?,
-        sender: String?
+        sender: String?,
+        targetDate: String? = nil
     ) {
-        self.id = id
         self.timestamp = timestamp
         self.type = type
         self.chronology = chronology
         self.category = category
         self.content = content
         self.sender = sender
+        self.targetDate = targetDate
     }
 }
 
@@ -102,8 +93,7 @@ public struct SanitizedTrackerRecord: Codable {
 }
 
 /// 脱敏后的活动上下文
-public struct SanitizedActivity: Codable, Identifiable {
-    public let id: String
+public struct SanitizedActivity: Codable {
     public let activityType: String                   // ActivityType.rawValue
     public let companions: [String]                   // CompanionType.rawValue[]
     public let companionRefs: [String]                // [REL_ID:name] 格式
@@ -111,14 +101,12 @@ public struct SanitizedActivity: Codable, Identifiable {
     public let tags: [String]                         // 标签文本（非 ID）
     
     public init(
-        id: String,
         activityType: String,
         companions: [String],
         companionRefs: [String],
         details: String?,
         tags: [String]
     ) {
-        self.id = id
         self.activityType = activityType
         self.companions = companions
         self.companionRefs = companionRefs
@@ -128,21 +116,18 @@ public struct SanitizedActivity: Codable, Identifiable {
 }
 
 /// 脱敏后的爱表记录
-public struct SanitizedLoveLog: Codable, Identifiable {
-    public let id: String
+public struct SanitizedLoveLog: Codable {
     public let timestamp: String
     public let senderRef: String                      // [REL_ID:name] 或 "Me"
     public let receiverRef: String                    // [REL_ID:name] 或 "Me"
     public let content: String                        // 已脱敏的内容
     
     public init(
-        id: String,
         timestamp: String,
         senderRef: String,
         receiverRef: String,
         content: String
     ) {
-        self.id = id
         self.timestamp = timestamp
         self.senderRef = senderRef
         self.receiverRef = receiverRef
@@ -151,25 +136,56 @@ public struct SanitizedLoveLog: Codable, Identifiable {
 }
 
 /// AI 对话摘要（无需脱敏）
-public struct AIConversationSummary: Codable, Identifiable {
-    public let id: String
+public struct AIConversationSummary: Codable {
     public let timestamp: String
     public let messageCount: Int
-    public let userMessages: [String]                 // 用户发送的消息（原文）
+    public let messages: [AIMessageSummary]           // 按顺序的对话消息（用户问→AI回→...）
     public let topics: [String]?                      // 可选：对话主题标签
     
     public init(
-        id: String,
         timestamp: String,
         messageCount: Int,
-        userMessages: [String],
+        messages: [AIMessageSummary] = [],
         topics: [String]? = nil
     ) {
-        self.id = id
         self.timestamp = timestamp
         self.messageCount = messageCount
-        self.userMessages = userMessages
+        self.messages = messages
         self.topics = topics
+    }
+}
+
+/// AI 对话消息摘要
+public struct AIMessageSummary: Codable {
+    public let role: String                           // "user" | "assistant"
+    public let content: String
+    
+    public init(role: String, content: String) {
+        self.role = role
+        self.content = content
+    }
+}
+
+/// 脱敏后的问题记录
+public struct SanitizedQuestion: Codable {
+    public let createdAt: String                      // 创建日期
+    public let dayId: String                          // 关联的日期
+    public let systemPrompt: String?                  // 问题内容
+    public let intervalDays: Int                      // 间隔天数
+    public let deliveryDate: String                   // 交付日期
+    
+    public init(
+        createdAt: String,
+        dayId: String,
+        systemPrompt: String?,
+        intervalDays: Int,
+        deliveryDate: String
+    ) {
+        self.createdAt = createdAt
+        self.dayId = dayId
+        self.systemPrompt = systemPrompt
+        self.intervalDays = intervalDays
+        self.deliveryDate = deliveryDate
     }
 }
 

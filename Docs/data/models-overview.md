@@ -51,7 +51,8 @@
 | `NormalizedDataModels.swift` | 标准化数据类型 | 数据标准化和转换 |
 | `ResonanceDateStat.swift` | `ResonanceDateStat` | 共鸣日期统计 |
 | `SystemPermission.swift` | `SystemPermission` | 系统权限状态 |
-| `DailyExtractionModels.swift` | `DailyExtractionPackage`, `SanitizedJournalEntry` | 🆕 AI 知识提取数据包 |
+| `DailyExtractionModels.swift` | `DailyExtractionPackage`, `SanitizedJournalEntry` | AI 知识提取数据包 |
+| `KnowledgeAPIModels.swift` | `ContextRequest`, `SanitizedContext`, `ExtractedResult` | 🆕 AI 知识提取 API 模型 |
 
 ## 核心枚举类型
 
@@ -147,12 +148,13 @@ graph TD
 - [数据架构文档](../architecture/data-architecture.md)
 
 ---
-**版本**: v1.2.0  
+**版本**: v1.3.0  
 **作者**: Kiro AI Assistant  
 **更新日期**: 2024-12-22  
 **状态**: 已发布
 
 **更新记录**:
+- v1.3.0 (2024-12-22): 添加 KnowledgeAPIModels.swift (AI 知识提取 API 模型)
 - v1.2.0 (2024-12-22): 添加 DailyExtractionModels.swift (AI 知识提取数据包)
 - v1.1.0 (2024-12-22): 添加 KnowledgeNodeModels.swift 和 AIPreferencesModels.swift
 - v1.0.0 (2024-12-17): 初始版本

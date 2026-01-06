@@ -3,7 +3,7 @@ import Foundation
 // MARK: - SiliconFlow API Request Models
 
 /// Chat completion request for SiliconFlow API (Qwen/QwQ-32B model)
-public struct ChatCompletionRequest: Codable {
+public struct ChatCompletionRequest: Codable, Sendable {
     public let model: String
     public let messages: [ChatMessage]
     public let stream: Bool
@@ -68,7 +68,7 @@ public struct ChatCompletionRequest: Codable {
     }
     
     /// Message in chat completion request
-    public struct ChatMessage: Codable {
+    public struct ChatMessage: Codable, Sendable {
         public let role: String
         public let content: String
         
@@ -135,14 +135,14 @@ public struct ChatCompletionResponse: Codable, Sendable {
 // MARK: - Streaming Response Models
 
 /// Stream chunk for Server-Sent Events (SSE) response
-public struct StreamChunk: Codable {
+public struct StreamChunk: Codable, Sendable {
     public let id: String
     public let object: String?
     public let created: Int?
     public let model: String?
     public let choices: [StreamChoice]
     
-    public struct StreamChoice: Codable {
+    public struct StreamChoice: Codable, Sendable {
         public let index: Int?
         public let delta: Delta
         public let finishReason: String?
@@ -152,7 +152,7 @@ public struct StreamChunk: Codable {
             case finishReason = "finish_reason"
         }
         
-        public struct Delta: Codable {
+        public struct Delta: Codable, Sendable {
             public let role: String?
             public let content: String?
             public let reasoningContent: String?

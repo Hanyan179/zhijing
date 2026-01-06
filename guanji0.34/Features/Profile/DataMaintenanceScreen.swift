@@ -11,7 +11,13 @@ public struct DataMaintenanceScreen: View {
         List {
             Section {
                 HStack {
-                    Label(Localization.tr("dayEndTime"), systemImage: "moon.stars")
+                    Label {
+                        Text(Localization.tr("dayEndTime"))
+                    } icon: {
+                        Image(systemName: "moon.stars")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Colors.indigo)
+                    }
                     Spacer()
                     DatePicker("", selection: Binding(get: {
                         let formatter = DateFormatter()
@@ -36,27 +42,39 @@ public struct DataMaintenanceScreen: View {
             }
             
             Section {
-                NavigationLink(destination: NarrativeUserProfileScreen()) {
-                    Label(Localization.tr("myProfile"), systemImage: "person.text.rectangle")
-                }
-                NavigationLink(destination: LocationListScreen(vm: vm)) {
-                    Label(Localization.tr("locationManagement"), systemImage: "map")
-                }
-                NavigationLink(destination: NarrativeRelationshipListScreen(viewModel: NarrativeRelationshipViewModel())) {
-                    Label(Localization.tr("peopleManagement"), systemImage: "person.2.fill")
-                }
-            }
-            
-            Section {
                 Button(action: { showExportSheet = true }) {
-                    Label(Localization.tr("exportData"), systemImage: "square.and.arrow.up")
+                    Label {
+                        Text(Localization.tr("exportData"))
+                    } icon: {
+                        Image(systemName: "square.and.arrow.up")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Colors.indigo)
+                    }
                 }
                 .foregroundStyle(.primary)
                 
                 Button(action: {}) {
-                    Label(Localization.tr("importData"), systemImage: "square.and.arrow.down")
+                    Label {
+                        Text(Localization.tr("importData"))
+                    } icon: {
+                        Image(systemName: "square.and.arrow.down")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Colors.indigo)
+                    }
                 }
                 .foregroundStyle(.primary)
+            }
+            
+            Section(header: Text("AI 知识提取 (调试)")) {
+                NavigationLink(destination: DailyExportView()) {
+                    Label {
+                        Text("AI养料导出/导入")
+                    } icon: {
+                        Image(systemName: "brain.head.profile")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Colors.indigo)
+                    }
+                }
             }
         }
         .listStyle(.insetGrouped)

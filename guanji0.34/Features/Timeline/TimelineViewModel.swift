@@ -150,8 +150,6 @@ public final class TimelineViewModel: ObservableObject {
     }
 
     public func addEntry(_ entry: JournalEntry) {
-        let ts = entry.timestamp
-        
         // Get current location
         let currentLoc = LocationService.shared.lastKnownLocation
         let lat = currentLoc?.coordinate.latitude ?? 0
@@ -213,7 +211,7 @@ public final class TimelineViewModel: ObservableObject {
                 return distance > 500 // 500m threshold
             }
             
-        case .journey(let j):
+        case .journey(_):
             // If we're in any fence, we've arrived -> Create scene
             if currentFence != nil {
                 return true

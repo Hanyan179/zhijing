@@ -8,6 +8,14 @@ public enum Gender: String, Codable, CaseIterable {
     public var localizedValue: String {
         Localization.tr("gender_\(rawValue)")
     }
+    
+    public var displayName: String {
+        switch self {
+        case .male: return Localization.tr("enum_gender_male")
+        case .female: return Localization.tr("enum_gender_female")
+        case .other: return Localization.tr("enum_gender_other")
+        }
+    }
 }
 
 public enum Education: String, Codable, CaseIterable {
@@ -15,6 +23,15 @@ public enum Education: String, Codable, CaseIterable {
     
     public var localizedValue: String {
         Localization.tr("education_\(rawValue)")
+    }
+    
+    public var displayName: String {
+        switch self {
+        case .highSchool: return Localization.tr("enum_education_highSchool")
+        case .bachelor: return Localization.tr("enum_education_bachelor")
+        case .master: return Localization.tr("enum_education_master")
+        case .phd: return Localization.tr("enum_education_phd")
+        }
     }
 }
 
@@ -66,8 +83,10 @@ public struct NarrativeUserProfile: Codable, Identifiable {
 // MARK: - Static Core (静态内核)
 
 /// User manually input identity information - all fields optional
+/// 纯静态核心信息，不包含任何动态或历史数据
 public struct StaticCore: Codable {
     // Basic identity (all optional)
+    public var nickname: String?                // 用户昵称
     public var gender: Gender?
     public var birthYearMonth: String?          // YYYY-MM
     public var hometown: String?
@@ -78,23 +97,66 @@ public struct StaticCore: Codable {
     public var industry: String?
     public var education: Education?
     
-    // Self description tags (user defined)
-    public var selfTags: [String]
+    // MARK: - Codable with backward compatibility
     
-    // Update history tracking
-    public var updateHistory: [ProfileUpdateRecord]
+    enum CodingKeys: String, CodingKey {
+        case nickname
+        case gender
+        case birthYearMonth
+        case hometown
+        case currentCity
+        case occupation
+        case industry
+        case education
+        case selfTags       // 旧字段，用于迁移
+        case updateHistory  // 旧字段，忽略
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        nickname = try container.decodeIfPresent(String.self, forKey: .nickname)
+        gender = try container.decodeIfPresent(Gender.self, forKey: .gender)
+        birthYearMonth = try container.decodeIfPresent(String.self, forKey: .birthYearMonth)
+        hometown = try container.decodeIfPresent(String.self, forKey: .hometown)
+        currentCity = try container.decodeIfPresent(String.self, forKey: .currentCity)
+        occupation = try container.decodeIfPresent(String.self, forKey: .occupation)
+        industry = try container.decodeIfPresent(String.self, forKey: .industry)
+        education = try container.decodeIfPresent(Education.self, forKey: .education)
+        
+        // 向后兼容：如果没有 nickname 但有 selfTags，使用第一个 selfTag 作为 nickname
+        if nickname == nil {
+            if let selfTags = try container.decodeIfPresent([String].self, forKey: .selfTags),
+               let firstTag = selfTags.first, !firstTag.isEmpty {
+                nickname = firstTag
+            }
+        }
+        // updateHistory 直接忽略，不再读取
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(nickname, forKey: .nickname)
+        try container.encodeIfPresent(gender, forKey: .gender)
+        try container.encodeIfPresent(birthYearMonth, forKey: .birthYearMonth)
+        try container.encodeIfPresent(hometown, forKey: .hometown)
+        try container.encodeIfPresent(currentCity, forKey: .currentCity)
+        try container.encodeIfPresent(occupation, forKey: .occupation)
+        try container.encodeIfPresent(industry, forKey: .industry)
+        try container.encodeIfPresent(education, forKey: .education)
+        // 不再写入 selfTags 和 updateHistory
+    }
     
     public init(
+        nickname: String? = nil,
         gender: Gender? = nil,
         birthYearMonth: String? = nil,
         hometown: String? = nil,
         currentCity: String? = nil,
         occupation: String? = nil,
         industry: String? = nil,
-        education: Education? = nil,
-        selfTags: [String] = [],
-        updateHistory: [ProfileUpdateRecord] = []
+        education: Education? = nil
     ) {
+        self.nickname = nickname
         self.gender = gender
         self.birthYearMonth = birthYearMonth
         self.hometown = hometown
@@ -102,33 +164,6 @@ public struct StaticCore: Codable {
         self.occupation = occupation
         self.industry = industry
         self.education = education
-        self.selfTags = selfTags
-        self.updateHistory = updateHistory
-    }
-}
-
-// MARK: - Profile Update Record
-
-/// Record of a single field update for history tracking
-public struct ProfileUpdateRecord: Codable, Identifiable {
-    public let id: String
-    public let timestamp: Date
-    public let fieldName: String
-    public let oldValue: String?
-    public let newValue: String?
-    
-    public init(
-        id: String = UUID().uuidString,
-        timestamp: Date = Date(),
-        fieldName: String,
-        oldValue: String?,
-        newValue: String?
-    ) {
-        self.id = id
-        self.timestamp = timestamp
-        self.fieldName = fieldName
-        self.oldValue = oldValue
-        self.newValue = newValue
     }
 }
 

@@ -29,7 +29,7 @@ public enum AttachmentType: String, Codable {
 // MARK: - Message Attachment
 
 /// Attachment in an AI message (image, audio, or file)
-public struct MessageAttachment: Codable, Identifiable, Equatable {
+public struct MessageAttachment: Codable, Identifiable, Equatable, Sendable {
     public let id: String
     public let type: AttachmentType
     public let url: String
@@ -54,7 +54,7 @@ public struct MessageAttachment: Codable, Identifiable, Equatable {
 // MARK: - AI Message
 
 /// A single message in an AI conversation
-public struct AIMessage: Codable, Identifiable, Equatable {
+public struct AIMessage: Codable, Identifiable, Equatable, Sendable {
     public let id: String
     public let role: MessageRole
     public var content: String

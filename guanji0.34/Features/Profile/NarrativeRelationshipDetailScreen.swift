@@ -123,7 +123,7 @@ public struct NarrativeRelationshipDetailScreen: View {
                 Text(Localization.tr("Profile.NoTags"))
                     .foregroundStyle(.secondary)
             } else {
-                FlowLayout(spacing: 8) {
+                RelationshipFlowLayout(spacing: 8) {
                     ForEach(relationship.tags, id: \.self) { tag in
                         Text(tag)
                             .font(.footnote)
@@ -316,9 +316,9 @@ extension MentionSource {
     }
 }
 
-// MARK: - Flow Layout
+// MARK: - Relationship Flow Layout
 
-private struct FlowLayout: Layout {
+private struct RelationshipFlowLayout: Layout {
     var spacing: CGFloat = 8
     
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {

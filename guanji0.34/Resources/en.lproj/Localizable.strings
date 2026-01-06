@@ -1023,3 +1023,47 @@
 "Activity.Leisure" = "Leisure";
 "Activity.Learning" = "Learning";
 "Activity.Rest" = "Rest";
+
+// MARK: - Profile Section Redesign
+
+// Section Headers
+"Profile.Section.Features" = "Features & Services";
+"Profile.Section.Preferences" = "Preferences";
+"Profile.Section.Privacy" = "Privacy & Security";
+"Profile.Section.Support" = "Support & Feedback";
+"Profile.Section.About" = "About";
+
+// User Header
+"Profile.EditProfile" = "Edit Profile";
+"Profile.SetNickname" = "Set Nickname";
+"Profile.TapToEdit" = "Tap to edit profile";
+"Profile.TapToChangeAvatar" = "Tap to change avatar";
+"Profile.Nickname" = "Nickname";
+"Profile.NicknamePlaceholder" = "Enter nickname";
+"Profile.BasicInfo" = "Basic Information";
+"Profile.CareerInfo" = "Career Information";
+"Profile.HometownPlaceholder" = "Enter hometown";
+"Profile.CurrentCityPlaceholder" = "Enter current city";
+"Profile.OccupationPlaceholder" = "Enter occupation";
+"Profile.IndustryPlaceholder" = "Enter industry";
+"Profile.NotSet" = "Not set";
+"Profile.EditHint" = "These are your basic information that rarely changes. AI will automatically extract skills, values, and other dynamic information from your diary, which can be viewed in Life Review.";
+
+// Menu Items
+"Profile.LifeReview" = "Life Review";
+"Profile.MyBonds" = "My Bonds";
+"Profile.Appearance" = "Appearance";
+"Profile.PrivacyPolicy" = "Privacy Policy";
+"Profile.HelpCenter" = "Help Center";
+"Profile.Feedback" = "Feedback";
+"Profile.RateUs" = "Rate Us";
+
+// Placeholder Screens
+"Profile.ComingSoon" = "Coming Soon...";
+"Profile.FeatureInDevelopment" = "This feature is under development, stay tuned";
+
+// Appearance Settings
+"Appearance.Title" = "Appearance";
+"Appearance.Light" = "Light";
+"Appearance.Dark" = "Dark";
+"Appearance.System" = "System";

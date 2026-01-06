@@ -26,17 +26,7 @@ public final class DailyExtractionService {
         let trackerRecord = try await extractTrackerRecord(for: dayId)
         let loveLogs = try await extractLoveLogs(for: dayId)
         let conversations = try await extractConversations(for: dayId)
-        
-        // 3. 生成关系上下文
-        let relationshipContexts = sanitizer.generateRelationshipContexts(from: relationships)
-        
-        // 4. 计算统计
-        let stats = calculateStats(
-            journals: journalEntries,
-            tracker: trackerRecord,
-            loveLogs: loveLogs,
-            conversations: conversations
-        )
+        let questions = try await extractQuestions(for: dayId)
         
         return DailyExtractionPackage(
             dayId: dayId,
@@ -45,8 +35,7 @@ public final class DailyExtractionService {
             trackerRecord: trackerRecord,
             loveLogs: loveLogs,
             aiConversations: conversations,
-            knownRelationships: relationshipContexts,
-            stats: stats
+            questions: questions
         )
     }
     
@@ -67,14 +56,17 @@ public final class DailyExtractionService {
         }
         
         return allEntries.map { entry in
-            SanitizedJournalEntry(
-                id: entry.id,
+            // past 类型：reviewDate 是发送给哪一天（目标日期）
+            let targetDate = entry.chronology == .past ? entry.metadata?.reviewDate : nil
+            
+            return SanitizedJournalEntry(
                 timestamp: extractTime(from: entry.timestamp),
                 type: entry.type.rawValue,
                 chronology: entry.chronology.rawValue,
                 category: entry.category?.rawValue,
                 content: sanitizer.sanitize(entry.content),
-                sender: sanitizer.sanitizeName(entry.metadata?.sender)
+                sender: sanitizer.sanitizeName(entry.metadata?.sender),
+                targetDate: targetDate
             )
         }
     }
@@ -104,7 +96,6 @@ public final class DailyExtractionService {
             let tagTexts = convertTagIds(activity.tags, activityType: activity.activityType)
             
             return SanitizedActivity(
-                id: activity.id,
                 activityType: activity.activityType.rawValue,
                 companions: activity.companions.map { $0.rawValue },
                 companionRefs: companionRefs,
@@ -146,7 +137,6 @@ public final class DailyExtractionService {
         
         return dayLogs.map { log in
             SanitizedLoveLog(
-                id: log.id,
                 timestamp: log.timestamp,
                 senderRef: sanitizer.sanitizeName(log.sender) ?? log.sender,
                 receiverRef: sanitizer.sanitizeName(log.receiver) ?? log.receiver,
@@ -169,59 +159,45 @@ public final class DailyExtractionService {
         }
         
         return dayConversations.map { conv in
-            // 只提取用户消息（无需脱敏）
-            let userMessages = conv.messages
-                .filter { $0.role == .user }
-                .map { $0.content }
+            // 按顺序提取对话消息（用户问→AI回→...），不含思考过程
+            let messages = conv.sortedMessages
+                .filter { $0.role == .user || $0.role == .assistant }
+                .map { msg in
+                    AIMessageSummary(
+                        role: msg.role.rawValue,
+                        content: msg.content
+                    )
+                }
             
             return AIConversationSummary(
-                id: conv.id,
                 timestamp: formatTime(conv.createdAt),
                 messageCount: conv.messages.count,
-                userMessages: userMessages,
+                messages: messages,
                 topics: nil  // TODO: 可以后续添加主题提取
             )
         }
     }
     
-    // MARK: - Calculate Stats
+    // MARK: - Extract Questions
     
-    private func calculateStats(
-        journals: [SanitizedJournalEntry],
-        tracker: SanitizedTrackerRecord?,
-        loveLogs: [SanitizedLoveLog],
-        conversations: [AIConversationSummary]
-    ) -> ExtractionStats {
-        // 估算文本长度
-        var totalLength = 0
+    /// 提取当天相关的问题（今天发起的 或 今天需要回复的）
+    private func extractQuestions(for dayId: String) async throws -> [SanitizedQuestion] {
+        let allQuestions = QuestionRepository.shared.getAll()
         
-        for entry in journals {
-            totalLength += entry.content?.count ?? 0
+        // 过滤：created_at == dayId（今天发起）或 delivery_date == dayId（今天回复）
+        let dayQuestions = allQuestions.filter { 
+            $0.created_at == dayId || $0.delivery_date == dayId 
         }
         
-        if let tracker = tracker {
-            for activity in tracker.activities {
-                totalLength += activity.details?.count ?? 0
-            }
+        return dayQuestions.map { question in
+            SanitizedQuestion(
+                createdAt: question.created_at,
+                dayId: question.dayId,
+                systemPrompt: question.system_prompt,
+                intervalDays: question.interval_days,
+                deliveryDate: question.delivery_date
+            )
         }
-        
-        for log in loveLogs {
-            totalLength += log.content.count
-        }
-        
-        for conv in conversations {
-            for msg in conv.userMessages {
-                totalLength += msg.count
-            }
-        }
-        
-        return ExtractionStats(
-            journalCount: journals.count,
-            hasTracker: tracker != nil,
-            loveLogCount: loveLogs.count,
-            conversationCount: conversations.count,
-            totalTextLength: totalLength
-        )
     }
     
     // MARK: - Helpers

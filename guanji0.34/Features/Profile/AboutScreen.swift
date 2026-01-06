@@ -9,6 +9,8 @@ public struct AboutScreen: View {
             Section(Localization.tr("about")) {
                 HStack {
                     Label(Localization.tr("appVersion"), systemImage: "number")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(Colors.indigo)
                     Spacer()
                     Text("0.34")
                         .font(.caption)
@@ -16,6 +18,8 @@ public struct AboutScreen: View {
                 }
                 HStack {
                     Label(Localization.tr("buildNumber"), systemImage: "hammer")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(Colors.indigo)
                     Spacer()
                     Text("2025-12-02")
                         .font(.caption)
@@ -31,6 +35,7 @@ public struct AboutScreen: View {
             }
         }
         .listStyle(.insetGrouped)
+        .tint(Colors.indigo)
         .navigationTitle(Localization.tr("about"))
         .id(appState.lang.rawValue)
     }

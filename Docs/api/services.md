@@ -22,7 +22,10 @@
 | HealthKitService | 健康数据访问 | HealthKit | `DataLayer/SystemServices/HealthKitService.swift` |
 | AIService | AI 对话服务 | URLSession | `DataLayer/SystemServices/AIService.swift` |
 | ProfileMigrationService | 用户画像迁移 | - | `DataLayer/SystemServices/ProfileMigrationService.swift` |
-| DailyExtractionService | 🆕 每日数据提取（AI 知识提取） | - | `DataLayer/SystemServices/DailyExtractionService.swift` |
+| DailyExtractionService | 每日数据提取（AI 知识提取） | - | `DataLayer/SystemServices/DailyExtractionService.swift` |
+| ContextBuilder | 🆕 上下文构建器（脱敏画像数据） | - | `DataLayer/SystemServices/ContextBuilder.swift` |
+| KnowledgeExportService | 🆕 知识导出服务 | - | `DataLayer/SystemServices/KnowledgeExportService.swift` |
+| KnowledgeImportService | 🆕 知识导入服务 | - | `DataLayer/SystemServices/KnowledgeImportService.swift` |
 
 ## LocationService
 
@@ -516,9 +519,156 @@ manager.pausesLocationUpdatesAutomatically = false
 - [数据架构](../architecture/data-architecture.md)
 - [时间轴功能](../features/timeline.md)
 
+## ContextBuilder 🆕
+
+**职责**: 构建脱敏后的上下文数据（用户画像 + 关系画像），用于 AI 知识提取
+
+### 核心功能
+
+- **用户画像脱敏**: 移除 hometown、currentCity 等敏感字段
+- **关系画像脱敏**: 移除 realName，保留 displayName 和 aliases
+- **按需构建**: 根据服务器请求构建指定的上下文
+
+### 核心方法
+
+```swift
+// 根据服务器请求构建上下文
+public func buildContext(for request: ContextRequest) -> SanitizedContext
+
+// 构建脱敏后的用户画像
+public func buildUserProfile() -> SanitizedUserProfile?
+
+// 构建脱敏后的关系画像
+public func buildRelationship(id: String) -> SanitizedRelationship?
+
+// 批量构建关系画像
+public func buildRelationships(ids: [String]) -> [SanitizedRelationship]
+
+// 构建所有关系画像
+public func buildAllRelationships() -> [SanitizedRelationship]
+```
+
+### 脱敏规则
+
+| 原始字段 | 脱敏处理 |
+|---------|---------|
+| UserProfile.staticCore.hometown | 移除 |
+| UserProfile.staticCore.currentCity | 移除 |
+| Relationship.realName | 移除 |
+| Relationship.narrative | 通过 TextSanitizer 脱敏 |
+
+### 使用示例
+
+```swift
+// 根据服务器请求构建上下文
+let request = ContextRequest(
+    requestedContexts: [
+        ContextRequestItem(type: .userProfile),
+        ContextRequestItem(type: .relationship, id: "rel_001")
+    ]
+)
+let context = ContextBuilder.shared.buildContext(for: request)
+```
+
+## KnowledgeExportService 🆕
+
+**职责**: 导出数据用于 AI 知识提取（每日数据 + 上下文）
+
+### 核心功能
+
+- **每日数据导出**: 导出指定日期的脱敏数据包
+- **上下文导出**: 根据服务器请求导出脱敏上下文
+- **组合导出**: 导出每日数据 + 上下文的组合包
+
+### 核心方法
+
+```swift
+// 导出每日数据包为 JSON
+public func exportDailyPackage(for dayId: String) async throws -> String
+
+// 导出上下文为 JSON
+public func exportContext(for request: ContextRequest) throws -> String
+
+// 导出完整上下文（用户画像 + 所有关系）
+public func exportFullContext() throws -> String
+
+// 导出组合包（每日数据 + 上下文）
+public func exportCombinedPackage(for dayId: String, contextRequest: ContextRequest) async throws -> String
+
+// 解析上下文请求 JSON
+public func parseContextRequest(from json: String) throws -> ContextRequest
+```
+
+### 使用示例
+
+```swift
+// 导出今天的数据
+let json = try await KnowledgeExportService.shared.exportDailyPackage(for: "2024.12.22")
+
+// 导出完整上下文
+let contextJson = try KnowledgeExportService.shared.exportFullContext()
+```
+
+## KnowledgeImportService 🆕
+
+**职责**: 导入 AI 提取结果并更新本地 L4 数据
+
+### 核心功能
+
+- **解析上下文请求**: 解析服务器返回的上下文请求 JSON
+- **解析提取结果**: 解析服务器返回的 L4 数据 JSON
+- **更新本地数据**: 将提取的 KnowledgeNode 添加到用户画像或关系画像
+
+### 核心方法
+
+```swift
+// 解析上下文请求 JSON
+public func parseContextRequest(json: String) throws -> ContextRequest
+
+// 解析提取响应 JSON
+public func parseExtractionResponse(json: String) throws -> ExtractionResponse
+
+// 导入提取结果并更新本地数据
+public func importExtractedResults(json: String) throws -> ImportSummary
+```
+
+### 支持的结果类型
+
+| 类型 | 说明 | 目标 |
+|------|------|------|
+| knowledge_node | 知识节点 | 用户画像或关系画像 |
+| relationship_attribute | 关系属性 | 关系画像 |
+| profile_insight | 画像洞察 | 仅记录，不存储 |
+| custom | 自定义数据 | 仅记录，不存储 |
+
+### 使用示例
+
+```swift
+// 导入服务器返回的结果
+let json = """
+{
+  "success": true,
+  "dayId": "2024.12.22",
+  "results": [
+    {
+      "type": "knowledge_node",
+      "target": "user",
+      "data": {
+        "nodeType": "hobby",
+        "name": "阅读",
+        "confidence": 0.85
+      }
+    }
+  ]
+}
+"""
+let summary = try KnowledgeImportService.shared.importExtractedResults(json: json)
+print(summary.description)  // "成功导入 1 条数据"
+```
+
 ---
-**版本**: v1.2.0  
+**版本**: v1.3.0  
 **作者**: Kiro AI Assistant  
-**更新日期**: 2024-12-19  
+**更新日期**: 2024-12-22  
 **状态**: 已发布  
-**重大变更**: 移除 TimelineRecorder，改为按需定位策略
+**重大变更**: 新增 ContextBuilder、KnowledgeExportService、KnowledgeImportService

@@ -50,7 +50,9 @@ public final class InsightViewModel: ObservableObject {
 
     public init() {
         setupNotifications()
-        Task { await compute() }
+        Task { @MainActor in
+            await compute()
+        }
     }
 
     @MainActor
@@ -166,125 +168,100 @@ public final class InsightViewModel: ObservableObject {
     // MARK: - Zone 1: Overview Computation
     
     nonisolated private func computeOverview() -> OverviewStats {
-        do {
-            let streak = try computeStreak()
-            let totalDays = try computeTotalDays()
-            let totalEntries = try computeTotalEntries()
-            let totalWords = try computeTotalWords()
-            
-            return OverviewStats(
-                streak: streak,
-                totalDays: totalDays,
-                totalEntries: totalEntries,
-                totalWords: totalWords
-            )
-        } catch {
-            print("[InsightViewModel] Error computing overview stats: \(error)")
-            return OverviewStats(streak: 0, totalDays: 0, totalEntries: 0, totalWords: 0)
-        }
+        let streak = computeStreak()
+        let totalDays = computeTotalDays()
+        let totalEntries = computeTotalEntries()
+        let totalWords = computeTotalWords()
+        
+        return OverviewStats(
+            streak: streak,
+            totalDays: totalDays,
+            totalEntries: totalEntries,
+            totalWords: totalWords
+        )
     }
     
     /// Compute consecutive days from today backward with at least one entry
-    private func computeStreak() throws -> Int {
-        do {
-            var streak = 0
-            var currentDate = DateUtilities.today
+    nonisolated private func computeStreak() -> Int {
+        var streak = 0
+        var currentDate = DateUtilities.today
+        
+        while true {
+            let timeline = TimelineRepository.shared.getDailyTimeline(for: currentDate)
+            let entryCount = countEntries(in: timeline)
             
-            while true {
-                let timeline = TimelineRepository.shared.getDailyTimeline(for: currentDate)
-                let entryCount = countEntries(in: timeline)
-                
-                if entryCount > 0 {
-                    streak += 1
-                    // Move to previous day
-                    if let date = DateUtilities.parse(currentDate),
-                       let previousDate = Calendar.current.date(byAdding: .day, value: -1, to: date) {
-                        currentDate = DateUtilities.format(previousDate)
-                    } else {
-                        break
-                    }
+            if entryCount > 0 {
+                streak += 1
+                // Move to previous day
+                if let date = DateUtilities.parse(currentDate),
+                   let previousDate = Calendar.current.date(byAdding: .day, value: -1, to: date) {
+                    currentDate = DateUtilities.format(previousDate)
                 } else {
                     break
                 }
+            } else {
+                break
             }
-            
-            return streak
-        } catch {
-            print("[InsightViewModel] Error computing streak: \(error)")
-            throw error
         }
+        
+        return streak
     }
     
     /// Count total days with at least one entry
-    private func computeTotalDays() throws -> Int {
-        do {
-            let allTimelines = TimelineRepository.shared.getAllTimelines()
-            var daysWithEntries = 0
-            
-            for timeline in allTimelines {
-                let entryCount = countEntries(in: timeline)
-                if entryCount > 0 {
-                    daysWithEntries += 1
-                }
+    nonisolated private func computeTotalDays() -> Int {
+        let allTimelines = TimelineRepository.shared.getAllTimelines()
+        var daysWithEntries = 0
+        
+        for timeline in allTimelines {
+            let entryCount = countEntries(in: timeline)
+            if entryCount > 0 {
+                daysWithEntries += 1
             }
-            
-            return daysWithEntries
-        } catch {
-            print("[InsightViewModel] Error computing total days: \(error)")
-            throw error
         }
+        
+        return daysWithEntries
     }
     
     /// Count total number of journal entries across all days
-    private func computeTotalEntries() throws -> Int {
-        do {
-            let allTimelines = TimelineRepository.shared.getAllTimelines()
-            var totalEntries = 0
-            
-            for timeline in allTimelines {
-                totalEntries += countEntries(in: timeline)
-            }
-            
-            return totalEntries
-        } catch {
-            print("[InsightViewModel] Error computing total entries: \(error)")
-            throw error
+    nonisolated private func computeTotalEntries() -> Int {
+        let allTimelines = TimelineRepository.shared.getAllTimelines()
+        var totalEntries = 0
+        
+        for timeline in allTimelines {
+            totalEntries += countEntries(in: timeline)
         }
+        
+        return totalEntries
     }
     
     /// Sum all words (character count) from all journal entries
-    private func computeTotalWords() throws -> Int {
-        do {
-            let allTimelines = TimelineRepository.shared.getAllTimelines()
-            var totalWords = 0
-            
-            for timeline in allTimelines {
-                for item in timeline.items {
-                    let entries: [JournalEntry]
-                    switch item {
-                    case .scene(let s):
-                        entries = s.entries
-                    case .journey(let j):
-                        entries = j.entries
-                    }
-                    
-                    for entry in entries {
-                        if let content = entry.content {
-                            totalWords += content.count
-                        }
+    nonisolated private func computeTotalWords() -> Int {
+        let allTimelines = TimelineRepository.shared.getAllTimelines()
+        var totalWords = 0
+        
+        for timeline in allTimelines {
+            for item in timeline.items {
+                let entries: [JournalEntry]
+                switch item {
+                case .scene(let s):
+                    entries = s.entries
+                case .journey(let j):
+                    entries = j.entries
+                }
+                
+                for entry in entries {
+                    if let content = entry.content {
+                        totalWords += content.count
                     }
                 }
             }
-            
-            return totalWords
-        } catch {
-            print("[InsightViewModel] Error computing total words: \(error)")
-            throw error
         }
+        
+        return totalWords
     }
     
     /// Helper: Count entries in a timeline
-    private func countEntries(in timeline: DailyTimeline) -> Int {
+    nonisolated private func countEntries(in timeline: DailyTimeline) -> Int {
         var count = 0
         for item in timeline.items {
             switch item {
@@ -300,270 +277,199 @@ public final class InsightViewModel: ObservableObject {
     // MARK: - Zone 2: Feature Usage Computation
     
     nonisolated private func computeFeatureUsage() -> FeatureUsageStats {
-        do {
-            let aiStats = try computeAIStats()
-            let trackerDays = try computeTrackerDays()
-            let mindRecords = try computeMindRecords()
-            let capsuleStats = try computeCapsuleStats()
-            let loveLogCount = try computeLoveLogCount()
-            let relationshipCount = try computeRelationshipCount()
-            
-            return FeatureUsageStats(
-                aiConversations: aiStats.conversations,
-                aiMessages: aiStats.messages,
-                trackerDays: trackerDays,
-                mindRecords: mindRecords,
-                capsuleTotal: capsuleStats.total,
-                capsulePending: capsuleStats.pending,
-                loveLogCount: loveLogCount,
-                relationshipCount: relationshipCount
-            )
-        } catch {
-            print("[InsightViewModel] Error computing feature usage stats: \(error)")
-            return FeatureUsageStats()
-        }
+        let aiStats = computeAIStats()
+        let trackerDays = computeTrackerDays()
+        let mindRecords = computeMindRecords()
+        let capsuleStats = computeCapsuleStats()
+        let loveLogCount = computeLoveLogCount()
+        let relationshipCount = computeRelationshipCount()
+        
+        return FeatureUsageStats(
+            aiConversations: aiStats.conversations,
+            aiMessages: aiStats.messages,
+            trackerDays: trackerDays,
+            mindRecords: mindRecords,
+            capsuleTotal: capsuleStats.total,
+            capsulePending: capsuleStats.pending,
+            loveLogCount: loveLogCount,
+            relationshipCount: relationshipCount
+        )
     }
     
     /// Compute AI conversation and message counts
-    private func computeAIStats() throws -> (conversations: Int, messages: Int) {
-        do {
-            let conversations = AIConversationRepository.shared.loadAll()
-            let conversationCount = conversations.count
-            
-            var messageCount = 0
-            for conversation in conversations {
-                messageCount += conversation.messages.count
-            }
-            
-            return (conversations: conversationCount, messages: messageCount)
-        } catch {
-            print("[InsightViewModel] Error computing AI stats: \(error)")
-            throw error
+    nonisolated private func computeAIStats() -> (conversations: Int, messages: Int) {
+        let conversations = AIConversationRepository.shared.loadAll()
+        let conversationCount = conversations.count
+        
+        var messageCount = 0
+        for conversation in conversations {
+            messageCount += conversation.messages.count
         }
+        
+        return (conversations: conversationCount, messages: messageCount)
     }
     
     /// Compute days with DailyTrackerRecord
-    private func computeTrackerDays() throws -> Int {
-        do {
-            let records = DailyTrackerRepository.shared.loadAll()
-            // Count unique dates
-            let uniqueDates = Set(records.map { $0.date })
-            return uniqueDates.count
-        } catch {
-            print("[InsightViewModel] Error computing tracker days: \(error)")
-            throw error
-        }
+    nonisolated private func computeTrackerDays() -> Int {
+        let records = DailyTrackerRepository.shared.loadAll()
+        // Count unique dates
+        let uniqueDates = Set(records.map { $0.date })
+        return uniqueDates.count
     }
     
     /// Compute total MindStateRecord count
-    private func computeMindRecords() throws -> Int {
-        do {
-            let records = MindStateRepository().loadAll()
-            return records.count
-        } catch {
-            print("[InsightViewModel] Error computing mind records: \(error)")
-            throw error
-        }
+    nonisolated private func computeMindRecords() -> Int {
+        let records = MindStateRepository().loadAll()
+        return records.count
     }
     
     /// Compute capsule total and pending counts
-    private func computeCapsuleStats() throws -> (total: Int, pending: Int) {
-        do {
-            let questions = QuestionRepository.shared.getAll()
-            let total = questions.count
-            
-            // Count pending capsules (delivery_date > today)
-            let today = DateUtilities.today
-            var pending = 0
-            
-            for question in questions {
-                // Compare delivery_date with today
-                // Format is "yyyy.MM.dd"
-                if question.delivery_date > today {
-                    pending += 1
-                }
+    nonisolated private func computeCapsuleStats() -> (total: Int, pending: Int) {
+        let questions = QuestionRepository.shared.getAll()
+        let total = questions.count
+        
+        // Count pending capsules (delivery_date > today)
+        let today = DateUtilities.today
+        var pending = 0
+        
+        for question in questions {
+            // Compare delivery_date with today
+            // Format is "yyyy.MM.dd"
+            if question.delivery_date > today {
+                pending += 1
             }
-            
-            return (total: total, pending: pending)
-        } catch {
-            print("[InsightViewModel] Error computing capsule stats: \(error)")
-            throw error
         }
+        
+        return (total: total, pending: pending)
     }
     
     /// Compute LoveLog count
-    private func computeLoveLogCount() throws -> Int {
-        do {
-            return LoveLogRepository.shared.getCount()
-        } catch {
-            print("[InsightViewModel] Error computing love log count: \(error)")
-            throw error
-        }
+    nonisolated private func computeLoveLogCount() -> Int {
+        return LoveLogRepository.shared.getCount()
     }
     
     /// Compute NarrativeRelationship count
-    private func computeRelationshipCount() throws -> Int {
-        do {
-            let relationships = NarrativeRelationshipRepository.shared.loadAll()
-            return relationships.count
-        } catch {
-            print("[InsightViewModel] Error computing relationship count: \(error)")
-            throw error
-        }
+    nonisolated private func computeRelationshipCount() -> Int {
+        let relationships = NarrativeRelationshipRepository.shared.loadAll()
+        return relationships.count
     }
     
     // MARK: - Zone 3: Data Insight Computation
     
     nonisolated private func computeDataInsight() -> DataInsightStats {
-        do {
-            let hourDistribution = try computeHourDistribution()
-            let activityDistribution = try computeActivityDistribution()
-            let moodTrend = try computeMoodTrend()
-            let topLocations = try computeTopLocations()
-            let loveSources = try computeLoveSources()
-            
-            return DataInsightStats(
-                hourDistribution: hourDistribution,
-                activityDistribution: activityDistribution,
-                moodTrend: moodTrend,
-                topLocations: topLocations,
-                loveSources: loveSources
-            )
-        } catch {
-            print("[InsightViewModel] Error computing data insight stats: \(error)")
-            return DataInsightStats(
-                hourDistribution: [],
-                activityDistribution: [:],
-                moodTrend: [],
-                topLocations: [],
-                loveSources: []
-            )
-        }
+        let hourDistribution = computeHourDistribution()
+        let activityDistribution = computeActivityDistribution()
+        let moodTrend = computeMoodTrend()
+        let topLocations = computeTopLocations()
+        let loveSources = computeLoveSources()
+        
+        return DataInsightStats(
+            hourDistribution: hourDistribution,
+            activityDistribution: activityDistribution,
+            moodTrend: moodTrend,
+            topLocations: topLocations,
+            loveSources: loveSources
+        )
     }
     
     /// Compute hour distribution from JournalEntry.timestamp
     /// Returns array of 24 integers representing entry count for each hour
-    private func computeHourDistribution() throws -> [Int] {
-        do {
-            var hourCounts = Array(repeating: 0, count: 24)
-            let allTimelines = TimelineRepository.shared.getAllTimelines()
-            
-            for timeline in allTimelines {
-                for item in timeline.items {
-                    let entries: [JournalEntry]
-                    switch item {
-                    case .scene(let s):
-                        entries = s.entries
-                    case .journey(let j):
-                        entries = j.entries
-                    }
-                    
-                    for entry in entries {
-                        // Parse timestamp format "HH:mm"
-                        let components = entry.timestamp.split(separator: ":")
-                        if let hourStr = components.first,
-                           let hour = Int(hourStr),
-                           (0..<24).contains(hour) {
-                            hourCounts[hour] += 1
-                        }
+    nonisolated private func computeHourDistribution() -> [Int] {
+        var hourCounts = Array(repeating: 0, count: 24)
+        let allTimelines = TimelineRepository.shared.getAllTimelines()
+        
+        for timeline in allTimelines {
+            for item in timeline.items {
+                let entries: [JournalEntry]
+                switch item {
+                case .scene(let s):
+                    entries = s.entries
+                case .journey(let j):
+                    entries = j.entries
+                }
+                
+                for entry in entries {
+                    // Parse timestamp format "HH:mm"
+                    let components = entry.timestamp.split(separator: ":")
+                    if let hourStr = components.first,
+                       let hour = Int(hourStr),
+                       (0..<24).contains(hour) {
+                        hourCounts[hour] += 1
                     }
                 }
             }
-            
-            return hourCounts
-        } catch {
-            print("[InsightViewModel] Error computing hour distribution: \(error)")
-            throw error
         }
+        
+        return hourCounts
     }
     
     /// Compute activity distribution from DailyTrackerRecord.activities
     /// Returns dictionary mapping activity type to count
-    private func computeActivityDistribution() throws -> [String: Int] {
-        do {
-            var activityCounts: [String: Int] = [:]
-            let records = DailyTrackerRepository.shared.loadAll()
-            
-            for record in records {
-                for activityContext in record.activities {
-                    let activityType = activityContext.activityType.rawValue
-                    activityCounts[activityType, default: 0] += 1
-                }
+    nonisolated private func computeActivityDistribution() -> [String: Int] {
+        var activityCounts: [String: Int] = [:]
+        let records = DailyTrackerRepository.shared.loadAll()
+        
+        for record in records {
+            for activityContext in record.activities {
+                let activityType = activityContext.activityType.rawValue
+                activityCounts[activityType, default: 0] += 1
             }
-            
-            return activityCounts
-        } catch {
-            print("[InsightViewModel] Error computing activity distribution: \(error)")
-            throw error
         }
+        
+        return activityCounts
     }
     
     /// Compute mood trend from MindStateRecord.valenceValue (sorted by date)
     /// Returns array of tuples with date and valence value
-    private func computeMoodTrend() throws -> [(date: String, value: Int)] {
-        do {
-            let records = MindStateRepository().loadAll()
-            
-            // Sort by date
-            let sortedRecords = records.sorted { $0.date < $1.date }
-            
-            // Map to (date, value) tuples
-            return sortedRecords.map { (date: $0.date, value: $0.valenceValue) }
-        } catch {
-            print("[InsightViewModel] Error computing mood trend: \(error)")
-            throw error
-        }
+    nonisolated private func computeMoodTrend() -> [(date: String, value: Int)] {
+        let records = MindStateRepository().loadAll()
+        
+        // Sort by date
+        let sortedRecords = records.sorted { $0.date < $1.date }
+        
+        // Map to (date, value) tuples
+        return sortedRecords.map { (date: $0.date, value: $0.valenceValue) }
     }
     
     /// Compute top locations from Scene.location and Journey.origin/destination
     /// Returns array of tuples with location name and count, sorted by count descending
-    private func computeTopLocations() throws -> [(name: String, count: Int)] {
-        do {
-            var locationCounts: [String: Int] = [:]
-            let allTimelines = TimelineRepository.shared.getAllTimelines()
-            
-            for timeline in allTimelines {
-                for item in timeline.items {
-                    switch item {
-                    case .scene(let s):
-                        // Count scene location
-                        let locationName = s.location.displayText
-                        locationCounts[locationName, default: 0] += 1
-                        
-                    case .journey(let j):
-                        // Count both origin and destination
-                        let originName = j.origin.displayText
-                        let destinationName = j.destination.displayText
-                        locationCounts[originName, default: 0] += 1
-                        locationCounts[destinationName, default: 0] += 1
-                    }
+    nonisolated private func computeTopLocations() -> [(name: String, count: Int)] {
+        var locationCounts: [String: Int] = [:]
+        let allTimelines = TimelineRepository.shared.getAllTimelines()
+        
+        for timeline in allTimelines {
+            for item in timeline.items {
+                switch item {
+                case .scene(let s):
+                    // Count scene location
+                    let locationName = s.location.displayText
+                    locationCounts[locationName, default: 0] += 1
+                    
+                case .journey(let j):
+                    // Count both origin and destination
+                    let originName = j.origin.displayText
+                    let destinationName = j.destination.displayText
+                    locationCounts[originName, default: 0] += 1
+                    locationCounts[destinationName, default: 0] += 1
                 }
             }
-            
-            // Sort by count descending and return top locations
-            return locationCounts
-                .map { (name: $0.key, count: $0.value) }
-                .sorted { $0.count > $1.count }
-        } catch {
-            print("[InsightViewModel] Error computing top locations: \(error)")
-            throw error
         }
+        
+        // Sort by count descending and return top locations
+        return locationCounts
+            .map { (name: $0.key, count: $0.value) }
+            .sorted { $0.count > $1.count }
     }
     
     /// Compute love sources from LoveLog.sender
     /// Returns array of tuples with sender name and count, sorted by count descending
-    private func computeLoveSources() throws -> [(name: String, count: Int)] {
-        do {
-            let logsBySender = LoveLogRepository.shared.getLogsBySender()
-            
-            // Convert to array of tuples and sort by count descending
-            return logsBySender
-                .map { (name: $0.key, count: $0.value) }
-                .sorted { $0.count > $1.count }
-        } catch {
-            print("[InsightViewModel] Error computing love sources: \(error)")
-            throw error
-        }
+    nonisolated private func computeLoveSources() -> [(name: String, count: Int)] {
+        let logsBySender = LoveLogRepository.shared.getLogsBySender()
+        
+        // Convert to array of tuples and sort by count descending
+        return logsBySender
+            .map { (name: $0.key, count: $0.value) }
+            .sorted { $0.count > $1.count }
     }
     
     /// Update Zone 3 visibility flags based on thresholds
@@ -635,27 +541,22 @@ public final class InsightViewModel: ObservableObject {
     }
 
     private func scanPeopleCounts(from counter: [EntryCategory: Int], peopleCounts: inout [String: Int], keywords: [String]) {
-        do {
-            let allDates = [ChronologyAnchor.TODAY_DATE, ChronologyAnchor.YESTERDAY_DATE, ChronologyAnchor.THREE_DAYS_AGO, ChronologyAnchor.ONE_YEAR_AGO_DATE, ChronologyAnchor.TWO_YEARS_AGO_DATE]
-            for d in allDates {
-                let timeline = TimelineRepository.shared.getDailyTimeline(for: d)
-                for item in timeline.items {
-                    let entries: [JournalEntry]
-                    switch item { case .scene(let s): entries = s.entries; case .journey(let j): entries = j.entries }
-                    for e in entries {
-                        let content = e.content ?? ""
-                        for k in keywords { if content.contains(k) { peopleCounts[k, default: 0] += 1 } }
-                    }
+        let allDates = [ChronologyAnchor.TODAY_DATE, ChronologyAnchor.YESTERDAY_DATE, ChronologyAnchor.THREE_DAYS_AGO, ChronologyAnchor.ONE_YEAR_AGO_DATE, ChronologyAnchor.TWO_YEARS_AGO_DATE]
+        for d in allDates {
+            let timeline = TimelineRepository.shared.getDailyTimeline(for: d)
+            for item in timeline.items {
+                let entries: [JournalEntry]
+                switch item { case .scene(let s): entries = s.entries; case .journey(let j): entries = j.entries }
+                for e in entries {
+                    let content = e.content ?? ""
+                    for k in keywords { if content.contains(k) { peopleCounts[k, default: 0] += 1 } }
                 }
             }
-            // Mock loveLogs usage removed for now as we don't have repo for it yet
-            // for (_, log) in ["love": MockDataService.loveLogs].enumerated() {
-            //    for l in log.value { let name = (l.sender == "Me") ? l.receiver : l.sender; peopleCounts[name, default: 0] += 1 }
-            // }
-        } catch {
-            print("[InsightViewModel] Error scanning people counts: \(error)")
-            // Continue with empty peopleCounts on error
         }
+        // Mock loveLogs usage removed for now as we don't have repo for it yet
+        // for (_, log) in ["love": MockDataService.loveLogs].enumerated() {
+        //    for l in log.value { let name = (l.sender == "Me") ? l.receiver : l.sender; peopleCounts[name, default: 0] += 1 }
+        // }
     }
 
     private func buildRanking(from counts: [String: Int]) -> [(name: String, count: Int, percent: Int)] {

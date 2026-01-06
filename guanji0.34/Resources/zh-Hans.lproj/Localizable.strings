@@ -1029,3 +1029,47 @@
 "Activity.Leisure" = "休闲";
 "Activity.Learning" = "学习";
 "Activity.Rest" = "休息";
+
+// MARK: - Profile Section Redesign
+
+// Section Headers
+"Profile.Section.Features" = "功能与服务";
+"Profile.Section.Preferences" = "偏好设置";
+"Profile.Section.Privacy" = "隐私与安全";
+"Profile.Section.Support" = "支持与反馈";
+"Profile.Section.About" = "关于";
+
+// User Header
+"Profile.EditProfile" = "编辑资料";
+"Profile.SetNickname" = "设置昵称";
+"Profile.TapToEdit" = "点击编辑个人资料";
+"Profile.TapToChangeAvatar" = "点击更换头像";
+"Profile.Nickname" = "昵称";
+"Profile.NicknamePlaceholder" = "输入昵称";
+"Profile.BasicInfo" = "基本信息";
+"Profile.CareerInfo" = "职业信息";
+"Profile.HometownPlaceholder" = "输入籍贯";
+"Profile.CurrentCityPlaceholder" = "输入常居地";
+"Profile.OccupationPlaceholder" = "输入职业";
+"Profile.IndustryPlaceholder" = "输入行业";
+"Profile.NotSet" = "未设置";
+"Profile.EditHint" = "这些是您的基础信息，很少变化。AI 会从您的日记中自动提取技能、价值观等动态信息，可在「人生回顾」中查看。";
+
+// Menu Items
+"Profile.LifeReview" = "人生回顾";
+"Profile.MyBonds" = "我的羁绊";
+"Profile.Appearance" = "外观";
+"Profile.PrivacyPolicy" = "隐私政策";
+"Profile.HelpCenter" = "帮助中心";
+"Profile.Feedback" = "意见反馈";
+"Profile.RateUs" = "给我们评分";
+
+// Placeholder Screens
+"Profile.ComingSoon" = "功能开发中...";
+"Profile.FeatureInDevelopment" = "此功能正在开发中，敬请期待";
+
+// Appearance Settings
+"Appearance.Title" = "外观设置";
+"Appearance.Light" = "浅色";
+"Appearance.Dark" = "深色";
+"Appearance.System" = "跟随系统";
