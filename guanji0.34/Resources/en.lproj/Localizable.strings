@@ -1,0 +1,1154 @@
+"memoryMuseum" = "Memory Museum";
+"searchCollection" = "Search collection...";
+"collectionStatus" = "Collection Progress";
+"noArtifacts" = "No artifacts yet";
+"lockedMemory" = "Locked Memory";
+"patternDetected" = "Pattern detected";
+"evidenceChain" = "Evidence chain";
+"current" = "Current";
+"target" = "Target";
+"tapToJump" = "Tap to jump to memory";
+"entryLabel" = "Entry";
+"moduleLabel" = "Module";
+"configLabel" = "Config";
+"artifactSource" = "Artifact source";
+"streak" = "Streak";
+"days" = "Days";
+"entries" = "Entries";
+"dominant" = "Dominant emotion";
+"activityDensity" = "Activity density";
+"week" = "Week";
+"month" = "Month";
+"year" = "Year";
+"all" = "All";
+"mood" = "Mood";
+"energy" = "Energy";
+"people" = "People";
+"location" = "Location";
+"recentFocus" = "Recent focus";
+"insightEngine" = "Insight Engine";
+"calm" = "Calm";
+"happy" = "Happy";
+"anxious" = "Anxious";
+"high" = "High";
+"low" = "Low";
+"osModules" = "OS Modules";
+"system" = "System";
+"privacy" = "Privacy";
+"notifications" = "Notifications";
+"language" = "Language";
+"dataSync" = "Data Sync";
+"managePlaces" = "Manage Places";
+"locationManagement" = "Location Management";
+"peopleManagement" = "People Management";
+"physicalAnchors" = "Physical Anchors";
+"editPlace" = "Edit Place";
+"placeName" = "Place Name";
+"appearance" = "Appearance";
+"deleteAnchor" = "Delete Anchor";
+"deletePlace" = "Delete Place";
+"meters" = "meters";
+"deviceAccess" = "Device Access";
+"privacyTitle" = "Privacy Settings";
+"privacyFooter" = "We only request permissions when necessary to improve your journaling experience.";
+"photoLibrary" = "Photo Library";
+"permPhotoDesc" = "Select images related to your records";
+"camera" = "Camera";
+"permCameraDesc" = "Capture photos or videos to attach";
+"location" = "Location";
+"permLocationDesc" = "Match places and build journeys";
+"grantAccess" = "Grant Access";
+"openSettings" = "Open Settings";
+"openSettingsDesc" = "Due to system restrictions, please adjust permissions in Settings.";
+"microphone" = "Microphone";
+"permMicDesc" = "Record and transcribe voice notes";
+"subNoticeTitle" = "Subscription Notice";
+"subNotice1Title" = "Subscription & Cancellation";
+"subNotice1Body" = "You can cancel anytime. No renewal after the current period.";
+"subNotice2Title" = "Privacy & Data";
+"subNotice2Body" = "Subscriptions do not change your privacy settings. Data is only for you.";
+"subNotice3Title" = "Service Changes";
+"subNotice3Body" = "We may adjust features and prices and announce ahead in-app.";
+"proFeatures" = "Pro Features";
+"weeklyAnalysis" = "Weekly Analysis";
+"fullCharts" = "Full Charts";
+"galleryAccess" = "Gallery Access";
+"unlimitedCapsules" = "Unlimited Capsules";
+"subscribe" = "Subscribe";
+"priceText" = " ¥29/mo";
+"planActive" = "Active";
+"subscriptionNoticeLabel" = "Subscription Notice";
+"pushNotifications" = "Push Notifications";
+"sounds" = "Sounds";
+"badges" = "Badges";
+"dailyReminder" = "Daily Reminder";
+"reminderTime" = "Reminder Time";
+"lifeInsight" = "Life Insight";
+"insightPlan" = "Jingever Membership";
+"gallery" = "Gallery";
+"componentLibrary" = "Component Library";
+"inputs" = "Input Components";
+"charts" = "Chart Components";
+"media" = "Media Components";
+"lists" = "List Components";
+"journal" = "Journal Atoms";
+"componentAtomHeader" = "Atom Header";
+"componentAtomTimestamp" = "Timestamp";
+"componentAtomContextReply" = "Context Reply";
+"componentLocationBadgeMapped" = "Location Badge (Mapped)";
+"componentLocationBadgeRaw" = "Location Badge (Raw)";
+"componentLocationBadgeNoPermission" = "Location Badge (No Permission)";
+"componentMoleculeSealed" = "Sealed Memory";
+"componentMoleculeConnection" = "Mentioned";
+"componentMoleculeReview" = "Review Entry";
+"componentAchievementCard" = "Achievement Card";
+"componentSceneBlock" = "Scene Block";
+"componentJourneyBlockView" = "Journey Block";
+"componentJournalRow" = "Journal Row";
+"componentDockContainer" = "Input Dock";
+"componentRecordingBar" = "Recording Bar";
+"componentOverviewCard" = "Overview Card";
+"componentRingChart" = "Ring Chart";
+"componentHeatmapGrid" = "Heatmap Grid";
+"componentImageEntry" = "Image Entry";
+"componentAudioEntry" = "Audio Entry";
+"componentListRow" = "List Row";
+"componentToggleSwitch" = "Toggle Switch";
+"photo" = "Photo";
+"file" = "File";
+"timeCapsule" = "Time Capsule";
+"about" = "About";
+"searchMemory" = "Search memory...";
+"backToToday" = "Back to Today";
+"placeholder" = "Record this moment...";
+"edit" = "Edit";
+"save" = "Save";
+"done" = "Done";
+"cancel" = "Cancel";
+"nameThisPlace" = "Name this place";
+"locationNamePlaceholder" = "e.g., Home, Office, Secret Base";
+"connectionMessage" = "In yesterday's silence, {sender} mentioned you.";
+"past" = "Past";
+"resonanceStream" = "Resonance Stream";
+"newCapsule" = "New Capsule";
+"text" = "Text";
+"img" = "Image";
+"voice" = "Voice";
+"unlockDate" = "Unlock Date";
+"sealCapsule" = "Seal Capsule";
+"writeToFuture" = "Write to the future...";
+"tomorrow" = "Tomorrow";
+"capsuleMessagePlaceholder" = "Leave a message for your future self...";
+"capsuleQuestionPlaceholder" = "Ask your future self a question...";
+"addSystemQuestion" = "Add Question";
+"removeSystemQuestion" = "Remove Question";
+"systemQuestion" = "System Question";
+"message" = "Message";
+"date" = "Date";
+"nextWeek" = "Next Week";
+"timelineTitle" = "Timeline";
+"historyTitle" = "History";
+"profileTitle" = "Profile";
+"membership" = "Membership";
+"subscriptionInfo" = "Subscription Info";
+"dataMaintenance" = "Data Maintenance";
+"locations" = "Locations";
+"componentGallery" = "Component Library";
+"enableAnalytics" = "Enable Analytics";
+"enableCrashReports" = "Enable Crash Reports";
+"enableLocationServices" = "Enable Location Services";
+"clearCache" = "Clear Cache";
+"reindexData" = "Rebuild Index";
+"exportData" = "Export Data";
+"importData" = "Import Data";
+"comingSoon" = "Coming Soon";
+"mappedLocations" = "Mapped Places";
+"latLngFormat" = "Lat: %@, Lng: %@";
+"radiusMetersFormat" = "Radius %@ m";
+"appVersion" = "Version";
+"buildNumber" = "Build";
+"currentPlan" = "Current Plan";
+"upgradePlan" = "Upgrade Plan";
+"manageSubscription" = "Manage Subscription";
+"statusActive" = "Active";
+"statusInactive" = "Inactive";
+"inbox" = "Inbox";
+"memoriesPast" = " memories in the past";
+"oneYearAgo" = "1 YEAR AGO";
+"twoYearsAgo" = "2 YEARS AGO";
+"yearsAgoSuffix" = " YEARS AGO";
+"moreSuffixShort" = " more";
+"yearSuffix" = "years ago";
+"artifactLabel" = "Artifact";
+"mixedLabel" = "Mixed";
+"categoryLabel" = "Category";
+"am" = "AM";
+"pm" = "PM";
+"holdToSpeak" = "Hold to speak";
+"Voice.ReleaseToSend" = "Release to send";
+"Voice.SlideToCancel" = "Slide up to cancel";
+"Voice.SlideUpToCancel" = "Slide up to cancel";
+"Voice.ReleaseToCancel" = "Release to cancel";
+"Voice.ReleaseToEdit" = "Release to edit";
+"Voice.Recording" = "Recording...";
+"Voice.ReleaseToEdit" = "Release to edit";
+"Voice.SlideHere" = "Slide here";
+"Voice.ToText" = "To text";
+"replyingTo" = "Replying to";
+"sealedMemory" = "Sealed Memory";
+"unlocksOn" = "Unlocks on %@";
+"sentTo" = "Sent to %@";
+"noteFrom" = "%@ note";
+"daysSuffixShort" = "d";
+"futureLabel" = "Future";
+"unknownLabel" = "Unknown";
+"someone" = "Someone";
+"fromThePast" = "From the past";
+"contextLabel" = "Context of the day";
+"echoesLabel" = "Echoes";
+"waitingEchoes" = "Waiting for echoes...";
+"appendReply" = "Append reply";
+"writeReply" = "Write a reply";
+"silenceTimeline" = "The river of time falls silent...";
+"noImageSource" = "No image source provided";
+"dataNotFound" = "Data not found";
+"record" = "Record";
+"dream" = "Dream";
+"idea" = "Idea";
+"emotion" = "Emotion";
+"work" = "Work";
+"social" = "Social";
+"media" = "Media";
+"health" = "Health";
+"life" = "Life";
+"other" = "Other";
+"connection" = "Mention";
+"rawLabel" = "(Raw)";
+"basicComponents" = "Basic Components";
+"componentInputQuickActions" = "Quick Actions";
+"ok" = "OK";
+"permPhotoDenied" = "No photo access. Enable in Privacy Settings.";
+"permCameraDenied" = "No camera access or device support.";
+"permLocationDenied" = "No location access. Enable in Privacy Settings.";
+"prev" = "Previous";
+"mind_swipe_up_to_save" = "Swipe up to save";
+"next" = "Next";
+"mind_title" = "State of Mind";
+"mind_select_intensity" = "How are you today?";
+"mind_select_labels" = "Which label best describes your feeling?";
+"mind_select_influences" = "What influences you the most?";
+"mind_cat_health" = "Health & Fitness";
+"mind_cat_relationships" = "Relationships & Intimacy";
+"mind_cat_identity" = "Identity & Spirituality";
+"mind_cat_tasks" = "Tasks & Responsibilities";
+"mind_cat_social" = "Social & Community";
+"mind_cat_environment" = "Environment & Facts";
+"mind_custom_influence" = "Custom influence";
+"mind_custom_influence_ph" = "e.g., exam, commute, meeting...";
+"mind_very_unpleasant" = "Very Unpleasant";
+"mind_unpleasant" = "Unpleasant";
+"mind_slightly_unpleasant" = "Slightly Unpleasant";
+"mind_neutral" = "Neutral";
+"mind_slightly_pleasant" = "Slightly Pleasant";
+"mind_pleasant" = "Pleasant";
+"mind_very_pleasant" = "Very Pleasant";
+"mind_angry" = "Angry";
+"mind_anxious" = "Anxious";
+"mind_ashamed" = "Ashamed";
+"mind_disappointed" = "Disappointed";
+"mind_discouraged" = "Discouraged";
+"mind_disgusted" = "Disgusted";
+"mind_embarrassed" = "Embarrassed";
+"mind_frustrated" = "Frustrated";
+"mind_guilty" = "Guilty";
+"mind_hopeless" = "Hopeless";
+"mind_irritated" = "Irritated";
+"mind_jealous" = "Jealous";
+"mind_lonely" = "Lonely";
+"mind_sad" = "Sad";
+"mind_scared" = "Scared";
+"mind_stressed" = "Stressed";
+"mind_worried" = "Worried";
+"mind_annoyed" = "Annoyed";
+"mind_drained" = "Drained";
+"mind_overwhelmed" = "Overwhelmed";
+"mind_calm" = "Calm";
+"mind_content" = "Content";
+"mind_indifferent" = "Indifferent";
+"mind_peaceful" = "Peaceful";
+"mind_satisfied" = "Satisfied";
+"mind_amazed" = "Amazed";
+"mind_amused" = "Amused";
+"mind_brave" = "Brave";
+"mind_confident" = "Confident";
+"mind_excited" = "Excited";
+"mind_grateful" = "Grateful";
+"mind_happy" = "Happy";
+"mind_hopeful" = "Hopeful";
+"mind_joyful" = "Joyful";
+"mind_passionate" = "Passionate";
+"mind_proud" = "Proud";
+"mind_relieved" = "Relieved";
+"mind_surprised" = "Surprised";
+"mind_dim_work" = "Work";
+"mind_dim_family" = "Family";
+"mind_dim_money" = "Money";
+"mind_dim_health" = "Health";
+"mind_dim_spirituality" = "Spirituality";
+"mind_dim_tasks" = "Tasks";
+"mind_dim_weather" = "Weather";
+"mind_dim_dating" = "Dating";
+"mind_dim_community" = "Community";
+"mind_dim_education" = "Education";
+"mind_dim_friends" = "Friends";
+"mind_dim_relationships" = "Relationships";
+"mind_dim_identity" = "Identity";
+"mind_dim_partner" = "Partner";
+"mind_dim_social" = "Social";
+"mind_dim_home" = "Home";
+"mind_dim_fitness" = "Fitness";
+"addPlace" = "Add Place";
+"newPlaceName" = "Enter place name";
+"create" = "Create";
+"searchPlace" = "Search places...";
+"untitledPlace" = "Untitled Place";
+"selectOnMap" = "Select on Map";
+"addAnchor" = "Add Anchor";
+"newAnchorName" = "New Anchor";
+"oneMonth" = "1 Month";
+"threeMonths" = "3 Months";
+"oneYear" = "1 Year";
+"cancelCategory" = "Clear Category";
+
+"moreAction" = "More Actions";
+"uploadFile" = "Upload File";
+"calendar" = "Calendar";
+/* History & Time Travel */
+"jump" = "Jump";
+"jumpToDate" = "Jump to Date";
+"go" = "Go";
+"noTitle" = "No Title";
+"noTags" = "No Tags";
+"noContent" = "No Content";
+"dayEndTime" = "Daily End Time";
+"dayEndTimeDescription" = "Determine when a new day starts. Late night entries before this time belong to the previous day.";
+"allMemories" = "All Memories";
+
+/* User Profile */
+"myProfile" = "My Profile";
+"profileKernel" = "Core";
+"profileState" = "Daily State";
+"notSet" = "Not Set";
+"lastUpdated" = "Last Updated";
+
+/* Five Dimensions */
+"dim_identity" = "Identity & Physiology";
+"dim_personality" = "Personality & Psychology";
+"dim_social" = "Social & Relations";
+"dim_competence" = "Competence & Development";
+"dim_lifestyle" = "Habits & Lifestyle";
+
+/* Identity Kernel Fields */
+"field_gender" = "Gender";
+"field_birthDate" = "Birth Date";
+"field_height" = "Height";
+"field_weight" = "Weight";
+"field_bloodType" = "Blood Type";
+"field_chronicConditions" = "Chronic Conditions";
+"field_basePhysicalCondition" = "Physical Condition";
+"field_geneticTraits" = "Genetic Traits";
+"field_hometown" = "Hometown";
+"field_currentCity" = "Current City";
+"field_education" = "Education";
+"field_maritalStatus" = "Marital Status";
+
+/* Identity State Fields */
+"field_isSick" = "Sick Today";
+"field_sicknessType" = "Sickness Type";
+"field_painLocation" = "Pain Location";
+"field_bodyEnergy" = "Body Energy";
+"field_sleepQuality" = "Sleep Quality";
+"field_exerciseLevel" = "Exercise Level";
+"field_hungerLevel" = "Hunger Level";
+"field_thirstLevel" = "Thirst Level";
+"field_fatigueLevel" = "Fatigue Level";
+
+/* Personality Kernel Fields */
+"field_mbtiType" = "MBTI Type";
+"field_bigFive" = "Big Five Personality";
+"field_valuePriorities" = "Core Values";
+"field_decisionMode" = "Decision Mode";
+"field_riskPreference" = "Risk Preference";
+
+/* Personality State Fields */
+"field_happiness" = "Happiness";
+"field_anxiety" = "Anxiety";
+"field_anger" = "Anger";
+"field_calmness" = "Calmness";
+"field_moodWeather" = "Mood Weather";
+"field_moodDescription" = "Mood Description";
+"field_currentStressors" = "Current Stressors";
+"field_stressLevel" = "Stress Level";
+
+/* Social Kernel Fields */
+"field_coreRelationships" = "Core Relationships";
+"field_socialType" = "Social Type";
+"field_socialEnergy" = "Social Energy";
+"field_familyStructure" = "Family Structure";
+
+/* Social State Fields */
+"field_recentSocialFrequency" = "Recent Social Frequency";
+"field_socialSatisfaction" = "Social Satisfaction";
+"field_relationshipsImproving" = "Improving Relationships";
+"field_relationshipsTense" = "Tense Relationships";
+"field_companionshipNeed" = "Companionship Need";
+
+/* Competence Kernel Fields */
+"field_occupation" = "Occupation";
+"field_industry" = "Industry";
+"field_employmentStatus" = "Employment Status";
+"field_skills" = "Skills";
+"field_expertise" = "Expertise";
+"field_consumptionLevel" = "Consumption Level";
+"field_debtStatus" = "Debt Status";
+
+/* Competence State Fields */
+"field_workIntensity" = "Work Intensity";
+"field_workStatus" = "Work Status";
+"field_currentTasks" = "Current Tasks";
+"field_taskPressure" = "Task Pressure";
+"field_achievementStatus" = "Achievement Status";
+"field_careerSatisfaction" = "Career Satisfaction";
+
+/* Lifestyle Kernel Fields */
+"field_chronoType" = "Chrono Type";
+"field_averageSleepHours" = "Average Sleep Hours";
+"field_longTermHobbies" = "Long-term Hobbies";
+"field_hobbyIntensity" = "Hobby Intensity";
+"field_tastePreferences" = "Taste Preferences";
+"field_dietType" = "Diet Type";
+"field_foodRestrictions" = "Food Restrictions";
+
+/* Lifestyle State Fields */
+"field_currentInterests" = "Current Interests";
+"field_interestDuration" = "Interest Duration";
+"field_recentEvents" = "Recent Events";
+"field_eventImpact" = "Event Impact";
+"field_planCompletionRate" = "Plan Completion Rate";
+"field_procrastinationLevel" = "Procrastination Level";
+
+/* Enum Values - Gender */
+"enum_gender_male" = "Male";
+"enum_gender_female" = "Female";
+"enum_gender_other" = "Other";
+
+/* Enum Values - Blood Type */
+"enum_bloodType_A" = "Type A";
+"enum_bloodType_B" = "Type B";
+"enum_bloodType_AB" = "Type AB";
+"enum_bloodType_O" = "Type O";
+
+/* Enum Values - Physical Condition */
+"enum_physicalCondition_weak" = "Weak";
+"enum_physicalCondition_normal" = "Normal";
+"enum_physicalCondition_strong" = "Strong";
+
+/* Enum Values - Education */
+"enum_education_highSchool" = "High School";
+"enum_education_bachelor" = "Bachelor";
+"enum_education_master" = "Master";
+"enum_education_phd" = "PhD";
+
+/* Enum Values - Marital Status */
+"enum_maritalStatus_single" = "Single";
+"enum_maritalStatus_dating" = "Dating";
+"enum_maritalStatus_married" = "Married";
+"enum_maritalStatus_divorced" = "Divorced";
+
+/* Enum Values - Sleep Quality */
+"enum_sleepQuality_insomnia" = "Insomnia";
+"enum_sleepQuality_poor" = "Poor";
+"enum_sleepQuality_normal" = "Normal";
+"enum_sleepQuality_good" = "Good";
+
+/* Enum Values - Exercise Level */
+"enum_exerciseLevel_sedentary" = "Sedentary";
+"enum_exerciseLevel_light" = "Light";
+"enum_exerciseLevel_moderate" = "Moderate";
+"enum_exerciseLevel_intense" = "Intense";
+
+/* Enum Values - Decision Mode */
+"enum_decisionMode_logical" = "Logical";
+"enum_decisionMode_emotional" = "Emotional";
+"enum_decisionMode_balanced" = "Balanced";
+
+/* Enum Values - Risk Preference */
+"enum_riskPreference_conservative" = "Conservative";
+"enum_riskPreference_moderate" = "Moderate";
+"enum_riskPreference_adventurous" = "Adventurous";
+
+/* Enum Values - Mood Description */
+"enum_moodDescription_positive" = "Positive";
+"enum_moodDescription_neutral" = "Neutral";
+"enum_moodDescription_negative" = "Negative";
+"enum_moodDescription_zen" = "Zen";
+
+/* Enum Values - Social Type */
+"enum_socialType_loner" = "Loner";
+"enum_socialType_passive" = "Passive Social";
+"enum_socialType_socialButterfly" = "Social Butterfly";
+
+/* Enum Values - Social Energy */
+"enum_socialEnergy_introvert" = "Introvert";
+"enum_socialEnergy_ambivert" = "Ambivert";
+"enum_socialEnergy_extrovert" = "Extrovert";
+
+/* Enum Values - Family Structure */
+"enum_familyStructure_nuclear" = "Nuclear Family";
+"enum_familyStructure_extended" = "Extended Family";
+"enum_familyStructure_alone" = "Living Alone";
+"enum_familyStructure_roommates" = "Roommates";
+
+/* Enum Values - Social Frequency */
+"enum_socialFrequency_stayHome" = "Stay Home";
+"enum_socialFrequency_occasional" = "Occasional";
+"enum_socialFrequency_frequent" = "Frequent";
+
+/* Enum Values - Companionship Need */
+"enum_companionshipNeed_needAlone" = "Need Alone Time";
+"enum_companionshipNeed_neutral" = "Neutral";
+"enum_companionshipNeed_needCompany" = "Need Company";
+
+/* Enum Values - Employment Status */
+"enum_employmentStatus_employed" = "Employed";
+"enum_employmentStatus_student" = "Student";
+"enum_employmentStatus_unemployed" = "Unemployed";
+"enum_employmentStatus_freelance" = "Freelance";
+
+/* Enum Values - Consumption Level */
+"enum_consumptionLevel_low" = "Low";
+"enum_consumptionLevel_medium" = "Medium";
+"enum_consumptionLevel_high" = "High";
+
+/* Enum Values - Debt Status */
+"enum_debtStatus_none" = "None";
+"enum_debtStatus_light" = "Light";
+"enum_debtStatus_moderate" = "Moderate";
+"enum_debtStatus_heavy" = "Heavy";
+
+/* Enum Values - Work Intensity */
+"enum_workIntensity_slacking" = "Slacking";
+"enum_workIntensity_normal" = "Normal";
+"enum_workIntensity_overtime" = "Overtime";
+"enum_workIntensity_hellMode" = "Hell Mode";
+
+/* Enum Values - Work Status */
+"enum_workStatus_vacation" = "Vacation";
+"enum_workStatus_normal" = "Normal";
+"enum_workStatus_busy" = "Busy";
+"enum_workStatus_crunchTime" = "Crunch Time";
+
+/* Enum Values - Achievement Status */
+"enum_achievementStatus_frustrated" = "Frustrated";
+"enum_achievementStatus_neutral" = "Neutral";
+"enum_achievementStatus_praised" = "Praised";
+
+/* Enum Values - Chrono Type */
+"enum_chronoType_morning" = "Morning Person";
+"enum_chronoType_neutral" = "Neutral";
+"enum_chronoType_night" = "Night Owl";
+
+/* Enum Values - Hobby Intensity */
+"enum_hobbyIntensity_light" = "Light";
+"enum_hobbyIntensity_moderate" = "Moderate";
+"enum_hobbyIntensity_intense" = "Intense";
+
+/* Enum Values - Diet Type */
+"enum_dietType_omnivore" = "Omnivore";
+"enum_dietType_vegetarian" = "Vegetarian";
+"enum_dietType_carnivore" = "Carnivore";
+
+/* Enum Values - Event Impact */
+"enum_eventImpact_positive" = "Positive";
+"enum_eventImpact_neutral" = "Neutral";
+"enum_eventImpact_negative" = "Negative";
+
+/* Enum Values - Core Values */
+"enum_coreValue_freedom" = "Freedom";
+"enum_coreValue_family" = "Family";
+"enum_coreValue_money" = "Money";
+"enum_coreValue_health" = "Health";
+"enum_coreValue_achievement" = "Achievement";
+"enum_coreValue_love" = "Love";
+"enum_coreValue_friendship" = "Friendship";
+"enum_coreValue_knowledge" = "Knowledge";
+"enum_coreValue_creativity" = "Creativity";
+"enum_coreValue_security" = "Security";
+
+/* Big Five Personality */
+"bigFive_openness" = "Openness";
+"bigFive_conscientiousness" = "Conscientiousness";
+"bigFive_extraversion" = "Extraversion";
+"bigFive_agreeableness" = "Agreeableness";
+"bigFive_neuroticism" = "Neuroticism";
+
+/* Units */
+"unit_cm" = "cm";
+"unit_kg" = "kg";
+"unit_hours" = "hours";
+"unit_days" = "days";
+"unit_people" = "people";
+
+/* Boolean Values */
+"bool_yes" = "Yes";
+"bool_no" = "No";
+
+
+/* Relationship Management */
+"searchPeople" = "Search people...";
+"noProfiles" = "No profiles yet";
+"basicInfo" = "Basic Info";
+"relationshipInfo" = "Relationship Info";
+"interactionStats" = "Interaction Stats";
+"typeSpecificInfo" = "Details";
+"notesAndTags" = "Notes & Tags";
+"totalInteractions" = "Total Interactions";
+"lastInteraction" = "Last Interaction";
+"interactionFrequency" = "Interaction Frequency";
+"intimacyLevel" = "Intimacy Level";
+"emotionalConnection" = "Emotional Connection";
+"noNotes" = "No notes";
+"deleteConfirmTitle" = "Confirm Delete";
+"deleteConfirmMessage" = "Are you sure you want to delete this profile? This action cannot be undone.";
+"editRelationship" = "Edit Profile";
+"newRelationship" = "New Profile";
+"displayName" = "Display Name";
+"displayNamePlaceholder" = "Enter name";
+"avatar" = "Avatar";
+"relationshipType" = "Relationship Type";
+"realName" = "Real Name";
+"optional" = "Optional";
+"privacyWarning" = "Real name will be encrypted and stored locally only";
+"selectEmoji" = "Select Emoji";
+"tags" = "Tags";
+"tagsPlaceholder" = "Separate with commas";
+"notes" = "Notes";
+
+/* Companion Types */
+"companion_alone" = "Alone";
+"companion_partner" = "Partner";
+"companion_family" = "Family";
+"companion_friends" = "Friends";
+"companion_colleagues" = "Colleagues";
+"companion_online_friends" = "Online Friends";
+"companion_pet" = "Pet";
+
+/* Interaction Frequency */
+"interaction_daily" = "Daily";
+"interaction_frequent" = "Frequent";
+"interaction_regular" = "Regular";
+"interaction_occasional" = "Occasional";
+"interaction_rare" = "Rare";
+"interaction_veryRare" = "Very Rare";
+
+/* Partner Fields */
+"partnerInfo" = "Partner Info";
+"partnerStatus" = "Relationship Status";
+"partnerStatus_dating" = "Dating";
+"partnerStatus_married" = "Married";
+"partnerStatus_separated" = "Separated";
+"anniversaryMet" = "Met Date";
+"anniversaryDating" = "Dating Anniversary";
+"anniversaryMarried" = "Wedding Anniversary";
+
+/* Family Fields */
+"familyInfo" = "Family Info";
+"familyRole" = "Family Role";
+"familyRole_parent" = "Parent";
+"familyRole_child" = "Child";
+"familyRole_sibling" = "Sibling";
+"familyRole_other" = "Other";
+"livingTogether" = "Living Together";
+
+/* Friend Fields */
+"friendInfo" = "Friend Info";
+"friendIntimacy" = "Closeness";
+"friendIntimacy_acquaintance" = "Acquaintance";
+"friendIntimacy_friend" = "Friend";
+"friendIntimacy_closeFriend" = "Close Friend";
+"friendIntimacy_bestFriend" = "Best Friend";
+"yearsKnown" = "Years Known";
+
+/* Colleague Fields */
+"colleagueInfo" = "Colleague Info";
+"workRelationship" = "Work Relationship";
+"workRelationship_superior" = "Superior";
+"workRelationship_subordinate" = "Subordinate";
+"workRelationship_peer" = "Peer";
+"workRelationship_partner" = "Partner";
+"company" = "Company";
+"department" = "Department";
+
+/* Online Friend Fields */
+"onlineFriendInfo" = "Online Friend Info";
+"platform" = "Platform";
+"platformPlaceholder" = "e.g., Twitter, Discord";
+"hasMetInPerson" = "Met in Person";
+
+/* Pet Fields */
+"petInfo" = "Pet Info";
+"petType" = "Pet Type";
+"petType_cat" = "Cat";
+"petType_dog" = "Dog";
+"petType_bird" = "Bird";
+"petType_fish" = "Fish";
+"petType_other" = "Other";
+"petAge" = "Age";
+"petBreed" = "Breed";
+
+/* Units */
+"unit_years" = "years";
+
+/* Additional UI Labels */
+"dayEndTimeWarning" = "Settings over 12:00 will be treated as 00:00";
+
+// MARK: - Daily Tracker
+
+// Step 1: Body Energy
+"body_energy" = "Body Energy";
+"body_collapsed" = "Collapsed";
+"body_exhausted" = "Exhausted";
+"body_tired" = "Tired";
+"body_normal" = "Normal";
+"body_fresh" = "Fresh";
+"body_energetic" = "Energetic";
+"body_unstoppable" = "Unstoppable";
+
+// Step 1: Mood Weather
+"mood_weather" = "Mood Weather";
+
+// Step 2: Activity Groups
+"tracker_status" = "Daily Status";
+"tracker_activities" = "Activities";
+"tracker_details" = "Details";
+"tracker_add_details" = "Add Details";
+"activity_group_competence" = "Competence & Habits";
+"activity_group_identity" = "Identity & Personality";
+"activity_group_social" = "Social & Relations";
+
+// Step 2: Activity Types
+"activity_work" = "Work";
+"activity_study" = "Study";
+"activity_housework" = "Housework";
+"activity_shopping" = "Shopping";
+"activity_errands" = "Errands";
+"activity_medical" = "Medical";
+"activity_internet" = "Internet";
+"activity_reading" = "Reading";
+"activity_creativity" = "Creativity";
+"activity_relax" = "Relax";
+"activity_gaming" = "Gaming";
+"activity_exercise" = "Exercise";
+"activity_outdoors" = "Outdoors";
+"activity_movies_tv" = "Movies/TV";
+"activity_date" = "Date";
+"activity_walk_pet" = "Walk Pet";
+"activity_party" = "Party";
+"activity_travel" = "Travel";
+
+// Step 3: Companion Types
+"companion_alone" = "Alone";
+"companion_partner" = "Partner";
+"companion_family" = "Family";
+"companion_friends" = "Friends";
+"companion_colleagues" = "Colleagues";
+"companion_online_friends" = "Online Friends";
+"companion_pet" = "Pet";
+
+// Step 3: Context
+"context_who" = "With";
+"context_what" = "What";
+"context_placeholder" = "What did you do...";
+"context_people" = "Select People";
+"context_companion_type" = "Companion Type";
+"context_tags" = "Tags";
+"context_new_tag" = "Add new tag...";
+"context_notes" = "Notes";
+"context_notes_placeholder" = "Additional notes (optional)";
+"context_add_person" = "Add New Person";
+"context_person_name" = "Name";
+"save_as_tag" = "Save as Tag";
+
+// Summary
+"tracker_summary" = "Daily Status";
+"tracker_completed" = "Completed";
+
+
+// MARK: - Narrative Profile
+
+// Profile
+"Profile.NotSet" = "Not set";
+"Profile.NoTags" = "No tags";
+"Profile.StaticCore" = "Static Core";
+"Profile.RecentPortrait" = "Recent Portrait";
+"Profile.UpdateHistory" = "Update History";
+"Profile.SelfTags" = "Self Description Tags";
+"Profile.AddTag" = "Add Tag";
+"Profile.DataStats" = "Data Statistics";
+
+// Relationship
+"Relationship.NoMentions" = "No interactions yet";
+"Relationship.MentionCount" = "%d mentions";
+"Relationship.Narrative" = "Relationship Description";
+"Relationship.NarrativePlaceholder" = "Describe your relationship...";
+"Relationship.FactAnchors" = "Fact Anchors";
+"Relationship.FirstMeeting" = "First Meeting Date";
+"Relationship.Anniversaries" = "Anniversaries";
+"Relationship.SharedExperiences" = "Shared Experiences";
+"Relationship.Mentions" = "Mentions";
+"Relationship.AddAnniversary" = "Add Anniversary";
+"Relationship.AddExperience" = "Add Shared Experience";
+"Relationship.AnniversaryName" = "Anniversary Name";
+"Relationship.AnniversaryDate" = "Date (MM-DD)";
+"Relationship.ExperiencePlaceholder" = "Describe the shared experience...";
+
+// Mention Source
+"mention_source_diary" = "Diary";
+"mention_source_dailyTracker" = "Daily Tracker";
+"mention_source_aiConversation" = "AI Conversation";
+
+
+// MARK: - AI Conversation Mode
+
+// Placeholder and Input
+"AI.Placeholder" = "Chat with AI...";
+
+// Welcome Screen
+"AI.Welcome.Title" = "Hello, I'm Jingever AI";
+"AI.Welcome.Subtitle" = "I can help you review memories, analyze emotions, or just chat";
+
+// Conversation Starters
+"AI.Starter.1" = "Help me review my recent mood changes";
+"AI.Starter.2" = "Analyze my recent life status";
+"AI.Starter.3" = "I want to talk about what happened recently";
+"AI.Starter.4" = "Give me some suggestions for today";
+
+// Sidebar
+"AI.SearchConversations" = "Search conversations...";
+"AI.NoConversations" = "No conversations yet";
+"AI.StartConversation" = "Start Conversation";
+"AI.NewConversation" = "New Conversation";
+"AI.History.Title" = "Conversations";
+"AI.History.Empty" = "No conversations yet";
+"AI.SelectModel" = "Select Model";
+
+// Thinking Mode
+"AI.ThinkingProcess" = "Thinking Process";
+"AI.Thinking" = "Thinking...";
+"AI.Parsing" = "Parsing...";
+
+// Attachments
+"AI.Audio" = "Voice Message";
+
+// Settings
+"AI.DefaultMode" = "Default Mode";
+"AI.Mode.Journal" = "Journal";
+"AI.Mode.AI" = "AI Chat";
+"AI.ThinkingMode" = "Show Thinking Process";
+"AI.APIKey" = "API Key";
+"AI.EnterAPIKey" = "Enter API Key";
+"AI.APIKeyDescription" = "Enter your API key to use AI conversation features";
+"AI.Configured" = "Configured";
+"AI.NotConfigured" = "Not Configured";
+
+// Conversation
+"AI.Conversation.Untitled" = "New Conversation";
+
+// Summary Card
+"AI.SummaryCard.Hint" = "Tap to expand conversation";
+
+// Date
+"Date.Today" = "Today";
+"Date.Yesterday" = "Yesterday";
+
+// Actions
+"Action.Retry" = "Retry";
+"Action.Save" = "Save";
+"Action.Cancel" = "Cancel";
+"Action.Back" = "Back";
+
+// Code Blocks
+"AI.Code.Copy" = "Copy";
+"AI.Code.Copied" = "Copied";
+"AI.Code.CopyHint" = "Tap to copy code to clipboard";
+
+// Message Actions
+"AI.Message.Copy" = "Copy Message";
+"AI.Message.Regenerate" = "Regenerate";
+"AI.Message.CopyWithThinking" = "Copy with Thinking";
+
+// AI Settings Screen
+"AI.Settings.Title" = "AI Settings";
+"AI.Settings.Section" = "AI Assistant";
+"AI.Settings.APISection" = "API Configuration";
+"AI.Settings.EnterAPIKey" = "Enter API Key";
+"AI.Settings.APIFooter" = "Your API key is stored securely and never shared.";
+"AI.Settings.DisplaySection" = "Display Options";
+"AI.Settings.ShowThinking" = "Show Thinking Process";
+"AI.Settings.ThinkingFooter" = "Display AI's reasoning steps before the final response.";
+"AI.Settings.ModelSection" = "Model Selection";
+"AI.Settings.Model" = "Model";
+"AI.Error.InvalidAPIKey" = "Please enter a valid API key";
+"AI.Error.ParsingFailed" = "Failed to parse message content";
+"Action.Done" = "Done";
+
+// Profile Dimensions
+"Dimension.Identity" = "Identity & Physical";
+"Dimension.Personality" = "Personality & Psychology";
+"Dimension.Social" = "Social & Relationships";
+"Dimension.Competence" = "Competence & Development";
+"Dimension.Lifestyle" = "Habits & Lifestyle";
+"Dimension.RelationshipBasic" = "Relationship Basic Info";
+"Dimension.RelationshipNature" = "Relationship Nature";
+"Dimension.RelationshipHistory" = "Relationship History";
+"Dimension.RelationshipFacts" = "Relationship Fact Anchors";
+
+// Source Types
+"SourceType.ManualInput" = "Manual Input";
+"SourceType.DiaryExtraction" = "Diary Extraction";
+"SourceType.AIConversation" = "AI Conversation";
+"SourceType.DailyTracker" = "Daily Tracker";
+"SourceType.Migration" = "Data Migration";
+"SourceType.AIGenerated" = "AI Generated";
+
+
+
+// Relationship Type-Specific Fields
+"relationship_specific_info" = "Specific Information";
+"relationship_detail" = "Relationship Detail";
+"relationship_nature" = "Relationship Nature";
+"relationship_fact_anchors" = "Fact Anchors";
+"relationship_mentions" = "Interaction Records";
+
+// Partner
+"relationship_partner_status" = "Relationship Status";
+"relationship_anniversary_met" = "First Met";
+"relationship_anniversary_dating" = "Started Dating";
+"relationship_anniversary_married" = "Wedding Anniversary";
+
+// Family
+"relationship_family_role" = "Family Role";
+"relationship_living_together" = "Living Together";
+
+// Friends
+"relationship_friend_intimacy" = "Intimacy Level";
+"relationship_years_known" = "Years Known";
+
+// Colleagues
+"relationship_work_relationship" = "Work Relationship";
+"relationship_company" = "Company";
+"relationship_department" = "Department";
+
+// Online Friends
+"relationship_platform" = "Platform";
+"relationship_has_met_in_person" = "Met in Person";
+
+// Pet
+"relationship_pet_type" = "Pet Type";
+"relationship_pet_age" = "Age";
+"relationship_pet_breed" = "Breed";
+
+// Mention Timeline
+"mention_timeline" = "Interaction Timeline";
+"first_mention" = "First Mention";
+"latest_mention" = "Latest Mention";
+"no_mentions_found" = "No Interaction Records";
+"no_mentions_description" = "Interaction records will appear here when you mention this person in your diary";
+"view_diary" = "View Diary";
+"view_more" = "View More";
+
+// Time Filters
+"filter_all_time" = "All Time";
+"filter_last_month" = "Last Month";
+"filter_last_three_months" = "Last 3 Months";
+"filter_last_year" = "Last Year";
+
+
+
+
+// Data Export
+"Export.Title" = "Data Export";
+"Export.Options" = "Export Options";
+"Export.DateRange" = "Date Range";
+"Export.Range.Last7Days" = "Last 7 Days";
+"Export.Range.Last30Days" = "Last 30 Days";
+"Export.Range.Last90Days" = "Last 90 Days";
+"Export.Range.AllTime" = "All Time";
+"Export.AvailableDates" = "Available Dates";
+"Export.NoData" = "No data available in this date range";
+"Export.Footer" = "Tap export button to share or save data to file";
+"Export.Action" = "Export";
+"Export.Error" = "Export Failed";
+"Action.Close" = "Close";
+"Action.OK" = "OK";
+
+// MARK: - Insight Feature
+"Insight.Title" = "Data Statistics";
+"Insight.Loading" = "Loading...";
+"Insight.Engine" = "Insight Engine";
+"Insight.Overview" = "Overview";
+"Insight.Streak" = "Streak";
+"Insight.TotalDays" = "Total Days";
+"Insight.TotalEntries" = "Total Entries";
+"Insight.TotalWords" = "Total Words";
+
+// Zone 2: Feature Usage
+"Insight.FeatureUsage" = "Feature Usage";
+"Insight.AIConversation" = "AI Conversation";
+"Insight.AIConversationValue" = "%d conversations / %d messages";
+"Insight.DailyTracker" = "Daily Tracker";
+"Insight.DailyTrackerValue" = "%d days tracked";
+"Insight.MindState" = "Mind State";
+"Insight.MindStateValue" = "%d records";
+"Insight.TimeCapsule" = "Time Capsule";
+"Insight.TimeCapsuleValue" = "%d capsules / %d pending";
+"Insight.LoveLog" = "Love Log";
+"Insight.LoveLogValue" = "%d records";
+"Insight.Relationships" = "Relationships";
+"Insight.RelationshipsValue" = "%d relationships";
+
+// Zone 3: Data Insight
+"Insight.DataInsight" = "Data Insight";
+"Insight.HourDistribution" = "Entry Time Distribution";
+"Insight.ActivityDistribution" = "Activity Distribution";
+"Insight.MoodTrend" = "Mood Trend";
+"Insight.TopLocations" = "Top Locations";
+"Insight.LoveSources" = "Love Sources";
+"Insight.NoData" = "No Data";
+"Insight.AndMore" = "and more...";
+"Insight.MoodPositive" = "Positive";
+"Insight.MoodNeutral" = "Neutral";
+"Insight.MoodNegative" = "Negative";
+
+// Activity Types
+"Activity.Work" = "Work";
+"Activity.Exercise" = "Exercise";
+"Activity.Social" = "Social";
+"Activity.Leisure" = "Leisure";
+"Activity.Learning" = "Learning";
+"Activity.Rest" = "Rest";
+
+// MARK: - Profile Section Redesign
+
+// Section Headers
+"Profile.Section.Features" = "Features & Services";
+"Profile.Section.Preferences" = "Preferences";
+"Profile.Section.Privacy" = "Privacy & Security";
+"Profile.Section.Support" = "Support & Feedback";
+"Profile.Section.About" = "About";
+
+// User Header
+"Profile.EditProfile" = "Edit Profile";
+"Profile.SetNickname" = "Set Nickname";
+"Profile.TapToEdit" = "Tap to edit profile";
+"Profile.TapToChangeAvatar" = "Tap to change avatar";
+"Profile.Nickname" = "Nickname";
+"Profile.NicknamePlaceholder" = "Enter nickname";
+"Profile.BasicInfo" = "Basic Information";
+"Profile.CareerInfo" = "Career Information";
+"Profile.HometownPlaceholder" = "Enter hometown";
+"Profile.CurrentCityPlaceholder" = "Enter current city";
+"Profile.OccupationPlaceholder" = "Enter occupation";
+"Profile.IndustryPlaceholder" = "Enter industry";
+"Profile.NotSet" = "Not set";
+"Profile.EditHint" = "These are your basic information that rarely changes. AI will automatically extract skills, values, and other dynamic information from your diary, which can be viewed in Life Review.";
+
+// Menu Items
+"Profile.LifeReview" = "Life Review";
+"Profile.MyBonds" = "My Bonds";
+"Profile.Appearance" = "Appearance";
+"Profile.PrivacyPolicy" = "Privacy Policy";
+"Profile.HelpCenter" = "Help Center";
+"Profile.Feedback" = "Feedback";
+"Profile.RateUs" = "Rate Us";
+
+// Placeholder Screens
+"Profile.ComingSoon" = "Coming Soon...";
+"Profile.FeatureInDevelopment" = "This feature is under development, stay tuned";
+
+// Appearance Settings
+"Appearance.Title" = "Appearance";
+"Appearance.Light" = "Light";
+"Appearance.Dark" = "Dark";
+"Appearance.System" = "System";
+
+
+// MARK: - Authentication Errors
+
+"auth.error.invalidEmail" = "Invalid email format";
+"auth.error.invalidPassword" = "Password does not meet requirements";
+"auth.error.emailAlreadyExists" = "This email is already registered";
+"auth.error.invalidCredentials" = "Incorrect email or password";
+"auth.error.accountDisabled" = "Account has been disabled";
+"auth.error.emailNotFound" = "Email not registered";
+"auth.error.sessionExpired" = "Session expired, please log in again";
+"auth.error.tokenRefreshFailed" = "Token refresh failed";
+"auth.error.appleSignInCancelled" = "Apple Sign In cancelled";
+"auth.error.appleSignInFailed" = "Apple Sign In failed";
+"auth.error.networkError" = "Network connection failed, please check your network";
+"auth.error.serviceUnavailable" = "Service temporarily unavailable, please try again later";
+"auth.error.rateLimited" = "Too many requests, please try again later";
+"auth.error.keychainError" = "Secure storage error";
+"auth.error.unknown" = "An unknown error occurred";
+"auth.error.usernameAlreadyExists" = "Username already exists";
+"auth.error.invalidVerificationCode" = "Invalid or expired verification code";
+"auth.error.invalid2FACode" = "Invalid two-factor authentication code";
+"auth.error.usernameTooShort" = "Username must be at least 3 characters";
+
+
+// MARK: - Authentication UI
+
+"auth.email" = "Email";
+"auth.username" = "Username";
+"auth.password" = "Password";
+"auth.confirmPassword" = "Confirm Password";
+"auth.signIn" = "Sign In";
+"auth.signUp" = "Sign Up";
+"auth.signOut" = "Sign Out";
+"auth.forgotPassword" = "Forgot Password?";
+"auth.noAccount" = "Don't have an account?";
+"auth.hasAccount" = "Already have an account?";
+"auth.or" = "or";
+"auth.resetPassword" = "Reset Password";
+"auth.sendResetEmail" = "Send Reset Email";
+"auth.resetEmailSent" = "Reset email sent. Please check your inbox.";
+"auth.resetEmailDescription" = "Enter your email address and we'll send you a password reset link.";
+"auth.passwordMismatch" = "Passwords do not match";
+"auth.signUpSuccess" = "Registration successful. Please sign in.";
+"auth.signOut.confirm.title" = "Confirm Sign Out";
+"auth.signOut.confirm.message" = "Are you sure you want to sign out?";
+
+// MARK: - 2FA UI
+
+"auth.2fa.title" = "Two-Factor Authentication";
+"auth.2fa.description" = "Enter the 6-digit code from your authenticator app";
+"auth.2fa.code" = "Verification Code";
+"auth.2fa.verify" = "Verify";
+"auth.2fa.backToLogin" = "Back to Login";
+
+// MARK: - Registration UI
+
+"auth.verificationCode" = "Verification Code";
+"auth.verificationCode.placeholder" = "Enter 6-digit code";
+"auth.sendCode" = "Send Code";
+"auth.codeSent" = "Code Sent";
+"auth.affCode" = "Invitation Code (Optional)";
+"auth.affCode.placeholder" = "Enter invitation code";
+
+
+// MARK: - Model Tier Selector
+
+"AI.ModelTier" = "Model Tier";
+"AI.Options" = "Options";
+"AI.ThinkingMode" = "Thinking Mode";
+"AI.ThinkingMode.Description" = "AI will show reasoning process, suitable for complex problems";

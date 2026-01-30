@@ -1,0 +1,1165 @@
+"memoryMuseum" = "记忆博物馆";
+"searchCollection" = "搜索收藏...";
+"collectionStatus" = "收集进度";
+"noArtifacts" = "暂无藏品";
+"lockedMemory" = "未解锁记忆";
+"patternDetected" = "发现线索";
+"evidenceChain" = "线索链";
+"current" = "当前";
+"target" = "目标";
+"tapToJump" = "点击跳转至记忆";
+"entryLabel" = "条目";
+"moduleLabel" = "模块";
+"configLabel" = "配置";
+"artifactSource" = "成就来源";
+"streak" = "连续记录";
+"days" = "总天数";
+"entries" = "总条目";
+"dominant" = "主导情绪";
+"activityDensity" = "活跃密度";
+"week" = "周";
+"month" = "月";
+"year" = "年";
+"all" = "全部";
+"mood" = "情绪";
+"energy" = "能量";
+"people" = "人物";
+"location" = "地点";
+"recentFocus" = "近期关注";
+"insightEngine" = "Insight Engine";
+"calm" = "平静";
+"happy" = "快乐";
+"anxious" = "焦虑";
+"high" = "高";
+"low" = "低";
+"osModules" = "OS 模块";
+"system" = "系统";
+"privacy" = "隐私设置";
+"notifications" = "通知";
+"language" = "语言";
+"dataSync" = "数据同步";
+"managePlaces" = "地点管理";
+"locationManagement" = "位置管理";
+"peopleManagement" = "人员管理";
+"physicalAnchors" = "物理锚点";
+"editPlace" = "编辑地点";
+"placeName" = "地点名称";
+"appearance" = "外观";
+"deleteAnchor" = "删除锚点";
+"deletePlace" = "删除地点";
+"meters" = "米";
+"deviceAccess" = "设备访问";
+"privacyTitle" = "隐私设置";
+"privacyFooter" = "我们仅在必要时请求权限，并严格用于提升你的记录体验。";
+"photoLibrary" = "照片库";
+"permPhotoDesc" = "用于选择与记录相关的图片";
+"camera" = "相机";
+"permCameraDesc" = "用于拍摄并附加照片或视频";
+"location" = "定位";
+"permLocationDesc" = "用于匹配地点并生成旅程记录";
+"grantAccess" = "授予访问";
+"openSettings" = "打开设置";
+"openSettingsDesc" = "由于系统限制，请前往设置页面手动调整权限。";
+"microphone" = "麦克风";
+"permMicDesc" = "用于语音记录与转写";
+"subNoticeTitle" = "订阅须知";
+"subNotice1Title" = "订阅与取消";
+"subNotice1Body" = "你可以随时取消订阅，取消后当期结束不再续费。";
+"subNotice2Title" = "隐私与数据";
+"subNotice2Body" = "订阅不会改变你的隐私设置，所有数据仅用于本人。";
+"subNotice3Title" = "服务变更";
+"subNotice3Body" = "我们可能调整功能与价格，并提前在应用内告知。";
+"proFeatures" = "Pro 功能";
+"weeklyAnalysis" = "每周分析";
+"fullCharts" = "完整图表";
+"galleryAccess" = "成就馆访问";
+"unlimitedCapsules" = "无限胶囊";
+"subscribe" = "订阅";
+"priceText" = " ¥29/月";
+"planActive" = "已激活";
+"subscriptionNoticeLabel" = "订阅须知";
+"pushNotifications" = "推送通知";
+"sounds" = "声音";
+"badges" = "角标";
+"dailyReminder" = "每日提醒";
+"reminderTime" = "提醒时间";
+"lifeInsight" = "生命洞察";
+"insightPlan" = "智镜会员计划";
+"gallery" = "成就馆";
+"componentLibrary" = "组件库";
+"inputs" = "输入组件";
+"charts" = "图表组件";
+"media" = "媒体组件";
+"lists" = "列表组件";
+"journal" = "日记原子";
+"componentAtomHeader" = "条目头部";
+"componentAtomTimestamp" = "时间戳";
+"componentAtomContextReply" = "上下文回复";
+"componentLocationBadgeMapped" = "位置徽章（已映射）";
+"componentLocationBadgeRaw" = "位置徽章（原始）";
+"componentLocationBadgeNoPermission" = "位置徽章（无权限）";
+"componentMoleculeSealed" = "封存记忆";
+"componentMoleculeConnection" = "被提及";
+"componentMoleculeReview" = "回顾条目";
+"componentAchievementCard" = "成就卡片";
+"componentSceneBlock" = "场景块";
+"componentJourneyBlockView" = "旅程块";
+"componentJournalRow" = "日记行";
+"componentDockContainer" = "输入坞";
+"componentRecordingBar" = "录音条";
+"componentOverviewCard" = "概览卡片";
+"componentRingChart" = "环形图";
+"componentHeatmapGrid" = "热力图";
+"componentImageEntry" = "图片条目";
+"componentAudioEntry" = "音频条目";
+"componentListRow" = "列表行";
+"componentToggleSwitch" = "切换开关";
+"photo" = "图片";
+"file" = "文件";
+"timeCapsule" = "时间胶囊";
+"about" = "关于";
+"searchMemory" = "搜索记忆...";
+"backToToday" = "回到今天";
+"placeholder" = "记录此刻...";
+"edit" = "编辑";
+"save" = "保存";
+"done" = "完成";
+"cancel" = "取消";
+"nameThisPlace" = "标记此地";
+"locationNamePlaceholder" = "例如：家、公司、秘密基地";
+"connectionMessage" = "在昨天的沉默中，{sender} 提到了你。";
+"past" = "往昔";
+"resonanceStream" = "共鸣流";
+"newCapsule" = "新建胶囊";
+"text" = "文字";
+"img" = "图片";
+"voice" = "语音";
+"unlockDate" = "开启日期";
+"sealCapsule" = "封存胶囊";
+"writeToFuture" = "写给未来...";
+"timelineTitle" = "时间轴";
+"historyTitle" = "历史";
+"profileTitle" = "个人中心";
+"membership" = "会员";
+"subscriptionInfo" = "订阅信息";
+"dataMaintenance" = "数据维护";
+"locations" = "地点";
+"componentGallery" = "组件库";
+"enableAnalytics" = "启用分析";
+"enableCrashReports" = "启用崩溃上报";
+"enableLocationServices" = "启用定位服务";
+"clearCache" = "清除缓存";
+"reindexData" = "重建索引";
+"exportData" = "导出数据";
+"importData" = "导入数据";
+"comingSoon" = "敬请期待";
+"mappedLocations" = "已映射地点";
+"latLngFormat" = "纬度: %@, 经度: %@";
+"radiusMetersFormat" = "半径 %@ 米";
+"appVersion" = "版本";
+"buildNumber" = "构建";
+"currentPlan" = "当前计划";
+"upgradePlan" = "升级计划";
+"manageSubscription" = "管理订阅";
+"statusActive" = "已激活";
+"statusInactive" = "未激活";
+"inbox" = "收件箱";
+"memoriesPast" = "条过往记忆";
+"oneYearAgo" = "1 年前";
+"twoYearsAgo" = "2 年前";
+"yearsAgoSuffix" = " 年前";
+"moreSuffixShort" = " 更多";
+"yearSuffix" = "年前";
+"artifactLabel" = "成就标记";
+"mixedLabel" = "混合";
+"categoryLabel" = "类别";
+"am" = "上午";
+"pm" = "下午";
+"holdToSpeak" = "按住说话";
+"Voice.ReleaseToSend" = "松开发送";
+"Voice.SlideToCancel" = "← 滑动取消";
+"Voice.SlideUpToCancel" = "↑ 上滑取消";
+"Voice.ReleaseToCancel" = "松开取消";
+"Voice.ReleaseToSend" = "松开发送";
+"Voice.ReleaseToEdit" = "松开编辑";
+"Voice.Recording" = "录音中...";
+"Voice.ReleaseToSend" = "松开 发送";
+"Voice.ReleaseToEdit" = "松开 编辑";
+"Voice.SlideHere" = "滑到这里";
+"Voice.ToText" = "转文字";
+"replyingTo" = "正在回复";
+"sealedMemory" = "封存的记忆";
+"unlocksOn" = "将于 %@ 开启";
+"sentTo" = "发送至 %@";
+"noteFrom" = "%@ 批注";
+"daysSuffixShort" = "天";
+"futureLabel" = "未来";
+"unknownLabel" = "未知";
+"someone" = "某人";
+"fromThePast" = "来自过去";
+"repliedToCapsule" = "回复了时间胶囊";
+"contextLabel" = "当天的记录";
+"echoesLabel" = "回响";
+"waitingEchoes" = "等待回响...";
+"appendReply" = "追加回复";
+"writeReply" = "写下回复";
+"silenceTimeline" = "时光之河静默...";
+"noImageSource" = "未提供图片链接";
+"dataNotFound" = "数据未找到";
+"record" = "记录";
+"dream" = "梦境";
+"idea" = "灵感";
+"emotion" = "情绪";
+"work" = "工作";
+"social" = "社交";
+"media" = "媒体";
+"other" = "其他";
+"health" = "健康";
+"life" = "生活";
+"connection" = "被提及";
+"rawLabel" = "(原始)";
+"basicComponents" = "基础组件";
+"prev" = "上一步";
+"next" = "下一步";
+"mind_title" = "心境记录";
+"mind_select_intensity" = "你今天的状态如何？";
+"mind_select_labels" = "哪一项可以描述你的感受？";
+"mind_select_influences" = "对你影响最大的是？";
+"mind_cat_health" = "健康与健身";
+"mind_cat_relationships" = "关系与亲密";
+"mind_cat_identity" = "身份与心灵";
+"mind_cat_tasks" = "事务与责任";
+"mind_cat_social" = "社交与社群";
+"mind_cat_environment" = "环境与事实";
+"mind_swipe_up_to_save" = "上滑保存记录";
+"mind_very_unpleasant" = "非常不愉快";
+"mind_unpleasant" = "不愉快";
+"mind_slightly_unpleasant" = "略不愉快";
+"mind_neutral" = "中性";
+"mind_slightly_pleasant" = "略愉快";
+"mind_pleasant" = "愉快";
+"mind_very_pleasant" = "非常愉快";
+"mind_angry" = "愤怒";
+"mind_anxious" = "焦虑";
+"mind_ashamed" = "羞愧";
+"mind_disappointed" = "失望";
+"mind_discouraged" = "沮丧";
+"mind_disgusted" = "厌恶";
+"mind_embarrassed" = "尴尬";
+"mind_frustrated" = "沮丧";
+"mind_guilty" = "内疚";
+"mind_hopeless" = "绝望";
+"mind_irritated" = "恼怒";
+"mind_jealous" = "嫉妒";
+"mind_lonely" = "孤独";
+"mind_sad" = "悲伤";
+"mind_scared" = "害怕";
+"mind_stressed" = "压力大";
+"mind_worried" = "担心";
+"mind_annoyed" = "烦躁";
+"mind_drained" = "疲惫";
+"mind_overwhelmed" = "不堪重负";
+"mind_calm" = "平静";
+"mind_content" = "满足";
+"mind_indifferent" = "漠不关心";
+"mind_peaceful" = "平和";
+"mind_satisfied" = "满足";
+"mind_amazed" = "惊奇";
+"mind_amused" = "有趣";
+"mind_brave" = "勇敢";
+"mind_confident" = "自信";
+"mind_excited" = "兴奋";
+"mind_grateful" = "感激";
+"mind_happy" = "快乐";
+"mind_hopeful" = "有希望";
+"mind_joyful" = "喜悦";
+"mind_passionate" = "热情";
+"mind_proud" = "自豪";
+"mind_relieved" = "宽慰";
+"mind_surprised" = "惊讶";
+"mind_dim_work" = "工作";
+"mind_dim_family" = "家人";
+"mind_dim_money" = "金钱";
+"mind_dim_health" = "健康";
+"mind_dim_spirituality" = "灵性";
+"mind_dim_tasks" = "任务";
+"mind_dim_weather" = "天气";
+"mind_dim_dating" = "约会";
+"mind_dim_community" = "社群";
+"mind_dim_education" = "教育";
+"mind_dim_friends" = "朋友";
+"mind_dim_relationships" = "关系";
+"mind_dim_identity" = "身份";
+"mind_dim_partner" = "伴侣";
+"mind_dim_social" = "社交";
+"mind_dim_home" = "家庭/家居";
+"mind_dim_fitness" = "健身";
+"componentInputQuickActions" = "快捷操作栏";
+"ok" = "好的";
+"permPhotoDenied" = "无照片权限，请在隐私设置中开启";
+"permCameraDenied" = "无相机权限，请在隐私设置中开启";
+"permLocationDenied" = "无定位权限，请在隐私设置中开启";
+"compositeComponents" = "复合组件";
+"statusComponents" = "状态组件";
+"layoutComponents" = "布局组件";
+"onThisDay" = "往年今日";
+"capsuleSealed" = "未开启";
+"capsuleCreated" = "待回复";
+"capsuleOpened" = "已回复";
+"capsuleOverdue" = "超期未回复";
+"capsuleReplyContinue" = "已回复";
+"tomorrow" = "明天";
+"capsuleMessagePlaceholder" = "给未来的自己留一段话...";
+"capsuleQuestionPlaceholder" = "向未来的自己提一个问题...";
+"addSystemQuestion" = "添加问题";
+"removeSystemQuestion" = "移除问题";
+"systemQuestion" = "问题";
+"message" = "留言";
+"delete" = "删除";
+"clearTag" = "去标";
+"date" = "日期";
+"nextWeek" = "下周";
+"oneMonth" = "1个月";
+"threeMonths" = "3个月";
+"oneYear" = "1年";
+"addPlace" = "新增地点";
+"newPlaceName" = "请输入地点名称";
+"create" = "创建";
+"searchPlace" = "搜索地点...";
+"untitledPlace" = "未命名地点";
+"selectOnMap" = "地图选点";
+"addAnchor" = "新增锚点";
+"newAnchorName" = "新锚点";
+"cancelCategory" = "取消分类";
+"moreAction" = "更多操作";
+"uploadFile" = "上传文件";
+"calendar" = "日历";
+"jump" = "跳转";
+"jumpToDate" = "跳转至日期";
+"go" = "前往";
+"noTitle" = "无标题";
+"noTags" = "无标签";
+"noContent" = "暂无内容";
+"daysAgoSuffix" = "天前";
+"today" = "今天";
+"replySameDay" = "当天回复";
+"replyOverdue" = "超时回复";
+"dayEndTime" = "每日结束时间";
+"dayEndTimeDescription" = "设置一天的结束时间。在此时间之前的记录将计入昨天。";
+"replyFollowUp" = "追评";
+"timeRipple" = "时间涟漪";
+"questionsForToday" = "今日问题";
+
+/* User Profile */
+"myProfile" = "我的画像";
+"profileKernel" = "内核";
+"profileState" = "每日状态";
+"notSet" = "未填写";
+"lastUpdated" = "最后更新";
+
+/* Five Dimensions */
+"dim_identity" = "身份与生理";
+"dim_personality" = "性格与心理";
+"dim_social" = "社会与关系";
+"dim_competence" = "能力与发展";
+"dim_lifestyle" = "习惯与生活";
+
+/* Identity Kernel Fields */
+"field_gender" = "性别";
+"field_birthDate" = "出生年月";
+"field_height" = "身高";
+"field_weight" = "体重";
+"field_bloodType" = "血型";
+"field_chronicConditions" = "慢性病史";
+"field_basePhysicalCondition" = "基础体能";
+"field_geneticTraits" = "遗传特征";
+"field_hometown" = "籍贯";
+"field_currentCity" = "常居地";
+"field_education" = "学历";
+"field_maritalStatus" = "婚姻状况";
+
+/* Identity State Fields */
+"field_isSick" = "今日是否生病";
+"field_sicknessType" = "病症类型";
+"field_painLocation" = "疼痛部位";
+"field_bodyEnergy" = "身体能量";
+"field_sleepQuality" = "睡眠质量";
+"field_exerciseLevel" = "运动量";
+"field_hungerLevel" = "饥饿感";
+"field_thirstLevel" = "口渴感";
+"field_fatigueLevel" = "疲劳感";
+
+/* Personality Kernel Fields */
+"field_mbtiType" = "MBTI 类型";
+"field_bigFive" = "大五人格";
+"field_valuePriorities" = "核心价值观";
+"field_decisionMode" = "决策模式";
+"field_riskPreference" = "风险偏好";
+
+/* Personality State Fields */
+"field_happiness" = "快乐指数";
+"field_anxiety" = "焦虑指数";
+"field_anger" = "愤怒指数";
+"field_calmness" = "平静指数";
+"field_moodWeather" = "心情指数";
+"field_moodDescription" = "心境描述";
+"field_currentStressors" = "当前压力源";
+"field_stressLevel" = "压力等级";
+
+/* Social Kernel Fields */
+"field_coreRelationships" = "核心关系人";
+"field_socialType" = "社交类型";
+"field_socialEnergy" = "社交能量";
+"field_familyStructure" = "家庭结构";
+
+/* Social State Fields */
+"field_recentSocialFrequency" = "最近社交频率";
+"field_socialSatisfaction" = "社交满意度";
+"field_relationshipsImproving" = "关系升温的人";
+"field_relationshipsTense" = "关系紧张的人";
+"field_companionshipNeed" = "陪伴需求";
+
+/* Competence Kernel Fields */
+"field_occupation" = "职业";
+"field_industry" = "行业";
+"field_employmentStatus" = "工作状态";
+"field_skills" = "核心技能";
+"field_expertise" = "专业领域";
+"field_consumptionLevel" = "消费水平";
+"field_debtStatus" = "负债状况";
+
+/* Competence State Fields */
+"field_workIntensity" = "工作强度";
+"field_workStatus" = "工作状态";
+"field_currentTasks" = "当前任务";
+"field_taskPressure" = "任务压力";
+"field_achievementStatus" = "成就状态";
+"field_careerSatisfaction" = "职业满意度";
+
+/* Lifestyle Kernel Fields */
+"field_chronoType" = "作息类型";
+"field_averageSleepHours" = "平均睡眠时长";
+"field_longTermHobbies" = "长期爱好";
+"field_hobbyIntensity" = "兴趣强度";
+"field_tastePreferences" = "口味偏好";
+"field_dietType" = "饮食类型";
+"field_foodRestrictions" = "忌口";
+
+/* Lifestyle State Fields */
+"field_currentInterests" = "当前热衷的事";
+"field_interestDuration" = "兴趣持续时间";
+"field_recentEvents" = "近期事件";
+"field_eventImpact" = "事件影响";
+"field_planCompletionRate" = "计划完成度";
+"field_procrastinationLevel" = "拖延倾向";
+
+/* Enum Values - Gender */
+"enum_gender_male" = "男";
+"enum_gender_female" = "女";
+"enum_gender_other" = "其他";
+
+/* Enum Values - Blood Type */
+"enum_bloodType_A" = "A型";
+"enum_bloodType_B" = "B型";
+"enum_bloodType_AB" = "AB型";
+"enum_bloodType_O" = "O型";
+
+/* Enum Values - Physical Condition */
+"enum_physicalCondition_weak" = "虚弱";
+"enum_physicalCondition_normal" = "一般";
+"enum_physicalCondition_strong" = "强壮";
+
+/* Enum Values - Education */
+"enum_education_highSchool" = "高中";
+"enum_education_bachelor" = "本科";
+"enum_education_master" = "硕士";
+"enum_education_phd" = "博士";
+
+/* Enum Values - Marital Status */
+"enum_maritalStatus_single" = "单身";
+"enum_maritalStatus_dating" = "恋爱中";
+"enum_maritalStatus_married" = "已婚";
+"enum_maritalStatus_divorced" = "离异";
+
+/* Enum Values - Sleep Quality */
+"enum_sleepQuality_insomnia" = "失眠";
+"enum_sleepQuality_poor" = "较差";
+"enum_sleepQuality_normal" = "一般";
+"enum_sleepQuality_good" = "良好";
+
+/* Enum Values - Exercise Level */
+"enum_exerciseLevel_sedentary" = "久坐";
+"enum_exerciseLevel_light" = "轻度";
+"enum_exerciseLevel_moderate" = "中度";
+"enum_exerciseLevel_intense" = "高强度";
+
+/* Enum Values - Decision Mode */
+"enum_decisionMode_logical" = "逻辑主导";
+"enum_decisionMode_emotional" = "情感主导";
+"enum_decisionMode_balanced" = "平衡";
+
+/* Enum Values - Risk Preference */
+"enum_riskPreference_conservative" = "保守";
+"enum_riskPreference_moderate" = "中庸";
+"enum_riskPreference_adventurous" = "冒险";
+
+/* Enum Values - Mood Description */
+"enum_moodDescription_positive" = "积极向上";
+"enum_moodDescription_neutral" = "平淡";
+"enum_moodDescription_negative" = "丧";
+"enum_moodDescription_zen" = "佛系";
+
+/* Enum Values - Social Type */
+"enum_socialType_loner" = "独处主义";
+"enum_socialType_passive" = "被动社交";
+"enum_socialType_socialButterfly" = "社交达人";
+
+/* Enum Values - Social Energy */
+"enum_socialEnergy_introvert" = "内向";
+"enum_socialEnergy_ambivert" = "中性";
+"enum_socialEnergy_extrovert" = "外向";
+
+/* Enum Values - Family Structure */
+"enum_familyStructure_nuclear" = "核心家庭";
+"enum_familyStructure_extended" = "大家族";
+"enum_familyStructure_alone" = "独居";
+"enum_familyStructure_roommates" = "合租";
+
+/* Enum Values - Social Frequency */
+"enum_socialFrequency_stayHome" = "宅家";
+"enum_socialFrequency_occasional" = "偶尔";
+"enum_socialFrequency_frequent" = "频繁";
+
+/* Enum Values - Companionship Need */
+"enum_companionshipNeed_needAlone" = "渴望独处";
+"enum_companionshipNeed_neutral" = "中性";
+"enum_companionshipNeed_needCompany" = "渴望陪伴";
+
+/* Enum Values - Employment Status */
+"enum_employmentStatus_employed" = "在职";
+"enum_employmentStatus_student" = "学生";
+"enum_employmentStatus_unemployed" = "待业";
+"enum_employmentStatus_freelance" = "自由职业";
+
+/* Enum Values - Consumption Level */
+"enum_consumptionLevel_low" = "低";
+"enum_consumptionLevel_medium" = "中";
+"enum_consumptionLevel_high" = "高";
+
+/* Enum Values - Debt Status */
+"enum_debtStatus_none" = "无";
+"enum_debtStatus_light" = "轻度";
+"enum_debtStatus_moderate" = "中度";
+"enum_debtStatus_heavy" = "重度";
+
+/* Enum Values - Work Intensity */
+"enum_workIntensity_slacking" = "摸鱼";
+"enum_workIntensity_normal" = "正常";
+"enum_workIntensity_overtime" = "加班";
+"enum_workIntensity_hellMode" = "地狱模式";
+
+/* Enum Values - Work Status */
+"enum_workStatus_vacation" = "假期";
+"enum_workStatus_normal" = "正常";
+"enum_workStatus_busy" = "忙碌";
+"enum_workStatus_crunchTime" = "项目冲刺";
+
+/* Enum Values - Achievement Status */
+"enum_achievementStatus_frustrated" = "受挫";
+"enum_achievementStatus_neutral" = "平淡";
+"enum_achievementStatus_praised" = "获得表彰";
+
+/* Enum Values - Chrono Type */
+"enum_chronoType_morning" = "晨型人";
+"enum_chronoType_neutral" = "中性";
+"enum_chronoType_night" = "夜猫子";
+
+/* Enum Values - Hobby Intensity */
+"enum_hobbyIntensity_light" = "轻度";
+"enum_hobbyIntensity_moderate" = "中度";
+"enum_hobbyIntensity_intense" = "重度";
+
+/* Enum Values - Diet Type */
+"enum_dietType_omnivore" = "杂食";
+"enum_dietType_vegetarian" = "素食";
+"enum_dietType_carnivore" = "肉食";
+
+/* Enum Values - Event Impact */
+"enum_eventImpact_positive" = "正面";
+"enum_eventImpact_neutral" = "中性";
+"enum_eventImpact_negative" = "负面";
+
+/* Enum Values - Core Values */
+"enum_coreValue_freedom" = "自由";
+"enum_coreValue_family" = "家庭";
+"enum_coreValue_money" = "金钱";
+"enum_coreValue_health" = "健康";
+"enum_coreValue_achievement" = "成就";
+"enum_coreValue_love" = "爱情";
+"enum_coreValue_friendship" = "友谊";
+"enum_coreValue_knowledge" = "知识";
+"enum_coreValue_creativity" = "创造";
+"enum_coreValue_security" = "安全";
+
+/* Big Five Personality */
+"bigFive_openness" = "开放性";
+"bigFive_conscientiousness" = "尽责性";
+"bigFive_extraversion" = "外向性";
+"bigFive_agreeableness" = "宜人性";
+"bigFive_neuroticism" = "神经质";
+
+/* Units */
+"unit_cm" = "厘米";
+"unit_kg" = "公斤";
+"unit_hours" = "小时";
+"unit_days" = "天";
+"unit_people" = "人";
+
+/* Boolean Values */
+"bool_yes" = "是";
+"bool_no" = "否";
+
+
+/* Relationship Management */
+"searchPeople" = "搜索人员...";
+"noProfiles" = "暂无人员";
+"basicInfo" = "基本信息";
+"relationshipInfo" = "关系信息";
+"interactionStats" = "互动统计";
+"typeSpecificInfo" = "详细信息";
+"notesAndTags" = "备注与标签";
+"totalInteractions" = "总互动次数";
+"lastInteraction" = "最后互动";
+"interactionFrequency" = "互动频率";
+"intimacyLevel" = "亲密度";
+"emotionalConnection" = "情感连接";
+"noNotes" = "暂无备注";
+"deleteConfirmTitle" = "确认删除";
+"deleteConfirmMessage" = "确定要删除这个人员档案吗？此操作无法撤销。";
+"editRelationship" = "编辑人员";
+"newRelationship" = "新建人员";
+"displayName" = "显示名称";
+"displayNamePlaceholder" = "输入名称";
+"avatar" = "头像";
+"relationshipType" = "关系类型";
+"realName" = "真实姓名";
+"optional" = "可选";
+"privacyWarning" = "真实姓名将加密存储，仅在本地可见";
+"selectEmoji" = "选择表情";
+"tags" = "标签";
+"tagsPlaceholder" = "用逗号分隔";
+
+/* Companion Types */
+"companion_alone" = "独处";
+"companion_partner" = "伴侣";
+"companion_family" = "家人";
+"companion_friends" = "朋友";
+"companion_colleagues" = "同事";
+"companion_online_friends" = "网友";
+"companion_pet" = "宠物";
+
+/* Interaction Frequency */
+"interaction_daily" = "每天";
+"interaction_frequent" = "频繁";
+"interaction_regular" = "定期";
+"interaction_occasional" = "偶尔";
+"interaction_rare" = "罕见";
+"interaction_veryRare" = "极少";
+
+/* Partner Fields */
+"partnerInfo" = "伴侣信息";
+"partnerStatus" = "关系状态";
+"partnerStatus_dating" = "恋爱中";
+"partnerStatus_married" = "已婚";
+"partnerStatus_separated" = "分居";
+"anniversaryMet" = "相识日";
+"anniversaryDating" = "恋爱日";
+"anniversaryMarried" = "结婚日";
+
+/* Family Fields */
+"familyInfo" = "家人信息";
+"familyRole" = "家庭角色";
+"familyRole_parent" = "父母";
+"familyRole_child" = "子女";
+"familyRole_sibling" = "兄弟姐妹";
+"familyRole_other" = "其他";
+"livingTogether" = "是否同住";
+
+/* Friend Fields */
+"friendInfo" = "朋友信息";
+"friendIntimacy" = "亲密程度";
+"friendIntimacy_acquaintance" = "普通朋友";
+"friendIntimacy_friend" = "好友";
+"friendIntimacy_closeFriend" = "挚友";
+"friendIntimacy_bestFriend" = "至交";
+"yearsKnown" = "认识年数";
+
+/* Colleague Fields */
+"colleagueInfo" = "同事信息";
+"workRelationship" = "工作关系";
+"workRelationship_superior" = "上级";
+"workRelationship_subordinate" = "下级";
+"workRelationship_peer" = "平级";
+"workRelationship_partner" = "合作伙伴";
+"company" = "公司";
+"department" = "部门";
+
+/* Online Friend Fields */
+"onlineFriendInfo" = "网友信息";
+"platform" = "认识平台";
+"platformPlaceholder" = "如：微信、即刻";
+"hasMetInPerson" = "是否见过面";
+
+/* Pet Fields */
+"petInfo" = "宠物信息";
+"petType" = "宠物类型";
+"petType_cat" = "猫";
+"petType_dog" = "狗";
+"petType_bird" = "鸟";
+"petType_fish" = "鱼";
+"petType_other" = "其他";
+"petAge" = "年龄";
+"petBreed" = "品种";
+
+/* Units */
+"unit_years" = "年";
+
+/* Additional UI Labels */
+"notes" = "备注";
+"dayEndTimeWarning" = "设置超过 12:00 将被视为 00:00";
+"allMemories" = "全部记忆";
+
+// MARK: - Daily Tracker
+
+// Step 1: Body Energy
+"body_energy" = "身体能量";
+"body_collapsed" = "累趴了";
+"body_exhausted" = "筋疲力尽";
+"body_tired" = "有点累";
+"body_normal" = "正常";
+"body_fresh" = "精神不错";
+"body_energetic" = "精力充沛";
+"body_unstoppable" = "状态爆表";
+
+// Step 1: Mood Weather (reuse existing mind_* keys)
+"mood_weather" = "心情指数";
+
+// Step 2: Activity Groups
+"tracker_status" = "今日状态";
+"tracker_activities" = "今日活动";
+"tracker_details" = "补充细节";
+"tracker_add_details" = "补充细节";
+"activity_group_competence" = "生存与产出";
+"activity_group_identity" = "探索与身心";
+"activity_group_social" = "连接与情感";
+
+// Step 2: Activity Types
+"activity_work" = "工作";
+"activity_study" = "学习";
+"activity_housework" = "家务";
+"activity_shopping" = "购物";
+"activity_errands" = "杂事";
+"activity_medical" = "医疗";
+"activity_internet" = "上网";
+"activity_reading" = "阅读";
+"activity_creativity" = "创作";
+"activity_relax" = "休息";
+"activity_gaming" = "游戏";
+"activity_exercise" = "运动";
+"activity_outdoors" = "户外";
+"activity_movies_tv" = "影视";
+"activity_date" = "约会";
+"activity_walk_pet" = "遛宠";
+"activity_party" = "聚会";
+"activity_travel" = "旅行";
+
+// Step 3: Companion Types
+"companion_alone" = "独处";
+"companion_partner" = "伴侣";
+"companion_family" = "家人";
+"companion_friends" = "朋友";
+"companion_colleagues" = "同事";
+"companion_online_friends" = "网友";
+"companion_pet" = "宠物";
+
+// Step 3: Context
+"context_who" = "和谁";
+"context_what" = "具体";
+"context_placeholder" = "具体做了什么...";
+"context_people" = "选择人物";
+"context_companion_type" = "关系类型";
+"context_tags" = "标签";
+"context_new_tag" = "添加新标签...";
+"context_notes" = "备注";
+"context_notes_placeholder" = "补充说明（可选）";
+"context_add_person" = "添加新人物";
+"context_person_name" = "名字";
+"save_as_tag" = "存为标签";
+
+// Summary
+"tracker_summary" = "今日状态";
+"tracker_completed" = "已完成";
+
+
+// MARK: - Narrative Profile (叙事画像)
+
+// Profile
+"Profile.NotSet" = "未填写";
+"Profile.NoTags" = "暂无标签";
+"Profile.StaticCore" = "静态内核";
+"Profile.RecentPortrait" = "近期画像";
+"Profile.UpdateHistory" = "更新历史";
+"Profile.SelfTags" = "自我描述标签";
+"Profile.AddTag" = "添加标签";
+"Profile.DataStats" = "数据统计";
+
+// Relationship
+"Relationship.NoMentions" = "暂无互动记录";
+"Relationship.MentionCount" = "共 %d 次提及";
+"Relationship.Narrative" = "关系描述";
+"Relationship.NarrativePlaceholder" = "描述你们的关系...";
+"Relationship.FactAnchors" = "事实锚点";
+"Relationship.FirstMeeting" = "初识日期";
+"Relationship.Anniversaries" = "纪念日";
+"Relationship.SharedExperiences" = "共同经历";
+"Relationship.Mentions" = "提及记录";
+"Relationship.AddAnniversary" = "添加纪念日";
+"Relationship.AddExperience" = "添加共同经历";
+"Relationship.AnniversaryName" = "纪念日名称";
+"Relationship.AnniversaryDate" = "日期 (MM-DD)";
+"Relationship.ExperiencePlaceholder" = "描述共同经历...";
+
+// Mention Source
+"mention_source_diary" = "日记";
+"mention_source_dailyTracker" = "每日记录";
+"mention_source_aiConversation" = "AI对话";
+
+
+// MARK: - AI Conversation Mode
+
+// Placeholder and Input
+"AI.Placeholder" = "和 AI 聊聊...";
+
+// Welcome Screen
+"AI.Welcome.Title" = "你好，我是智镜 AI";
+"AI.Welcome.Subtitle" = "我可以帮你回顾记忆、分析情绪、或者只是聊聊天";
+
+// Conversation Starters
+"AI.Starter.1" = "帮我回顾一下最近的心情变化";
+"AI.Starter.2" = "分析一下我最近的生活状态";
+"AI.Starter.3" = "我想聊聊最近发生的事";
+"AI.Starter.4" = "给我一些今天的建议";
+
+// Sidebar
+"AI.SearchConversations" = "搜索对话...";
+"AI.NoConversations" = "暂无对话";
+"AI.StartConversation" = "开始对话";
+"AI.NewConversation" = "新对话";
+"AI.SelectModel" = "选择模型";
+
+// Thinking Mode
+"AI.ThinkingProcess" = "思考过程";
+"AI.Thinking" = "正在思考...";
+"AI.Parsing" = "正在解析...";
+
+// Attachments
+"AI.Audio" = "语音消息";
+
+// Settings
+"AI.DefaultMode" = "默认模式";
+"AI.Mode.Journal" = "日记";
+"AI.Mode.AI" = "AI 对话";
+"AI.ThinkingMode" = "显示思考过程";
+"AI.APIKey" = "API 密钥";
+"AI.EnterAPIKey" = "输入 API 密钥";
+"AI.APIKeyDescription" = "请输入 API 密钥以使用 AI 对话功能";
+"AI.Configured" = "已配置";
+"AI.NotConfigured" = "未配置";
+
+// Actions
+"Action.Retry" = "重试";
+"Action.Save" = "保存";
+"Action.Cancel" = "取消";
+"Action.Back" = "返回";
+
+// Code Blocks
+"AI.Code.Copy" = "复制";
+"AI.Code.Copied" = "已复制";
+"AI.Code.CopyHint" = "点击复制代码到剪贴板";
+
+// Message Actions
+"AI.Message.Copy" = "复制消息";
+"AI.Message.Regenerate" = "重新生成";
+"AI.Message.CopyWithThinking" = "复制（含思考过程）";
+
+// AI Settings Screen
+"AI.Settings.Title" = "AI 设置";
+"AI.Settings.Section" = "AI 助手";
+"AI.Settings.APISection" = "API 配置";
+"AI.Settings.EnterAPIKey" = "输入 API 密钥";
+"AI.Settings.APIFooter" = "您的 API 密钥将安全存储，不会被分享。";
+"AI.Settings.DisplaySection" = "显示选项";
+"AI.Settings.ShowThinking" = "显示思考过程";
+"AI.Settings.ThinkingFooter" = "在最终回复前显示 AI 的推理步骤。";
+"AI.Settings.ModelSection" = "模型选择";
+"AI.Settings.Model" = "模型";
+"AI.Error.InvalidAPIKey" = "请输入有效的 API 密钥";
+"AI.Error.ParsingFailed" = "消息内容解析失败";
+"Action.Done" = "完成";
+
+// Conversation
+"AI.Conversation.Untitled" = "新对话";
+
+// Summary Card
+"AI.SummaryCard.Hint" = "点击展开对话";
+
+// Profile Dimensions
+"Dimension.Identity" = "身份与生理";
+"Dimension.Personality" = "性格与心理";
+"Dimension.Social" = "社会与关系";
+"Dimension.Competence" = "能力与发展";
+"Dimension.Lifestyle" = "习惯与生活";
+"Dimension.RelationshipBasic" = "关系基本信息";
+"Dimension.RelationshipNature" = "关系性质";
+"Dimension.RelationshipHistory" = "关系历史";
+"Dimension.RelationshipFacts" = "关系事实锚点";
+
+// Source Types
+"SourceType.ManualInput" = "手动输入";
+"SourceType.DiaryExtraction" = "日记提取";
+"SourceType.AIConversation" = "AI 对话";
+"SourceType.DailyTracker" = "每日追踪";
+"SourceType.Migration" = "数据迁移";
+"SourceType.AIGenerated" = "AI 生成";
+
+
+
+// Relationship Type-Specific Fields
+"relationship_specific_info" = "专属信息";
+"relationship_detail" = "关系详情";
+"relationship_nature" = "关系性质";
+"relationship_fact_anchors" = "事实锚点";
+"relationship_mentions" = "互动记录";
+
+// Partner
+"relationship_partner_status" = "关系状态";
+"relationship_anniversary_met" = "初次见面";
+"relationship_anniversary_dating" = "开始交往";
+"relationship_anniversary_married" = "结婚纪念日";
+
+// Family
+"relationship_family_role" = "家庭角色";
+"relationship_living_together" = "是否同住";
+
+// Friends
+"relationship_friend_intimacy" = "亲密程度";
+"relationship_years_known" = "认识年数";
+
+// Colleagues
+"relationship_work_relationship" = "工作关系";
+"relationship_company" = "公司";
+"relationship_department" = "部门";
+
+// Online Friends
+"relationship_platform" = "平台";
+"relationship_has_met_in_person" = "是否见过面";
+
+// Pet
+"relationship_pet_type" = "宠物类型";
+"relationship_pet_age" = "年龄";
+"relationship_pet_breed" = "品种";
+
+// Mention Timeline
+"mention_timeline" = "互动时间线";
+"first_mention" = "首次提及";
+"latest_mention" = "最近提及";
+"no_mentions_found" = "暂无互动记录";
+"no_mentions_description" = "在日记中提及此人后，互动记录会自动出现在这里";
+"view_diary" = "查看日记";
+"view_more" = "查看更多";
+
+// Time Filters
+"filter_all_time" = "全部时间";
+"filter_last_month" = "最近一个月";
+"filter_last_three_months" = "最近三个月";
+"filter_last_year" = "最近一年";
+
+
+
+
+// Data Export
+"Export.Title" = "数据导出";
+"Export.Options" = "导出选项";
+"Export.DateRange" = "日期范围";
+"Export.Range.Last7Days" = "最近 7 天";
+"Export.Range.Last30Days" = "最近 30 天";
+"Export.Range.Last90Days" = "最近 90 天";
+"Export.Range.AllTime" = "全部时间";
+"Export.AvailableDates" = "可导出日期";
+"Export.NoData" = "该时间范围内没有数据";
+"Export.Footer" = "点击导出按钮将数据分享或保存到文件";
+"Export.Action" = "导出";
+"Export.Error" = "导出失败";
+"Action.Close" = "关闭";
+"Action.OK" = "确定";
+
+// MARK: - Insight Feature
+"Insight.Title" = "数据统计";
+"Insight.Loading" = "加载中...";
+"Insight.Engine" = "洞察引擎";
+"Insight.Overview" = "记录概览";
+"Insight.Streak" = "连续天数";
+"Insight.TotalDays" = "总天数";
+"Insight.TotalEntries" = "总条目";
+"Insight.TotalWords" = "总字数";
+
+// Zone 2: Feature Usage
+"Insight.FeatureUsage" = "功能使用";
+"Insight.AIConversation" = "AI 对话";
+"Insight.AIConversationValue" = "%d次对话 / %d条消息";
+"Insight.DailyTracker" = "每日追踪";
+"Insight.DailyTrackerValue" = "%d天追踪";
+"Insight.MindState" = "心境记录";
+"Insight.MindStateValue" = "%d次记录";
+"Insight.TimeCapsule" = "时间胶囊";
+"Insight.TimeCapsuleValue" = "%d个胶囊 / %d个待开启";
+"Insight.LoveLog" = "爱的表达";
+"Insight.LoveLogValue" = "%d条记录";
+"Insight.Relationships" = "关系数量";
+"Insight.RelationshipsValue" = "%d个关系";
+
+// Zone 3: Data Insight
+"Insight.DataInsight" = "数据洞察";
+"Insight.HourDistribution" = "记录时间分布";
+"Insight.ActivityDistribution" = "活动分布";
+"Insight.MoodTrend" = "情绪趋势";
+"Insight.TopLocations" = "常去地点";
+"Insight.LoveSources" = "爱的来源";
+"Insight.NoData" = "暂无数据";
+"Insight.AndMore" = "及更多...";
+"Insight.MoodPositive" = "积极";
+"Insight.MoodNeutral" = "中性";
+"Insight.MoodNegative" = "消极";
+
+// Activity Types
+"Activity.Work" = "工作";
+"Activity.Exercise" = "运动";
+"Activity.Social" = "社交";
+"Activity.Leisure" = "休闲";
+"Activity.Learning" = "学习";
+"Activity.Rest" = "休息";
+
+// MARK: - Profile Section Redesign
+
+// Section Headers
+"Profile.Section.Features" = "功能与服务";
+"Profile.Section.Preferences" = "偏好设置";
+"Profile.Section.Privacy" = "隐私与安全";
+"Profile.Section.Support" = "支持与反馈";
+"Profile.Section.About" = "关于";
+
+// User Header
+"Profile.EditProfile" = "编辑资料";
+"Profile.SetNickname" = "设置昵称";
+"Profile.TapToEdit" = "点击编辑个人资料";
+"Profile.TapToChangeAvatar" = "点击更换头像";
+"Profile.Nickname" = "昵称";
+"Profile.NicknamePlaceholder" = "输入昵称";
+"Profile.BasicInfo" = "基本信息";
+"Profile.CareerInfo" = "职业信息";
+"Profile.HometownPlaceholder" = "输入籍贯";
+"Profile.CurrentCityPlaceholder" = "输入常居地";
+"Profile.OccupationPlaceholder" = "输入职业";
+"Profile.IndustryPlaceholder" = "输入行业";
+"Profile.NotSet" = "未设置";
+"Profile.EditHint" = "这些是您的基础信息，很少变化。AI 会从您的日记中自动提取技能、价值观等动态信息，可在「人生回顾」中查看。";
+
+// Menu Items
+"Profile.LifeReview" = "人生回顾";
+"Profile.MyBonds" = "我的羁绊";
+"Profile.Appearance" = "外观";
+"Profile.PrivacyPolicy" = "隐私政策";
+"Profile.HelpCenter" = "帮助中心";
+"Profile.Feedback" = "意见反馈";
+"Profile.RateUs" = "给我们评分";
+
+// Placeholder Screens
+"Profile.ComingSoon" = "功能开发中...";
+"Profile.FeatureInDevelopment" = "此功能正在开发中，敬请期待";
+
+// Appearance Settings
+"Appearance.Title" = "外观设置";
+"Appearance.Light" = "浅色";
+"Appearance.Dark" = "深色";
+"Appearance.System" = "跟随系统";
+
+
+// MARK: - Authentication Errors (认证错误)
+
+"auth.error.invalidEmail" = "邮箱格式不正确";
+"auth.error.invalidPassword" = "密码不符合要求";
+"auth.error.emailAlreadyExists" = "该邮箱已被注册";
+"auth.error.invalidCredentials" = "邮箱或密码错误";
+"auth.error.accountDisabled" = "账户已被禁用";
+"auth.error.emailNotFound" = "邮箱未注册";
+"auth.error.sessionExpired" = "会话已过期，请重新登录";
+"auth.error.tokenRefreshFailed" = "Token 刷新失败";
+"auth.error.appleSignInCancelled" = "Apple 登录已取消";
+"auth.error.appleSignInFailed" = "Apple 登录失败";
+"auth.error.networkError" = "网络连接失败，请检查网络或尝试使用 VPN";
+"auth.error.serviceUnavailable" = "服务暂时不可用，可能需要科学上网";
+"auth.error.rateLimited" = "请求过于频繁，请稍后重试";
+"auth.error.keychainError" = "安全存储错误";
+"auth.error.unknown" = "发生未知错误";
+"auth.error.usernameAlreadyExists" = "用户名已存在";
+"auth.error.invalidVerificationCode" = "验证码无效或已过期";
+"auth.error.invalid2FACode" = "两步验证码错误";
+"auth.error.usernameTooShort" = "用户名至少需要3个字符";
+
+
+// MARK: - Authentication UI (认证界面)
+
+"auth.email" = "邮箱";
+"auth.username" = "用户名";
+"auth.password" = "密码";
+"auth.confirmPassword" = "确认密码";
+"auth.signIn" = "登录";
+"auth.signUp" = "注册";
+"auth.signOut" = "退出登录";
+"auth.forgotPassword" = "忘记密码？";
+"auth.noAccount" = "还没有账户？";
+"auth.hasAccount" = "已有账户？";
+"auth.or" = "或";
+"auth.resetPassword" = "重置密码";
+"auth.sendResetEmail" = "发送重置邮件";
+"auth.resetEmailSent" = "重置邮件已发送，请检查您的邮箱。";
+"auth.resetEmailDescription" = "输入您的邮箱地址，我们将发送密码重置链接。";
+"auth.passwordMismatch" = "两次输入的密码不一致";
+"auth.signUpSuccess" = "注册成功，请登录";
+"auth.signOut.confirm.title" = "确认退出";
+"auth.signOut.confirm.message" = "确定要退出登录吗？";
+
+// MARK: - 2FA UI (两步验证界面)
+
+"auth.2fa.title" = "两步验证";
+"auth.2fa.description" = "请输入验证器应用中的6位验证码";
+"auth.2fa.code" = "验证码";
+"auth.2fa.verify" = "验证";
+"auth.2fa.backToLogin" = "返回登录";
+
+// MARK: - Registration UI (注册界面)
+
+"auth.verificationCode" = "邮箱验证码";
+"auth.verificationCode.placeholder" = "输入6位验证码";
+"auth.sendCode" = "发送验证码";
+"auth.codeSent" = "已发送";
+"auth.affCode" = "邀请码（可选）";
+"auth.affCode.placeholder" = "输入邀请码";
+
+
+// MARK: - Model Tier Selector (模型档次选择器)
+
+"AI.ModelTier" = "模型档次";
+"AI.Options" = "选项";
+"AI.ThinkingMode" = "思考模式";
+"AI.ThinkingMode.Description" = "启用后 AI 会展示推理过程，适合复杂问题";
